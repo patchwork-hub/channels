@@ -166,9 +166,9 @@ const Firehose = ({ feedType, multiColumn }) => {
       </ColumnHeader>
 
       <div className='account__section-headline'>
-        <NavLink exact to='/public/local'>
+        {/* <NavLink exact to='/public/local'>
           <FormattedMessage tagName='div' id='firehose.local' defaultMessage='This server' />
-        </NavLink>
+        </NavLink> */}
 
         <NavLink exact to='/public/remote'>
           <FormattedMessage tagName='div' id='firehose.remote' defaultMessage='Other servers' />
