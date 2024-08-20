@@ -399,6 +399,6 @@ RUN \
 # Set the running user for resulting container
 USER mastodon
 # Expose default Puma ports
-EXPOSE 3000
+EXPOSE 3000 4000
 # Set container tini as default entry point
 ENTRYPOINT ["/usr/bin/tini", "--"]
