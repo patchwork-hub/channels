@@ -174,7 +174,7 @@ class SwitchingColumnsArea extends PureComponent {
     } else if (singleUserMode && owner && initialState?.accounts[owner]) {
       redirect = <Redirect from='/' to={`/@${initialState.accounts[owner].username}`} exact />;
     } else if (trendsEnabled && trendsAsLanding) {
-      redirect = <Redirect from='/' to='/explore' exact />;
+      redirect = <Redirect from='/' to='/public' exact />;
     } else {
       redirect = <Redirect from='/' to='/about' exact />;
     }
