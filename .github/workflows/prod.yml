@@ -1,4 +1,4 @@
-run-name: Deploy to Patchwork Dashboard by @${{ github.actor }}
+run-name: Deploy to Channel Servers by @${{ github.actor }}
 
 on:
   workflow_dispatch:
@@ -80,4 +80,4 @@ jobs:
             eval "$(ssh-agent -s)"
             ssh-add ~/.ssh/id_rsa
             cd /home/ubuntu/channels
-            bash bash alldeploy.sh
+            bash alldeploy.sh  #all jsons apply to all servers
