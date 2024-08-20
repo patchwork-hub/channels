@@ -86,5 +86,5 @@ jobs:
           script: |
             eval "$(ssh-agent -s)"
             ssh-add ~/.ssh/id_rsa
-            cd /home/ubuntu/channels
+            cd /home/ubuntu/create-channel
             bash alldeploy.sh  
