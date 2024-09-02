@@ -182,7 +182,7 @@ class NotifyService < BaseService
     @notification = Notification.new(account: @recipient, type: type, activity: @activity)
     
     #Disable sending out notifications
-    return true
+    return if @notification.from_account.domain.nil?
 
     # For certain conditions we don't need to create a notification at all
     return if dismiss?
