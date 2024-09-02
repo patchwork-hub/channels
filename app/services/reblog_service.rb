@@ -32,7 +32,7 @@ class ReblogService < BaseService
     DistributionWorker.perform_async(reblog.id)
     
     # Prevent reblog and increment of reblog count
-    ActivityPub::DistributionWorker.perform_async(reblog.id) unless reblog.account.domain.nil?
+    # ActivityPub::DistributionWorker.perform_async(reblog.id) unless reblog.account.domain.nil?
 
     create_notification(reblog)
     increment_statistics
