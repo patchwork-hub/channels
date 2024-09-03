@@ -21,6 +21,12 @@ import ColumnHeader from '../../components/column_header';
 import SettingToggle from '../notifications/components/setting_toggle';
 import StatusListContainer from '../ui/containers/status_list_container';
 
+const getTitle = () => {
+  const subdomain = window.location.host.split('.')[0];
+  const title = subdomain.charAt(0).toUpperCase() + subdomain.slice(1);
+  return title;
+};
+
 const messages = defineMessages({
   title: { id: 'column.firehose', defaultMessage: 'Live feeds' },
 });
@@ -152,12 +158,12 @@ const Firehose = ({ feedType, multiColumn }) => {
   );
 
   return (
-    <Column bindToDocument={!multiColumn} ref={columnRef} label={intl.formatMessage(messages.title)}>
+    <Column bindToDocument={!multiColumn} ref={columnRef} label={getTitle()}>
       <ColumnHeader
         icon='globe'
         iconComponent={PublicIcon}
         active={hasUnread}
-        title={intl.formatMessage(messages.title)}
+        title={getTitle()}
         onPin={handlePin}
         onClick={handleHeaderClick}
         multiColumn={multiColumn}
@@ -190,7 +196,7 @@ const Firehose = ({ feedType, multiColumn }) => {
       />
 
       <Helmet>
-        <title>{intl.formatMessage(messages.title)}</title>
+        <title>{getTitle()}</title>
         <meta name='robots' content='noindex' />
       </Helmet>
     </Column>
