@@ -2739,7 +2739,7 @@ $ui-header-logo-wordmark-width: 99px;
   background: var(--background-color);
   backdrop-filter: var(--background-filter);
   position: sticky;
-  top: $ui-header-height;
+  top: 0;
   z-index: 2;
   padding-top: 0;
 
@@ -2923,15 +2923,17 @@ $ui-header-logo-wordmark-width: 99px;
 
   .columns-area__panels__main {
     width: calc(100% - $sidebar-width);
+    border: 1px solid var(--background-border-color);
   }
 
   .columns-area__panels {
-    min-height: calc(100vh - $ui-header-height);
+    //min-height: calc(100vh - $ui-header-height);
     gap: 0;
   }
 
   .columns-area__panels__pane--navigational {
     min-width: $sidebar-width;
+    display: none;
 
     .columns-area__panels__pane__inner {
       width: $sidebar-width;
@@ -2988,10 +2990,12 @@ $ui-header-logo-wordmark-width: 99px;
 
   .columns-area__panels__main {
     width: calc(100% - $sidebar-width);
+    border: 1px solid var(--background-border-color);
   }
 
   .columns-area__panels__pane--navigational {
     min-width: $sidebar-width;
+    display: none;
 
     .columns-area__panels__pane__inner {
       width: $sidebar-width;

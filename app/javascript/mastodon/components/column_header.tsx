@@ -256,13 +256,13 @@ export const ColumnHeader: React.FC<Props> = ({
             {backButton}
 
             <button onClick={handleTitleClick} className='column-header__title'>
-              {!backButton && (
+              {/* {!backButton && (
                 <Icon
                   id={icon}
                   icon={iconComponent}
                   className='column-header__icon'
                 />
-              )}
+              )} */}
               {title}
             </button>
           </>
