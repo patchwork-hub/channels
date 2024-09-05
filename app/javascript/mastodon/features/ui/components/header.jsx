@@ -113,7 +113,6 @@ class Header extends PureComponent {
         <Link to='/' className='ui__header__logo'>
           {/* <WordmarkLogo />
           <SymbolLogo /> */}
-          {getTitle()}
         </Link>
 
         <div className='ui__header__links'>
