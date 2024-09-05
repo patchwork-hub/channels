@@ -16,6 +16,12 @@ import { WordmarkLogo, SymbolLogo } from 'mastodon/components/logo';
 import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
 import { registrationsOpen, me, sso_redirect } from 'mastodon/initial_state';
 
+const getTitle = () => {
+  const subdomain = window.location.host.split('.')[0];
+  const title = subdomain.charAt(0).toUpperCase() + subdomain.slice(1);
+  return title;
+};
+
 const Account = connect(state => ({
   account: state.getIn(['accounts', me]),
 }))(({ account }) => (
@@ -105,8 +111,9 @@ class Header extends PureComponent {
     return (
       <div className='ui__header'>
         <Link to='/' className='ui__header__logo'>
-          <WordmarkLogo />
-          <SymbolLogo />
+          {/* <WordmarkLogo />
+          <SymbolLogo /> */}
+          {getTitle()}
         </Link>
 
         <div className='ui__header__links'>
