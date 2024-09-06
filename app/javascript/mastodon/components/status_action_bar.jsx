@@ -11,12 +11,15 @@ import { connect } from 'react-redux';
 
 import BookmarkIcon from '@/material-icons/400-24px/bookmark-fill.svg';
 import BookmarkBorderIcon from '@/material-icons/400-24px/bookmark.svg?react';
+import StarBorderIcon from '@/material-icons/400-24px/channel_org_like.svg?react';
+import RepeatIcon from '@/material-icons/400-24px/channel_org_reblog.svg?react';
+import ReplyIcon from '@/material-icons/400-24px/channel_org_reply.svg?react';
 import MoreHorizIcon from '@/material-icons/400-24px/more_horiz.svg?react';
-import RepeatIcon from '@/material-icons/400-24px/repeat.svg?react';
-import ReplyIcon from '@/material-icons/400-24px/reply.svg?react';
+//import RepeatIcon from '@/material-icons/400-24px/repeat.svg?react';
+// import ReplyIcon from '@/material-icons/400-24px/reply.svg?react';
 import ReplyAllIcon from '@/material-icons/400-24px/reply_all.svg?react';
 import StarIcon from '@/material-icons/400-24px/star-fill.svg?react';
-import StarBorderIcon from '@/material-icons/400-24px/star.svg?react';
+//import StarBorderIcon from '@/material-icons/400-24px/star.svg?react';
 import VisibilityIcon from '@/material-icons/400-24px/visibility.svg?react';
 import RepeatActiveIcon from '@/svg-icons/repeat_active.svg?react';
 import RepeatDisabledIcon from '@/svg-icons/repeat_disabled.svg?react';

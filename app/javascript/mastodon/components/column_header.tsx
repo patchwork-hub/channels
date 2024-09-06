@@ -14,8 +14,12 @@ import type { IconProp } from 'mastodon/components/icon';
 import { Icon } from 'mastodon/components/icon';
 import { ButtonInTabsBar } from 'mastodon/features/ui/util/columns_context';
 import { useIdentity } from 'mastodon/identity_context';
+//import SearchIcon from '@/material-icons/400-24px/search.svg?react';
+import SearchIcon from '@/material-icons/400-24px/channel_org_search.svg?react';
+import ChannelOrgIcon from '@/material-icons/400-24px/channel_org.svg?react';
 
 import { useAppHistory } from './router';
+import { Link, NavLink } from 'react-router-dom';
 
 const messages = defineMessages({
   show: { id: 'column_header.show_settings', defaultMessage: 'Show settings' },
@@ -263,7 +267,22 @@ export const ColumnHeader: React.FC<Props> = ({
                   className='column-header__icon'
                 />
               )} */}
-              {title}
+              <div>
+                <ChannelOrgIcon />
+                
+                {/* <Icon id={'channel-org'} width='30px' icon={ChannelOrgIcon} /> */}
+              </div>
+              
+              
+              <div> {title} </div>
+
+              <button className='rounded-button'>
+                <a href='https://google.com' target='blank'>
+                  <Icon id={'search-icon'} icon={SearchIcon} />
+                  explore
+                </a>
+              </button>
+
             </button>
           </>
         )}
