@@ -269,17 +269,15 @@ export const ColumnHeader: React.FC<Props> = ({
               )} */}
               <div>
                 <ChannelOrgIcon />
-                
-                {/* <Icon id={'channel-org'} width='30px' icon={ChannelOrgIcon} /> */}
               </div>
               
               
               <div> {title} </div>
 
               <button className='rounded-button'>
-                <a href='https://google.com' target='blank'>
+                <a href='https://home.channel.org/search' target='blank'>
                   <Icon id={'search-icon'} icon={SearchIcon} />
-                  explore
+                  Explore
                 </a>
               </button>
 
