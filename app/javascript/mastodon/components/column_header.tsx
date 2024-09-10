@@ -267,17 +267,18 @@ export const ColumnHeader: React.FC<Props> = ({
                   className='column-header__icon'
                 />
               )} */}
-              <div>
+              <div style={{ marginTop: '10px' }}>
                 <ChannelOrgIcon />
               </div>
               
               
-              <div> {title} </div>
+              <div className='desktop-header'> {title} </div>
 
               <button className='rounded-button'>
                 <a href='https://home.channel.org/search' target='blank'>
                   <Icon id={'search-icon'} icon={SearchIcon} />
-                  Explore
+                  <div>Explore</div>
+                  
                 </a>
               </button>
 
@@ -290,6 +291,12 @@ export const ColumnHeader: React.FC<Props> = ({
         <div className='column-header__buttons'>
           {extraButton}
           {collapseButton}
+        </div>
+      </h1>
+
+      <h1 className={`${buttonClassName} mobile-header`}>
+        <div className='column-header__title'>
+          <div> {title} </div>
         </div>
       </h1>
 
