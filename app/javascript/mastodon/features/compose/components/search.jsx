@@ -335,12 +335,15 @@ class Search extends PureComponent {
           onBlur={this.handleBlur}
         />
         }
-
+        
+        {signedIn && 
         <div role='button' tabIndex={0} className='search__icon' onClick={this.handleClear}>
           <Icon id='search' icon={SearchIcon} className={hasValue ? '' : 'active'} />
           <Icon id='times-circle' icon={CancelIcon} className={hasValue ? 'active' : ''} aria-label={intl.formatMessage(messages.placeholder)} />
         </div>
+        }
 
+        {signedIn &&
         <div className='search__popout'>
           {options.length === 0 && (
             <>
@@ -395,6 +398,8 @@ class Search extends PureComponent {
             </div>
           )}
         </div>
+        }
+        
       </div>
     );
   }
