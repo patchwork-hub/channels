@@ -321,6 +321,7 @@ class Search extends PureComponent {
 
     return (
       <div className={classNames('search', { active: expanded })}>
+        {signedIn && 
         <input
           ref={this.setRef}
           className='search__input'
@@ -333,6 +334,7 @@ class Search extends PureComponent {
           onFocus={this.handleFocus}
           onBlur={this.handleBlur}
         />
+        }
 
         <div role='button' tabIndex={0} className='search__icon' onClick={this.handleClear}>
           <Icon id='search' icon={SearchIcon} className={hasValue ? '' : 'active'} />
