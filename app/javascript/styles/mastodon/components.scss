@@ -3461,7 +3461,6 @@ $ui-header-logo-wordmark-width: 99px;
   height: calc(100% - 20px);
   overflow-y: auto;
   display: flex;
-  // display: none;
   flex-direction: column;
 
   & > a {
@@ -8949,7 +8948,6 @@ noscript {
 }
 
 .server-banner {
-  // display: none;
   &__introduction {
     font-size: 15px;
     line-height: 22px;
@@ -9587,7 +9585,6 @@ noscript {
   padding-top: 20px;
   z-index: 1;
   font-size: 13px;
-  display: none;
 
   .column & {
     padding: 15px;
