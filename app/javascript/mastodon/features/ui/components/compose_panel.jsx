@@ -62,7 +62,7 @@ class ComposePanel extends PureComponent {
 
         {signedIn && <ComposeFormContainer singleColumn />}
 
-        <LinkFooter />
+        {/* <LinkFooter /> */}
       </div>
     );
   }

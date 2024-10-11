@@ -2651,8 +2651,7 @@ a.account__display-name {
 
       &__inner {
         position: fixed;
-        // width: 285px;
-        width: 345px;
+        width: 285px;
         pointer-events: auto;
         height: 100%;
       }
@@ -2747,7 +2746,8 @@ $ui-header-logo-wordmark-width: 99px;
   padding-top: 0;
 
   @media screen and (min-width: $no-gap-breakpoint) {
-    padding-top: 10px;
+    // padding-top: 10px;
+    // padding-top: 10px;
     top: 0;
   }
 }
@@ -7369,6 +7369,7 @@ a.status-card {
   cursor: default;
   display: flex;
   flex-shrink: 0;
+  border-bottom: 1px solid #e6e7eb33;
 
   @media screen and (max-width: $no-gap-breakpoint - 1px) {
     border-right: 0;
@@ -10889,4 +10890,31 @@ noscript {
     height: 13px;
     color: #ff3c26;
   }
+}
+.layout-multiple-columns .columns-area__panels__pane {
+  order: 3;
+}
+
+.layout-multiple-columns .columns-area__panels__main {
+  border: 1px solid #e6e7eb33;
+  order: 2;
+}
+
+.layout-multiple-columns
+  .columns-area__panels__pane.columns-area__panels__pane--start.columns-area__panels__pane--navigational {
+  order: 1;
+}
+
+.layout-single-column .columns-area__panels__pane {
+  order: 3;
+}
+
+.layout-single-column .columns-area__panels__main {
+  border: 1px solid #e6e7eb33;
+  order: 2;
+}
+
+.layout-single-column
+  .columns-area__panels__pane.columns-area__panels__pane--start.columns-area__panels__pane--navigational {
+  order: 1;
 }
