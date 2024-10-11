@@ -7398,7 +7398,6 @@ a.status-card {
 
     &.active {
       color: $primary-text-color;
-
       &::before {
         display: block;
         content: '';
@@ -7408,8 +7407,10 @@ a.status-card {
         transform: translateX(-50%);
         width: 40px;
         height: 3px;
-        border-radius: 4px 4px 0 0;
-        background: $highlight-text-color;
+        // border-radius: 4px 4px 0 0;
+        width: 100%;
+        // background: $highlight-text-color;
+        background: #ff3c26;
       }
     }
   }
