@@ -2738,6 +2738,7 @@ $ui-header-logo-wordmark-width: 99px;
 }
 
 .tabs-bar__wrapper {
+  display: none;
   background: var(--background-color);
   backdrop-filter: var(--background-filter);
   position: sticky;
@@ -2918,6 +2919,10 @@ $ui-header-logo-wordmark-width: 99px;
   .navigation-panel__legal {
     display: none;
   }
+}
+
+.columns-area__panels{
+  flex-direction: row-reverse;
 }
 
 @media screen and (max-width: $no-gap-breakpoint - 1px) {
@@ -7396,6 +7401,7 @@ a.status-card {
 
     &.active {
       color: $primary-text-color;
+      border-bottom: 4px solid #FF3C26;
 
       &::before {
         display: block;
@@ -7407,7 +7413,7 @@ a.status-card {
         width: 40px;
         height: 3px;
         border-radius: 4px 4px 0 0;
-        background: $highlight-text-color;
+        // background: $highlight-text-color;
       }
     }
   }
