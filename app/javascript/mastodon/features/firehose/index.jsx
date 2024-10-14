@@ -26,6 +26,7 @@ import Column from '../../components/column';
 import ColumnHeader from '../../components/column_header';
 import SettingToggle from '../notifications/components/setting_toggle';
 import StatusListContainer from '../ui/containers/status_list_container';
+import ChannelTopBanner from 'mastodon/components/channel_top_banner';
 
 const getTitle = () => {
   const subdomain = window.location.host.split('.')[0];
@@ -199,7 +200,7 @@ const Firehose = ({ feedType, multiColumn }) => {
       >
         <ColumnSettings />
       </ColumnHeader> */}
-
+      <ChannelTopBanner name="Science" src="/temp-images/science-banner.jpeg" participants={17280}/>
       <div className='account__section-headline'>
         {/* <NavLink exact to='/public/local'>
           <FormattedMessage tagName='div' id='firehose.local' defaultMessage='This server' />

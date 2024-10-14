@@ -10923,6 +10923,24 @@ noscript {
   order: 1;
 }
 
+.channel_name_in_top_banner {
+  color: '#fff';
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.24px;
+}
+
+.participants_counter {
+  & > span,
+  & > span > span,
+  & > span > span > span {
+    color: #fff !important;
+    font-size: 18px !important;
+    font-weight: 300 !important;
+    letter-spacing: 0.18px !important;
+  }
+}
+
 /* Sidebar styles */
 .nav-header {
   background: linear-gradient(180deg, #f8f8ff 10%, #babaf8 100%);

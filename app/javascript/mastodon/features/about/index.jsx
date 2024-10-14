@@ -23,6 +23,7 @@ import { ServerHeroImage } from 'mastodon/components/server_hero_image';
 import { Skeleton } from 'mastodon/components/skeleton';
 import Account from 'mastodon/containers/account_container';
 import LinkFooter from 'mastodon/features/ui/components/link_footer';
+import ChannelTopBanner from 'mastodon/components/channel_top_banner';
 
 const messages = defineMessages({
   title: { id: 'column.about', defaultMessage: 'About' },
@@ -149,6 +150,11 @@ class About extends PureComponent {
           title={intl.formatMessage(messages.title)}
           multiColumn={multiColumn}
         /> */}
+        <ChannelTopBanner
+          name='Science'
+          src='/temp-images/science-banner.jpeg'
+          participants={17280}
+        />
         <div className='account__section-headline'>
           {/* <NavLink exact to='/public/local'>
             <FormattedMessage tagName='div' id='firehose.local' defaultMessage='This server' />
