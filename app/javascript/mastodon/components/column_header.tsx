@@ -16,6 +16,7 @@ import { ButtonInTabsBar } from 'mastodon/features/ui/util/columns_context';
 import { useIdentity } from 'mastodon/identity_context';
 //import SearchIcon from '@/material-icons/400-24px/search.svg?react';
 import SearchIcon from '@/material-icons/400-24px/channel_org_search.svg?react';
+import ChannelOrgIcon from '@/material-icons/400-24px/channel_org.svg?react';
 
 import { useAppHistory } from './router';
 import { Link, NavLink } from 'react-router-dom';
@@ -266,6 +267,9 @@ export const ColumnHeader: React.FC<Props> = ({
                   className='column-header__icon'
                 />
               )} */}
+              <div style={{ marginTop: '10px' }}>
+                <ChannelOrgIcon />
+              </div>
               
               
               <div className='desktop-header'> {title} </div>
