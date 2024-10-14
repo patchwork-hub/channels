@@ -10919,3 +10919,21 @@ noscript {
   .columns-area__panels__pane.columns-area__panels__pane--start.columns-area__panels__pane--navigational {
   order: 1;
 }
+
+.channel_name_in_top_banner {
+  color:'#fff';
+  font-size:24px;
+  font-weight:600;
+  letter-spacing: 0.24px;
+}
+
+.participants_counter {
+  &>span,
+  &>span>span,
+  &>span>span>span {
+    color:#fff !important;
+    font-size: 18px !important;
+    font-weight: 300 !important;
+    letter-spacing: 0.18px !important;
+  }
+}
