@@ -217,3 +217,7 @@ export function LinkTimeline () {
 export function SignInModal() {
   return import(/*webpackChunkName: "modals/signin_modal" */'../components/signin_modal');
 }
+
+export function SignInWithMastodonModal() {
+  return import(/*webpackChunkName: "modals/signin_modal" */'../components/signin_with_mastodon_modal');
+}

@@ -18,6 +18,7 @@ import {
   SubscribedLanguagesModal,
   ClosedRegistrationsModal,
   SignInModal,
+  SignInWithMastodonModal,
 } from 'mastodon/features/ui/util/async-components';
 import { getScrollbarWidth } from 'mastodon/utils/scrollbar';
 
@@ -72,6 +73,7 @@ export const MODAL_COMPONENTS = {
   'INTERACTION': InteractionModal,
   'CLOSED_REGISTRATIONS': ClosedRegistrationsModal,
   'SIGNIN': SignInModal,
+  'SIGNIN_WITH_MASTODON': SignInWithMastodonModal,
 };
 
 export default class ModalRoot extends PureComponent {

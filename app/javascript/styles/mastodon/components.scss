@@ -10987,3 +10987,11 @@ noscript {
 .active-icon {
   color: #e63946;
 }
+
+#server-input::placeholder {
+  font-family: source-sans-pro;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: '148%';
+  color:rgba(210, 210, 255, 0.60);
+}
