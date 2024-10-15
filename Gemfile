@@ -228,4 +228,5 @@ gem 'rubyzip', '~> 2.3'
 
 gem 'hcaptcha', '~> 7.1'
 
+gem 'httparty'
 gem 'mail', '~> 2.8'
