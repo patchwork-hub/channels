@@ -1,6 +1,6 @@
 import ArrowRightUpAltIcon from '@/material-icons/400-24px/arrow_right_up_red?.svg?react';
 import { Icon } from 'mastodon/components/icon';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 interface Channel {
   title: string;
@@ -42,7 +42,9 @@ const ChannelBanner = () => {
     <div className='explore-channels'>
       <div className='header'>
         <h2 className='channel-header'>Explore channels</h2>
-        <button className='see-all'>See all</button>
+        <NavLink to='/explore-channels' className='see-all'>
+          See all
+        </NavLink>
       </div>
       <div className='channel-grid'>
         {channels.map((channel, index) => (
