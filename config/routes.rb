@@ -42,6 +42,7 @@ Rails.application.routes.draw do
     /blocks
     /domain_blocks
     /mutes
+    /explore-channels
     /followed_tags
     /statuses/(*any)
     /deck/(*any)

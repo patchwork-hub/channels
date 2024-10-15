@@ -28,29 +28,32 @@ import { ColumnLoading } from './column_loading';
 import ComposePanel from './compose_panel';
 import DrawerLoading from './drawer_loading';
 import NavigationPanel from './navigation_panel';
+import Navigations from './navigations';
 
 const componentMap = {
-  'COMPOSE': Compose,
-  'HOME': HomeTimeline,
-  'NOTIFICATIONS': NotificationsWrapper,
-  'PUBLIC': PublicTimeline,
-  'REMOTE': PublicTimeline,
-  'COMMUNITY': CommunityTimeline,
-  'HASHTAG': HashtagTimeline,
-  'DIRECT': DirectTimeline,
-  'FAVOURITES': FavouritedStatuses,
-  'BOOKMARKS': BookmarkedStatuses,
-  'LIST': ListTimeline,
-  'DIRECTORY': Directory,
+  COMPOSE: Compose,
+  HOME: HomeTimeline,
+  NOTIFICATIONS: NotificationsWrapper,
+  PUBLIC: PublicTimeline,
+  REMOTE: PublicTimeline,
+  COMMUNITY: CommunityTimeline,
+  HASHTAG: HashtagTimeline,
+  DIRECT: DirectTimeline,
+  FAVOURITES: FavouritedStatuses,
+  BOOKMARKS: BookmarkedStatuses,
+  LIST: ListTimeline,
+  DIRECTORY: Directory,
 };
 
 const TabsBarPortal = () => {
-  const {setTabsBarElement} = useColumnsContext();
+  const { setTabsBarElement } = useColumnsContext();
 
-  const setRef = useCallback((element) => {
-    if(element)
-      setTabsBarElement(element);
-  }, [setTabsBarElement]);
+  const setRef = useCallback(
+    (element) => {
+      if (element) setTabsBarElement(element);
+    },
+    [setTabsBarElement],
+  );
 
   return <div id='tabs-bar__portal' ref={setRef} />;
 };
@@ -64,7 +67,8 @@ export default class ColumnsArea extends ImmutablePureComponent {
   };
 
   // Corresponds to (max-width: $no-gap-breakpoint + 285px - 1px) in SCSS
-  mediaQuery = 'matchMedia' in window && window.matchMedia('(max-width: 1174px)');
+  mediaQuery =
+    'matchMedia' in window && window.matchMedia('(max-width: 1174px)');
 
   state = {
     renderComposePanel: !(this.mediaQuery && this.mediaQuery.matches),
@@ -72,7 +76,11 @@ export default class ColumnsArea extends ImmutablePureComponent {
 
   componentDidMount() {
     if (!this.props.singleColumn) {
-      this.node.addEventListener('wheel', this.handleWheel, supportsPassiveEvents ? { passive: true } : false);
+      this.node.addEventListener(
+        'wheel',
+        this.handleWheel,
+        supportsPassiveEvents ? { passive: true } : false,
+      );
     }
 
     if (this.mediaQuery) {
@@ -84,22 +92,34 @@ export default class ColumnsArea extends ImmutablePureComponent {
       this.setState({ renderComposePanel: !this.mediaQuery.matches });
     }
 
-    this.isRtlLayout = document.getElementsByTagName('body')[0].classList.contains('rtl');
+    this.isRtlLayout = document
+      .getElementsByTagName('body')[0]
+      .classList.contains('rtl');
   }
 
   UNSAFE_componentWillUpdate(nextProps) {
-    if (this.props.singleColumn !== nextProps.singleColumn && nextProps.singleColumn) {
+    if (
+      this.props.singleColumn !== nextProps.singleColumn &&
+      nextProps.singleColumn
+    ) {
       this.node.removeEventListener('wheel', this.handleWheel);
     }
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.singleColumn !== prevProps.singleColumn && !this.props.singleColumn) {
-      this.node.addEventListener('wheel', this.handleWheel, supportsPassiveEvents ? { passive: true } : false);
+    if (
+      this.props.singleColumn !== prevProps.singleColumn &&
+      !this.props.singleColumn
+    ) {
+      this.node.addEventListener(
+        'wheel',
+        this.handleWheel,
+        supportsPassiveEvents ? { passive: true } : false,
+      );
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (!this.props.singleColumn) {
       this.node.removeEventListener('wheel', this.handleWheel);
     }
@@ -116,7 +136,10 @@ export default class ColumnsArea extends ImmutablePureComponent {
   handleChildrenContentChange() {
     if (!this.props.singleColumn) {
       const modifier = this.isRtlLayout ? -1 : 1;
-      this._interruptScrollAnimation = scrollRight(this.node, (this.node.scrollWidth - window.innerWidth) * modifier);
+      this._interruptScrollAnimation = scrollRight(
+        this.node,
+        (this.node.scrollWidth - window.innerWidth) * modifier,
+      );
     }
   }
 
@@ -136,15 +159,19 @@ export default class ColumnsArea extends ImmutablePureComponent {
     this.node = node;
   };
 
-  renderLoading = columnId => () => {
-    return columnId === 'COMPOSE' ? <DrawerLoading /> : <ColumnLoading multiColumn />;
+  renderLoading = (columnId) => () => {
+    return columnId === 'COMPOSE' ? (
+      <DrawerLoading />
+    ) : (
+      <ColumnLoading multiColumn />
+    );
   };
 
   renderError = (props) => {
     return <BundleColumnError multiColumn errorType='network' {...props} />;
   };
 
-  render () {
+  render() {
     const { columns, children, singleColumn, isModalOpen } = this.props;
     const { renderComposePanel } = this.state;
 
@@ -158,13 +185,17 @@ export default class ColumnsArea extends ImmutablePureComponent {
           </div>
 
           <div className='columns-area__panels__main'>
-            <div className='tabs-bar__wrapper'><TabsBarPortal /></div>
+            <div className='tabs-bar__wrapper'>
+              <TabsBarPortal />
+            </div>
             <div className='columns-area columns-area--mobile'>{children}</div>
           </div>
 
           <div className='columns-area__panels__pane columns-area__panels__pane--start columns-area__panels__pane--navigational'>
             <div className='columns-area__panels__pane__inner'>
-              <NavigationPanel />
+              {/* <NavigationPanel /> */}
+
+              <Navigations />
             </div>
           </div>
         </div>
@@ -172,21 +203,40 @@ export default class ColumnsArea extends ImmutablePureComponent {
     }
 
     return (
-      <div className={`columns-area ${ isModalOpen ? 'unscrollable' : '' }`} ref={this.setRef}>
-        {columns.map(column => {
-          const params = column.get('params', null) === null ? null : column.get('params').toJS();
-          const other  = params && params.other ? params.other : {};
+      <div
+        className={`columns-area ${isModalOpen ? 'unscrollable' : ''}`}
+        ref={this.setRef}
+      >
+        {columns.map((column) => {
+          const params =
+            column.get('params', null) === null
+              ? null
+              : column.get('params').toJS();
+          const other = params && params.other ? params.other : {};
 
           return (
-            <BundleContainer key={column.get('uuid')} fetchComponent={componentMap[column.get('id')]} loading={this.renderLoading(column.get('id'))} error={this.renderError}>
-              {SpecificComponent => <SpecificComponent columnId={column.get('uuid')} params={params} multiColumn {...other} />}
+            <BundleContainer
+              key={column.get('uuid')}
+              fetchComponent={componentMap[column.get('id')]}
+              loading={this.renderLoading(column.get('id'))}
+              error={this.renderError}
+            >
+              {(SpecificComponent) => (
+                <SpecificComponent
+                  columnId={column.get('uuid')}
+                  params={params}
+                  multiColumn
+                  {...other}
+                />
+              )}
             </BundleContainer>
           );
         })}
 
-        {Children.map(children, child => cloneElement(child, { multiColumn: true }))}
+        {Children.map(children, (child) =>
+          cloneElement(child, { multiColumn: true }),
+        )}
       </div>
     );
   }
-
 }

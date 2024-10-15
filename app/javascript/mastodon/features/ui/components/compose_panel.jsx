@@ -3,11 +3,19 @@ import { PureComponent } from 'react';
 
 import { connect } from 'react-redux';
 
-import { changeComposing, mountCompose, unmountCompose } from 'mastodon/actions/compose';
+import {
+  changeComposing,
+  mountCompose,
+  unmountCompose,
+} from 'mastodon/actions/compose';
 import ServerBanner from 'mastodon/components/server_banner';
+import ChannelBanner from 'mastodon/components/channel_banner';
 import ComposeFormContainer from 'mastodon/features/compose/containers/compose_form_container';
 import SearchContainer from 'mastodon/features/compose/containers/search_container';
-import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
+import {
+  identityContextPropShape,
+  withIdentity,
+} from 'mastodon/identity_context';
 
 import LinkFooter from './link_footer';
 
@@ -27,12 +35,12 @@ class ComposePanel extends PureComponent {
     dispatch(changeComposing(false));
   };
 
-  componentDidMount () {
+  componentDidMount() {
     const { dispatch } = this.props;
     dispatch(mountCompose());
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     const { dispatch } = this.props;
     dispatch(unmountCompose());
   }
@@ -46,20 +54,18 @@ class ComposePanel extends PureComponent {
 
         {!signedIn && (
           <>
-            <ServerBanner />
+            {/* <ServerBanner /> */}
+            <ChannelBanner />
             <div className='flex-spacer' />
           </>
         )}
 
-        {signedIn && (
-          <ComposeFormContainer singleColumn />
-        )}
+        {signedIn && <ComposeFormContainer singleColumn />}
 
-        <LinkFooter />
+        {/* <LinkFooter /> */}
       </div>
     );
   }
-
 }
 
 export default connect()(withIdentity(ComposePanel));
