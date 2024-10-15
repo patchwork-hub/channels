@@ -26,6 +26,7 @@ import { PERMISSION_MANAGE_USERS, PERMISSION_MANAGE_FEDERATION } from 'mastodon/
 import { IconButton } from '../../../components/icon_button';
 import DropdownMenuContainer from '../../../containers/dropdown_menu_container';
 import { me } from '../../../initial_state';
+import { openModal } from 'mastodon/actions/modal';
 
 const messages = defineMessages({
   delete: { id: 'status.delete', defaultMessage: 'Delete' },
@@ -91,20 +92,49 @@ class ActionBar extends PureComponent {
     intl: PropTypes.object.isRequired,
   };
 
+  handleLogin = ()=>{
+    const { dispatch } = this.props;
+    dispatch(openModal({
+      modalType:'SIGNIN',
+      modalProps:{}
+    }));
+  };
+
+
   handleReplyClick = () => {
-    this.props.onReply(this.props.status);
+    const { signedIn } = this.props.identity;
+    if(signedIn){
+      this.props.onReply(this.props.status);
+    }else{
+      this.handleLogin();
+    }
   };
 
   handleReblogClick = (e) => {
-    this.props.onReblog(this.props.status, e);
+    const { signedIn } = this.props.identity;
+    if(signedIn){
+      this.props.onReblog(this.props.status, e);
+    }else{
+      this.handleLogin();
+    }
   };
 
   handleFavouriteClick = () => {
-    this.props.onFavourite(this.props.status);
+    const { signedIn } = this.props.identity;
+    if(signedIn){
+      this.props.onFavourite(this.props.status);
+    }else{
+      this.handleLogin();
+    }
   };
 
   handleBookmarkClick = (e) => {
-    this.props.onBookmark(this.props.status, e);
+    const { signedIn } = this.props.identity;
+    if(signedIn){
+      this.props.onBookmark(this.props.status, e);
+    }else{
+      this.handleLogin();
+    }
   };
 
   handleDeleteClick = () => {
