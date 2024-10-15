@@ -49,8 +49,9 @@ const Navigations = () => {
         />
         <ColumnLink
           transparent
-          to='/blog'
+          href='https://www.blog-pat.ch/'
           icon='blog'
+          target='_blank'
           iconComponent={PenIcon}
           activeIconComponent={PenIcon}
           text={intl.formatMessage(messages.blog)}
@@ -73,8 +74,9 @@ const Navigations = () => {
         />
         <ColumnLink
           transparent
-          to='/website'
+          href='https://home.channel.org/'
           icon='website'
+          target='_blank'
           iconComponent={WebsiteIcon}
           activeIconComponent={WebsiteIcon}
           text={intl.formatMessage(messages.website)}
@@ -113,14 +115,14 @@ const Navigations = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to='/privacy' className='footer-link'>
+            <a href='https://channel.org/privacy-policy/' target='_blank' className='footer-link'>
               Privacy Policy
-            </NavLink>
+            </a>
           </li>
           <li>
-            <NavLink to='/source' className='footer-link'>
+            <a href='https://github.com/patchwork-hub/' target='_blank' className='footer-link'>
               Source Code
-            </NavLink>
+            </a>
           </li>
         </ul>
         <p>© {new Date().getFullYear()} Patchwork</p>
