@@ -33,6 +33,7 @@ import DropdownMenuContainer from '../containers/dropdown_menu_container';
 import { me } from '../initial_state';
 
 import { IconButton } from './icon_button';
+import { openModal } from 'mastodon/actions/modal';
 
 const messages = defineMessages({
   delete: { id: 'status.delete', defaultMessage: 'Delete' },
@@ -117,13 +118,22 @@ class StatusActionBar extends ImmutablePureComponent {
     'withDismiss',
   ];
 
+  handleLogin = ()=>{
+    const { dispatch } = this.props;
+    dispatch(openModal({
+      modalType:'SIGNIN',
+      modalProps:{}
+    }));
+  };
+
   handleReplyClick = () => {
     const { signedIn } = this.props.identity;
 
     if (signedIn) {
       this.props.onReply(this.props.status);
     } else {
-      this.props.onInteractionModal('reply', this.props.status);
+      this.handleLogin();
+      // this.props.onInteractionModal('reply', this.props.status);
     }
   };
 
@@ -141,7 +151,8 @@ class StatusActionBar extends ImmutablePureComponent {
     if (signedIn) {
       this.props.onFavourite(this.props.status);
     } else {
-      this.props.onInteractionModal('favourite', this.props.status);
+      this.handleLogin();
+      // this.props.onInteractionModal('favourite', this.props.status);
     }
   };
 
@@ -151,12 +162,18 @@ class StatusActionBar extends ImmutablePureComponent {
     if (signedIn) {
       this.props.onReblog(this.props.status, e);
     } else {
-      this.props.onInteractionModal('reblog', this.props.status);
+      this.handleLogin();
+      // this.props.onInteractionModal('reblog', this.props.status);
     }
   };
 
   handleBookmarkClick = () => {
-    this.props.onBookmark(this.props.status);
+    const { signedIn } = this.props.identity;
+    if(signedIn){
+      this.props.onBookmark(this.props.status);
+    }else{
+      this.handleLogin();
+    }
   };
 
   handleDeleteClick = () => {
