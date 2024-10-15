@@ -10935,6 +10935,7 @@ noscript {
   & > span > span,
   & > span > span > span {
     color: #fff !important;
+    font-family: 'source-sans-pro' !important;
     font-size: 18px !important;
     font-weight: 300 !important;
     letter-spacing: 0.18px !important;
@@ -10985,6 +10986,14 @@ noscript {
 }
 .active-icon {
   color: #e63946;
+}
+
+#server-input::placeholder {
+  font-family: source-sans-pro;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: '148%';
+  color:rgba(210, 210, 255, 0.60);
 }
 .channels {
   .channels__header {
