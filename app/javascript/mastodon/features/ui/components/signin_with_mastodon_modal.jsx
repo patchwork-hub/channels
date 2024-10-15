@@ -1,7 +1,7 @@
 
 const SignInWithMastodonModal = () => {
     return (
-        <div style={{
+        <div className="modal-root__modal" style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
