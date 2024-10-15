@@ -27,34 +27,6 @@ const messages = defineMessages({
   rss: { id: 'rss.title', defaultMessage: 'RSS Feed' },
   bluesky: { id: 'bluesky.title', defaultMessage: 'Bluesky Account' },
   thread: { id: 'thread.title', defaultMessage: 'Threads Account' },
-  firehose: { id: 'column.firehose', defaultMessage: 'Live feeds' },
-  direct: { id: 'navigation_bar.direct', defaultMessage: 'Private mentions' },
-  favourites: { id: 'navigation_bar.favourites', defaultMessage: 'Favorites' },
-  bookmarks: { id: 'navigation_bar.bookmarks', defaultMessage: 'Bookmarks' },
-  lists: { id: 'navigation_bar.lists', defaultMessage: 'Lists' },
-  preferences: {
-    id: 'navigation_bar.preferences',
-    defaultMessage: 'Preferences',
-  },
-  followsAndFollowers: {
-    id: 'navigation_bar.follows_and_followers',
-    defaultMessage: 'Follows and followers',
-  },
-  about: { id: 'navigation_bar.about', defaultMessage: 'About' },
-  search: { id: 'navigation_bar.search', defaultMessage: 'Search' },
-  advancedInterface: {
-    id: 'navigation_bar.advanced_interface',
-    defaultMessage: 'Open in advanced web interface',
-  },
-  openedInClassicInterface: {
-    id: 'navigation_bar.opened_in_classic_interface',
-    defaultMessage:
-      'Posts, accounts, and other specific pages are opened by default in the classic web interface.',
-  },
-  followRequests: {
-    id: 'navigation_bar.follow_requests',
-    defaultMessage: 'Follow requests',
-  },
 });
 
 const Navigations = () => {
@@ -69,8 +41,8 @@ const Navigations = () => {
       <div className='nav-links'>
         <ColumnLink
           transparent
-          to='/explore'
-          icon='explore'
+          to='/explore-channels'
+          icon='explore-channels'
           iconComponent={SearchIcon}
           activeIconComponent={SearchIcon}
           text={intl.formatMessage(messages.explore)}
@@ -132,91 +104,6 @@ const Navigations = () => {
           text={intl.formatMessage(messages.thread)}
         />
       </div>
-
-      {/* <nav className='nav'>
-        <ul>
-          <li>
-            <NavLink
-              to='/explore'
-              className={({ isActive }) =>
-                isActive ? 'nav-item active' : 'nav-item'
-              }
-            >
-              Explore
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to='/blog'
-              className={({ isActive }) =>
-                isActive ? 'nav-item active' : 'nav-item'
-              }
-            >
-              <span className='icon'>✍️</span> Blog
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to='/podcast'
-              className={({ isActive }) =>
-                isActive ? 'nav-item active' : 'nav-item'
-              }
-            >
-              <span className='icon'>🎙️</span> Podcast
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to='/chat'
-              className={({ isActive }) =>
-                isActive ? 'nav-item active' : 'nav-item'
-              }
-            >
-              <span className='icon'>💬</span> Chat/Forum
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to='/website'
-              className={({ isActive }) =>
-                isActive ? 'nav-item active' : 'nav-item'
-              }
-            >
-              <span className='icon'>🌐</span> Website
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to='/rss'
-              className={({ isActive }) =>
-                isActive ? 'nav-item active' : 'nav-item'
-              }
-            >
-              <span className='icon'>📡</span> RSS Feed
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to='/bluesky'
-              className={({ isActive }) =>
-                isActive ? 'nav-item active' : 'nav-item'
-              }
-            >
-              <span className='icon'>🦋</span> Bluesky Account
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to='/threads'
-              className={({ isActive }) =>
-                isActive ? 'nav-item active' : 'nav-item'
-              }
-            >
-              <span className='icon'>⚡</span> Threads Account
-            </NavLink>
-          </li>
-        </ul>
-      </nav> */}
 
       <footer className='footer'>
         <ul>
