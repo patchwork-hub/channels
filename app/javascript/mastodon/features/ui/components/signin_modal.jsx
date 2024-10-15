@@ -1,5 +1,18 @@
+import { closeModal, openModal } from "mastodon/actions/modal";
+import { useDispatch } from "react-redux";
 
 const SignInModal = () => {
+    const dispatch = useDispatch();
+
+    const signinWithMastodon = ()=>{
+        dispatch(closeModal({
+            modalType:'SIGNIN',
+        }));
+        dispatch(openModal({
+            modalType:'SIGNIN_WITH_MASTODON',
+            modalProps:{}
+        }));
+    }
     return (
         <div className="modal-root__modal" style={{
             display: 'flex',
@@ -56,7 +69,7 @@ const SignInModal = () => {
                 ["-webkit-background-clip"]: 'text',
                 ["-webkit-text-fill-color"]: 'transparent',
             }}>C</span>Login with Channel.org</button>
-            <button style={{
+            <button onClick={signinWithMastodon} style={{
                 alignSelf: 'stretch',
                 borderRadius: 8,
                 border: 0,
