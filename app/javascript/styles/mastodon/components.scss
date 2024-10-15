@@ -10796,6 +10796,7 @@ noscript {
   padding: 20px;
   border: 1px solid #e6e7eb33;
   color: white;
+  font-family: 'source-sans-pro';
 }
 
 .header {
@@ -10812,6 +10813,7 @@ noscript {
   padding: 5px 10px;
   border-radius: 8px;
   cursor: pointer;
+  text-decoration: none;
   transition: all 0.3s;
 }
 
@@ -10851,6 +10853,7 @@ noscript {
   font-size: 20px;
   line-height: 24px;
   font-weight: 700;
+  font-family: 'ibm-plex-sans';
 }
 
 .channel-overlay {
@@ -10881,8 +10884,8 @@ noscript {
       line-height: 16px;
       font-size: 13px;
     }
-
     .channel-title {
+      font-family: 'ibm-plex-sans';
       font-size: 15px;
       line-height: 18px;
       font-weight: 600;
@@ -10935,6 +10938,7 @@ noscript {
   & > span > span,
   & > span > span > span {
     color: #fff !important;
+    font-family: 'source-sans-pro' !important;
     font-size: 18px !important;
     font-weight: 300 !important;
     letter-spacing: 0.18px !important;
@@ -10952,9 +10956,11 @@ noscript {
   font-weight: 700;
   padding-bottom: 20px;
   text-decoration: none;
+  font-family: 'ibm-plex-sans';
 }
 .nav-links {
   padding-bottom: 20px;
+  font-family: 'source-sans-pro';
 }
 
 /* Footer styles */
@@ -10986,7 +10992,16 @@ noscript {
 .active-icon {
   color: #e63946;
 }
+
+#server-input::placeholder {
+  font-family: source-sans-pro;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: '148%';
+  color: rgba(210, 210, 255, 0.6);
+}
 .channels {
+  font-family: 'source-sans-pro';
   .channels__header {
     padding: 30px 20px;
     .title {
@@ -10999,6 +11014,7 @@ noscript {
       font-weight: 700;
       padding-bottom: 14px;
       text-decoration: none;
+      font-family: 'ibm-plex-sans';
     }
     .text {
       font-weight: 400;
@@ -11064,6 +11080,7 @@ noscript {
         line-height: 22px;
       }
       .title {
+        font-family: 'ibm-plex-sans';
         font-size: 24px;
         line-height: 30px;
         font-weight: 600;
