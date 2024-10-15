@@ -48,7 +48,8 @@ const SignInWithMastodonModal = () => {
                 padding:'14px 16px',
                 borderRadius:3,
                 border:'1px solid rgba(255, 255, 255, 0.50)',
-                background:'transparent'
+                background:'transparent',
+                color:'#fff'
             }}/>
             </div>
             <button style={{
