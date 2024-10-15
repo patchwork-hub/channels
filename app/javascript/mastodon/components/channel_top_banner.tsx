@@ -25,6 +25,7 @@ const ChannelTopBanner:React.FC<ChannelTopBannerProps> = ({
                 style={{
                     color:'#fff',
                     fontSize:24,
+                    fontFamily:'source-sans-pro',
                     fontWeight:600,
                     letterSpacing:0.24
                 }}>{name}</p>

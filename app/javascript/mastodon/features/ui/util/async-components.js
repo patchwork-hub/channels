@@ -213,3 +213,7 @@ export function NotificationRequest () {
 export function LinkTimeline () {
   return import(/*webpackChunkName: "features/link_timeline" */'../../link_timeline');
 }
+
+export function SignInModal() {
+  return import(/*webpackChunkName: "modals/signin_modal" */'../components/signin_modal');
+}
