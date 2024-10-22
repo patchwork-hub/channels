@@ -50,7 +50,7 @@ class ComposePanel extends PureComponent {
 
     return (
       <div className='compose-panel' onFocus={this.onFocus}>
-        <SearchContainer openInRoute />
+        {/* <SearchContainer openInRoute /> */}
 
         {!signedIn && (
           <>

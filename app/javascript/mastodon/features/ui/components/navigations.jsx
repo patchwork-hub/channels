@@ -34,7 +34,7 @@ const Navigations = () => {
   return (
     <aside className='navigation-panel sidebar'>
       <div className='navigation-panel__logo'>
-        <Link to='/' className='column-link column-link--logo nav-header'>
+        <Link to='/' className='nav-header'>
           Channel.org
         </Link>
       </div>
