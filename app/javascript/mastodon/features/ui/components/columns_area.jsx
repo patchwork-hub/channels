@@ -29,6 +29,8 @@ import ComposePanel from './compose_panel';
 import DrawerLoading from './drawer_loading';
 import NavigationPanel from './navigation_panel';
 import Navigations from './navigations';
+import { Link } from 'react-router-dom';
+import Search from '@/images/icons/icon-search.svg';
 
 const componentMap = {
   COMPOSE: Compose,
@@ -188,13 +190,25 @@ export default class ColumnsArea extends ImmutablePureComponent {
             <div className='tabs-bar__wrapper'>
               <TabsBarPortal />
             </div>
-            <div className='columns-area columns-area--mobile'>{children}</div>
+            <div className='columns-area columns-area--mobile'>
+              <nav className='columns-area__top-nav'>
+                <div className=''>
+                  <Link to='/' className=''>
+                    Channel.org
+                  </Link>
+                </div>
+                <img
+                  src={Search}
+                  alt='search'
+                />
+              </nav>
+              {children}
+            </div>
           </div>
 
           <div className='columns-area__panels__pane columns-area__panels__pane--start columns-area__panels__pane--navigational'>
             <div className='columns-area__panels__pane__inner'>
               {/* <NavigationPanel /> */}
-
               <Navigations />
             </div>
           </div>

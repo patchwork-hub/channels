@@ -1,3 +1,5 @@
+$grey-50: #F8F8FF;
+
 .app-body {
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: -ms-autohiding-scrollbar;
@@ -2667,6 +2669,23 @@ a.account__display-name {
       @media screen and (min-width: $no-gap-breakpoint) {
         max-width: 600px;
       }
+    }
+  }
+
+  &__top-nav {
+    padding: 21px 16px;
+    border-bottom: 1px solid rgba($white, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    a {
+      font-size: 21px;
+      font-weight: 700;
+      color: $grey-50;
+      text-decoration: none;
+    }
+    @media screen and (min-width: 768px) {
+      display: none;
     }
   }
 }
@@ -11095,3 +11114,4 @@ noscript {
     }
   }
 }
+
