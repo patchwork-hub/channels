@@ -1,6 +1,6 @@
 import ArrowRightUpAltIcon from '@/material-icons/400-24px/arrow_right_up_red?.svg?react';
 import { Icon } from 'mastodon/components/icon';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 interface Channel {
   title: string;
@@ -39,37 +39,46 @@ const channels: Channel[] = [
 
 const ChannelBanner = () => {
   return (
-    <div className='explore-channels'>
-      <div className='header'>
-        <h2 className='channel-header'>Explore channels</h2>
-        <NavLink to='/explore-channels' className='see-all'>
-          See all
-        </NavLink>
-      </div>
-      <div className='channel-grid'>
-        {channels.map((channel, index) => (
-          <a key={index} target='_blank' href={channel.link}>
-            <div className='channel-card'>
-              <img
-                src={channel.imgSrc}
-                alt={channel.title}
-                className='channel-image'
-              />
-              <div className='channel-overlay' />
-              <div className='channel__info'>
-                <p className='channel__info-detail'>
-                  <span className='channel-title'>{channel.title}</span>
-                  <span className='channel-subtitle'>{channel.subtitle}</span>
-                </p>
-                <Icon
-                  icon={ArrowRightUpAltIcon}
-                  id={''}
-                  className='channel__info-icon'
+    <div>
+      <a
+        href='https://home.channel.org/'
+        target='_blank'
+        className='right-banner-logo'
+      >
+        Channel.org
+      </a>
+      <div className='explore-channels'>
+        <div className='header'>
+          <h2 className='channel-header'>Explore channels</h2>
+          <NavLink to='/explore-channels' className='see-all'>
+            See all
+          </NavLink>
+        </div>
+        <div className='channel-grid'>
+          {channels.map((channel, index) => (
+            <a key={index} target='_blank' href={channel.link}>
+              <div className='channel-card'>
+                <img
+                  src={channel.imgSrc}
+                  alt={channel.title}
+                  className='channel-image'
                 />
+                <div className='channel-overlay' />
+                <div className='channel__info'>
+                  <p className='channel__info-detail'>
+                    <span className='channel-title'>{channel.title}</span>
+                    <span className='channel-subtitle'>{channel.subtitle}</span>
+                  </p>
+                  <Icon
+                    icon={ArrowRightUpAltIcon}
+                    id={''}
+                    className='channel__info-icon'
+                  />
+                </div>
               </div>
-            </div>
-          </a>
-        ))}
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   );

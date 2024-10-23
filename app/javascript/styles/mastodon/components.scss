@@ -10795,6 +10795,7 @@ noscript {
 
 // channel banners
 .explore-channels {
+  margin-top: 20px;
   padding: 20px;
   border: 1px solid #e6e7eb33;
   color: white;
@@ -10948,7 +10949,8 @@ noscript {
 }
 
 /* Sidebar styles */
-.nav-header {
+.nav-header,
+.right-banner-logo {
   background: linear-gradient(180deg, #f8f8ff 10%, #babaf8 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -10956,10 +10958,16 @@ noscript {
   font-size: 27px;
   line-height: 32px;
   font-weight: 700;
-  padding-bottom: 20px;
+  padding-bottom: 0;
   text-decoration: none;
   font-family: 'ibm-plex-sans';
 }
+
+.right-banner-logo {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
 .nav-links {
   padding-bottom: 20px;
   font-family: 'source-sans-pro';
