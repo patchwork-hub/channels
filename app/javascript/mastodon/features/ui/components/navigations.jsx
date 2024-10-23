@@ -34,7 +34,7 @@ const Navigations = () => {
   return (
     <aside className='navigation-panel sidebar'>
       <div className='navigation-panel__logo'>
-        <Link to='/' className='column-link column-link--logo nav-header'>
+        <Link to='/' className='nav-header'>
           Channel.org
         </Link>
       </div>
@@ -109,23 +109,31 @@ const Navigations = () => {
 
       <footer className='footer'>
         <ul>
-          <li>
+          {/* <li>
             <NavLink to='/terms' className='footer-link'>
               Terms & Conditions
             </NavLink>
-          </li>
+          </li> */}
           <li>
-            <a href='https://channel.org/privacy-policy/' target='_blank' className='footer-link'>
+            <a
+              href='https://channel.org/privacy-policy/'
+              target='_blank'
+              className='footer-link'
+            >
               Privacy Policy
             </a>
           </li>
           <li>
-            <a href='https://github.com/patchwork-hub/' target='_blank' className='footer-link'>
+            <a
+              href='https://github.com/patchwork-hub/'
+              target='_blank'
+              className='footer-link'
+            >
               Source Code
             </a>
           </li>
         </ul>
-        <p>© {new Date().getFullYear()} Patchwork</p>
+        {/* <p>© {new Date().getFullYear()} Patchwork</p> */}
       </footer>
     </aside>
   );
