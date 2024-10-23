@@ -2992,7 +2992,8 @@ $ui-header-logo-wordmark-width: 99px;
   $sidebar-width: 55px;
 
   .columns-area__panels__main {
-    width: calc(100% - $sidebar-width);
+    width: 100%;
+    border: 0;
   }
 
   .columns-area__panels__pane--navigational {
