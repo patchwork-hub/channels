@@ -1,4 +1,7 @@
 $grey-50: #F8F8FF;
+$grey-900: #16161D;
+
+$red-600: #e63946;
 
 .app-body {
   -webkit-overflow-scrolling: touch;
@@ -2678,6 +2681,8 @@ a.account__display-name {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    background-color: $grey-900;
     a {
       font-size: 21px;
       font-weight: 700;
@@ -2687,6 +2692,50 @@ a.account__display-name {
     @media screen and (min-width: 768px) {
       display: none;
     }
+
+    &__burger-menu {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      & > *:first-child {
+        margin-right: 10px;
+      }
+      &__btn {
+        background-color: transparent;
+        border: none;
+      }
+      &__icon {
+        width: 21px;
+        height: 21px;
+      }
+    }
+    & .footer {
+      li a {
+        color: $red-600;
+        font-size: 14px;
+        font-weight: 400;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__sidebar {
+    position: fixed;
+    top: 67px;
+    left: 1px;
+    width: 99.5%;
+    height: 100%;
+    background-color: $grey-900;
+    z-index: 999;
+    transform: translateX(-100%);
+    transition: .3s ease transform;
+    &__open {
+      transform: translateX(0);
+    }
+  }
+
+  &__copyright {
+    padding-left: 12px;
   }
 }
 

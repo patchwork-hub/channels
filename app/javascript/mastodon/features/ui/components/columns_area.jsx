@@ -31,6 +31,19 @@ import NavigationPanel from './navigation_panel';
 import Navigations from './navigations';
 import { Link } from 'react-router-dom';
 import Search from '@/images/icons/icon-search.svg';
+import BurgerMenu from '@/images/icons/icon-burger-menu.svg';
+import BurgerMenuClose from '@/images/icons/icon-burger-menu-close.svg';
+import HomeIcon from '@/material-icons/400-24px/home.svg?react';
+import SearchIcon from '@/material-icons/400-24px/search.svg?react';
+import PenIcon from '@/material-icons/400-24px/pen_icon.svg?react';
+import PodcastIcon from '@/material-icons/400-24px/podcast.svg?react';
+import ChatIcon from '@/material-icons/400-24px/chat.svg?react';
+import WebsiteIcon from '@/material-icons/400-24px/website_icon.svg?react';
+import RssFeedIcon from '@/material-icons/400-24px/rss_feed.svg?react';
+import ButterflyIcon from '@/material-icons/400-24px/butterfly.svg?react';
+import ThreadIcon from '@/material-icons/400-24px/thread.svg?react';
+import ColumnLink from './column_link';
+import { defineMessages } from 'react-intl';
 
 const componentMap = {
   COMPOSE: Compose,
@@ -60,6 +73,22 @@ const TabsBarPortal = () => {
   return <div id='tabs-bar__portal' ref={setRef} />;
 };
 
+const messages = defineMessages({
+  home: { id: 'tabs_bar.home', defaultMessage: 'Home' },
+  notifications: {
+    id: 'tabs_bar.notifications',
+    defaultMessage: 'Notifications',
+  },
+  blog: { id: 'blog.title', defaultMessage: 'Blog' },
+  explore: { id: 'explore.title', defaultMessage: 'Explore' },
+  podcast: { id: 'podcast.title', defaultMessage: 'Podcast' },
+  chat: { id: 'chat.title', defaultMessage: 'Chat/Forum' },
+  website: { id: 'globe.title', defaultMessage: 'Website' },
+  rss: { id: 'rss.title', defaultMessage: 'RSS Feed' },
+  bluesky: { id: 'bluesky.title', defaultMessage: 'Bluesky Account' },
+  thread: { id: 'thread.title', defaultMessage: 'Threads Account' },
+});
+
 export default class ColumnsArea extends ImmutablePureComponent {
   static propTypes = {
     columns: ImmutablePropTypes.list.isRequired,
@@ -74,6 +103,8 @@ export default class ColumnsArea extends ImmutablePureComponent {
 
   state = {
     renderComposePanel: !(this.mediaQuery && this.mediaQuery.matches),
+    isMenuOpen: false,
+    currentYear: new Date().getFullYear()
   };
 
   componentDidMount() {
@@ -157,6 +188,12 @@ export default class ColumnsArea extends ImmutablePureComponent {
     this._interruptScrollAnimation();
   };
 
+  handleOpenMenu = () => {
+    this.setState((prevState) => ({
+      isMenuOpen: !prevState.isMenuOpen,
+    }));
+  };
+
   setRef = (node) => {
     this.node = node;
   };
@@ -175,7 +212,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
 
   render() {
     const { columns, children, singleColumn, isModalOpen } = this.props;
-    const { renderComposePanel } = this.state;
+    const { renderComposePanel, isMenuOpen, currentYear } = this.state;
 
     if (singleColumn) {
       return (
@@ -192,7 +229,14 @@ export default class ColumnsArea extends ImmutablePureComponent {
             </div>
             <div className='columns-area columns-area--mobile'>
               <nav className='columns-area__top-nav'>
-                <div className=''>
+                <div className='columns-area__top-nav__burger-menu'>
+                  <button className='columns-area__top-nav__burger-menu__btn' onClick={this.handleOpenMenu}>
+                    <img
+                      src={isMenuOpen ? BurgerMenuClose : BurgerMenu}
+                      className='columns-area__top-nav__burger-menu__icon'
+                      alt='menu'
+                    />
+                  </button>
                   <Link to='/' className=''>
                     Channel.org
                   </Link>
@@ -201,6 +245,120 @@ export default class ColumnsArea extends ImmutablePureComponent {
                   src={Search}
                   alt='search'
                 />
+
+                <div className={`columns-area__sidebar ${isMenuOpen && 'columns-area__sidebar__open'}`}>
+                  <div>
+                    <div className='nav-links'>
+                      <ColumnLink
+                        transparent
+                        to='/explore-channels'
+                        icon='explore-channels'
+                        iconComponent={SearchIcon}
+                        activeIconComponent={SearchIcon}
+                        text='Explore'
+                        // text={intl.formatMessage(messages.explore)}
+                      />
+                      <ColumnLink
+                        transparent
+                        href='https://www.blog-pat.ch/'
+                        icon='blog'
+                        target='_blank'
+                        iconComponent={PenIcon}
+                        activeIconComponent={PenIcon}
+                        text='Blog'
+                        // text={intl.formatMessage(messages.blog)}
+                      />
+                      <ColumnLink
+                        transparent
+                        to='/podcast'
+                        icon='podcast'
+                        iconComponent={PodcastIcon}
+                        activeIconComponent={PodcastIcon}
+                        text='Podcast'
+                        // text={intl.formatMessage(messages.podcast)}
+                      />
+                      <ColumnLink
+                        transparent
+                        to='/chat'
+                        icon='chat'
+                        iconComponent={ChatIcon}
+                        activeIconComponent={ChatIcon}
+                        text='Chat/Forum'
+                        // text={intl.formatMessage(messages.chat)}
+                      />
+                      <ColumnLink
+                        transparent
+                        href='https://home.channel.org/'
+                        icon='website'
+                        target='_blank'
+                        iconComponent={WebsiteIcon}
+                        activeIconComponent={WebsiteIcon}
+                        text='Website'
+                        // text={intl.formatMessage(messages.website)}
+                      />
+                      <ColumnLink
+                        transparent
+                        to='/rss-feed'
+                        icon='rss-feed'
+                        iconComponent={RssFeedIcon}
+                        activeIconComponent={RssFeedIcon}
+                        text='RSS Feed'
+                        // text={intl.formatMessage(messages.rss)}
+                      />
+                      <ColumnLink
+                        transparent
+                        to='/bluesky'
+                        icon='bluesky'
+                        iconComponent={ButterflyIcon}
+                        activeIconComponent={ButterflyIcon}
+                        text='Bluesky Account'
+                        // text={intl.formatMessage(messages.bluesky)}
+                      />
+                      <ColumnLink
+                        transparent
+                        to='/thread'
+                        icon='thread'
+                        iconComponent={ThreadIcon}
+                        activeIconComponent={ThreadIcon}
+                        text='Thread Account'
+                        // text={intl.formatMessage(messages.thread)}
+                      />
+                    </div>
+
+                    <footer className='footer'>
+                      <ul>
+                        {/* <li>
+                          <NavLink to='/terms' className='footer-link'>
+                            Terms & Conditions
+                          </NavLink>
+                        </li> */}
+                        <li>
+                          <a
+                            href='https://channel.org/privacy-policy/'
+                            target='_blank'
+                            className='footer-link'
+                          >
+                            Privacy Policy
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            href='https://github.com/patchwork-hub/'
+                            target='_blank'
+                            className='footer-link'
+                          >
+                            Source Code
+                          </a>
+                        </li>
+                      </ul>
+                      {/* <p>© {new Date().getFullYear()} Patchwork</p> */}
+                    </footer>
+
+                    <p className='columns-area__copyright'>
+                      © {currentYear} Patchwork
+                    </p>
+                  </div>
+                </div>
               </nav>
               {children}
             </div>
