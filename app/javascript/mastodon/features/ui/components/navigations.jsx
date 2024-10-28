@@ -52,7 +52,7 @@ const Navigations = () => {
         /> */}
         <ColumnLink
           transparent
-          to='/explore-channels'
+          to='/public'
           icon='feed'
           iconComponent={FeedIcon}
           activeIconComponent={FeedIcon}
