@@ -6,12 +6,14 @@ import HomeActiveIcon from '@/material-icons/400-24px/home-fill.svg?react';
 import HomeIcon from '@/material-icons/400-24px/home.svg?react';
 import SearchIcon from '@/material-icons/400-24px/search.svg?react';
 import PenIcon from '@/material-icons/400-24px/pen_icon.svg?react';
+import FeedIcon from '@/material-icons/400-24px/feed_icon.svg?.react';
 import PodcastIcon from '@/material-icons/400-24px/podcast.svg?react';
 import ChatIcon from '@/material-icons/400-24px/chat.svg?react';
 import WebsiteIcon from '@/material-icons/400-24px/website_icon.svg?react';
 import RssFeedIcon from '@/material-icons/400-24px/rss_feed.svg?react';
 import ButterflyIcon from '@/material-icons/400-24px/butterfly.svg?react';
 import ThreadIcon from '@/material-icons/400-24px/thread.svg?react';
+import channelOrgImage from '../../../../images/wide_channel_logo.svg';
 
 const messages = defineMessages({
   home: { id: 'tabs_bar.home', defaultMessage: 'Home' },
@@ -21,6 +23,7 @@ const messages = defineMessages({
   },
   blog: { id: 'blog.title', defaultMessage: 'Blog' },
   explore: { id: 'explore.title', defaultMessage: 'Explore' },
+  feed: { id: 'feed.title', defaultMessage: 'Feed' },
   podcast: { id: 'podcast.title', defaultMessage: 'Podcast' },
   chat: { id: 'chat.title', defaultMessage: 'Chat/Forum' },
   website: { id: 'globe.title', defaultMessage: 'Website' },
@@ -39,13 +42,21 @@ const Navigations = () => {
         </Link>
       </div>
       <div className='nav-links'>
-        <ColumnLink
+        {/* <ColumnLink
           transparent
           to='/explore-channels'
           icon='explore-channels'
           iconComponent={SearchIcon}
           activeIconComponent={SearchIcon}
           text={intl.formatMessage(messages.explore)}
+        /> */}
+        <ColumnLink
+          transparent
+          to='/explore-channels'
+          icon='feed'
+          iconComponent={FeedIcon}
+          activeIconComponent={FeedIcon}
+          text={intl.formatMessage(messages.feed)}
         />
         <ColumnLink
           transparent
@@ -133,6 +144,9 @@ const Navigations = () => {
             </a>
           </li>
         </ul>
+
+        <p className='powered-by'>Powered by</p>
+        <img src={channelOrgImage} alt='channel org' />
         {/* <p>© {new Date().getFullYear()} Patchwork</p> */}
       </footer>
     </aside>
