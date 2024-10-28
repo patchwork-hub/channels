@@ -1,5 +1,5 @@
-$grey-50: #F8F8FF;
-$grey-900: #16161D;
+$grey-50: #f8f8ff;
+$grey-900: #16161d;
 
 $red-600: #e63946;
 
@@ -2728,7 +2728,7 @@ a.account__display-name {
     background-color: $grey-900;
     z-index: 999;
     transform: translateX(-100%);
-    transition: .3s ease transform;
+    transition: 0.3s ease transform;
     &__open {
       transform: translateX(0);
     }
@@ -3818,6 +3818,7 @@ $ui-header-logo-wordmark-width: 99px;
   text-decoration: none;
   overflow: hidden;
   white-space: nowrap;
+  position: relative;
   border: 0;
   background: transparent;
   color: $secondary-text-color;
@@ -11031,11 +11032,6 @@ noscript {
   font-family: 'ibm-plex-sans';
 }
 
-.right-banner-logo {
-  display: flex;
-  flex-direction: row-reverse;
-}
-
 .nav-links {
   padding-bottom: 20px;
   font-family: 'source-sans-pro';
@@ -11172,4 +11168,21 @@ noscript {
     }
   }
 }
-
+.powered-by {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  color: #ffffffb3;
+}
+.column-link_feed_badge {
+  position: absolute;
+  display: inline-block;
+  border-radius: 5px;
+  font-size: 12px;
+  line-height: 19px;
+  font-weight: 500;
+  background: #ffffffd6;
+  padding: 5px 5px;
+  top: 11px;
+  left: 30px;
+}

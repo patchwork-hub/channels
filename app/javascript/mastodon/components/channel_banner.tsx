@@ -1,5 +1,6 @@
 import ArrowRightUpAltIcon from '@/material-icons/400-24px/arrow_right_up_red?.svg?react';
 import { Icon } from 'mastodon/components/icon';
+import channelOrgImage from '../../images/wide_white_channel_logo.svg';
 import { Link, NavLink } from 'react-router-dom';
 
 interface Channel {
@@ -40,12 +41,8 @@ const channels: Channel[] = [
 const ChannelBanner = () => {
   return (
     <div>
-      <a
-        href='https://home.channel.org/'
-        target='_blank'
-        className='right-banner-logo'
-      >
-        Channel.org
+      <a href='https://home.channel.org/' target='_blank'>
+        <img src={channelOrgImage} alt='channel org' />
       </a>
       <div className='explore-channels'>
         <div className='header'>
