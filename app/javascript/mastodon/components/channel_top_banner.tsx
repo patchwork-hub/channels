@@ -20,7 +20,7 @@ const ChannelTopBanner:React.FC<ChannelTopBannerProps> = ({
             background: `linear-gradient(180deg, rgba(43, 43, 43, 0.00) 0%, rgba(37, 37, 37, 0.60) 56.93%), url(${src}) lightgray 50% / cover no-repeat`
         }}>
             <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
-                <p 
+                {/* <p 
                 className="channel_name_in_top_banner"
                 style={{
                     color:'#fff',
@@ -32,7 +32,7 @@ const ChannelTopBanner:React.FC<ChannelTopBannerProps> = ({
                 <div 
                     className="participants_counter">
                     <ShortNumber value={participants} renderer={ParticipantsCounter} />
-                </div>
+                </div> */}
             </div>
         </div>
     )

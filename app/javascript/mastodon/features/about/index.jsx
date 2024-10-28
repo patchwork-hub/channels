@@ -177,23 +177,6 @@ class About extends PureComponent {
             <h1>
               {isLoading ? <Skeleton width='10ch' /> : server.get('domain')}
             </h1>
-            <p>
-              <FormattedMessage
-                id='about.powered_by'
-                defaultMessage='Decentralized social media powered by {mastodon}'
-                values={{
-                  mastodon: (
-                    <a
-                      href='https://joinmastodon.org'
-                      className='about__mail'
-                      target='_blank'
-                    >
-                      Mastodon
-                    </a>
-                  ),
-                }}
-              />
-            </p>
           </div>
           <div className='about__meta'>
             <div className='about__meta__column'>
@@ -348,14 +331,6 @@ class About extends PureComponent {
             )}
           </Section>
           <LinkFooter />
-          <div className='about__footer'>
-            <p>
-              <FormattedMessage
-                id='about.disclaimer'
-                defaultMessage='Mastodon is free, open-source software, and a trademark of Mastodon gGmbH.'
-              />
-            </p>
-          </div>
         </div>
         <Helmet>
           <title>{intl.formatMessage(messages.title)}</title>
