@@ -54,11 +54,13 @@ const Navigations = () => {
           transparent
           to='/public'
           icon='feed'
+          badge={true}
           iconComponent={FeedIcon}
           activeIconComponent={FeedIcon}
           text={intl.formatMessage(messages.feed)}
         />
         <ColumnLink
+          badge={true}
           transparent
           href='https://www.blog-pat.ch/'
           icon='blog'
@@ -68,6 +70,7 @@ const Navigations = () => {
           text={intl.formatMessage(messages.blog)}
         />
         <ColumnLink
+          badge={true}
           transparent
           to='/podcast'
           icon='podcast'
@@ -76,6 +79,7 @@ const Navigations = () => {
           text={intl.formatMessage(messages.podcast)}
         />
         <ColumnLink
+          badge={true}
           transparent
           to='/chat'
           icon='chat'
@@ -84,6 +88,7 @@ const Navigations = () => {
           text={intl.formatMessage(messages.chat)}
         />
         <ColumnLink
+          badge={true}
           transparent
           href='https://home.channel.org/'
           icon='website'
@@ -93,6 +98,7 @@ const Navigations = () => {
           text={intl.formatMessage(messages.website)}
         />
         <ColumnLink
+          badge={true}
           transparent
           to='/rss-feed'
           icon='rss-feed'
@@ -101,6 +107,7 @@ const Navigations = () => {
           text={intl.formatMessage(messages.rss)}
         />
         <ColumnLink
+          badge={true}
           transparent
           to='/bluesky'
           icon='bluesky'
@@ -109,6 +116,7 @@ const Navigations = () => {
           text={intl.formatMessage(messages.bluesky)}
         />
         <ColumnLink
+          badge={true}
           transparent
           to='/thread'
           icon='thread'

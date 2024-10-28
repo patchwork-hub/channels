@@ -15,7 +15,6 @@ const ColumnLink = ({
   href,
   method,
   badge,
-  feedBadge,
   transparent,
   ...other
 }) => {
@@ -23,13 +22,10 @@ const ColumnLink = ({
   const className = classNames('column-link', {
     'column-link--transparent': transparent,
   });
+  const active = match?.isExact;
   const badgeElement =
-    typeof badge !== 'undefined' || typeof feedBadge !== 'undefined' ? (
-      <span
-        className={feedBadge ? 'column-link_feed_badge' : 'column-link__badge'}
-      >
-        {badge}
-      </span>
+    typeof badge !== 'undefined' ? (
+      <span className={active ? 'column-link__badge' : ''}>{badge}</span>
     ) : null;
   const iconElement =
     typeof icon === 'string' || iconComponent ? (
@@ -48,7 +44,6 @@ const ColumnLink = ({
     ) : (
       iconElement
     ));
-  const active = match?.isExact;
 
   if (href) {
     return (
