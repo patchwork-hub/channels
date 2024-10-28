@@ -275,12 +275,6 @@ class About extends PureComponent {
               </>
             ) : domainBlocks.get('isAvailable') ? (
               <>
-                <p>
-                  <FormattedMessage
-                    id='about.domain_blocks.preamble'
-                    defaultMessage='Mastodon generally allows you to view content from and interact with users from any other server in the fediverse. These are the exceptions that have been made on this particular server.'
-                  />
-                </p>
                 {domainBlocks.get('items').size > 0 && (
                   <div className='about__domain-blocks'>
                     {domainBlocks.get('items').map((block) => (
