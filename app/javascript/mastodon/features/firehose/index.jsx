@@ -200,7 +200,7 @@ const Firehose = ({ feedType, multiColumn }) => {
       >
         <ColumnSettings />
       </ColumnHeader> */}
-      <ChannelTopBanner name="Science" src="/temp-images/science-banner.jpeg" participants={17280}/>
+      <ChannelTopBanner />
       <div className='account__section-headline'>
         {/* <NavLink exact to='/public/local'>
           <FormattedMessage tagName='div' id='firehose.local' defaultMessage='This server' />
