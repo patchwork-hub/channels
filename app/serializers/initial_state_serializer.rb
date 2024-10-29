@@ -86,7 +86,7 @@ class InitialStateSerializer < ActiveModel::Serializer
   end
 
   def header_image
-    JSON.parse(ENV.fetch('HEADER_IMAGE', nil))
+    ENV.fetch('HEADER_IMAGE', nil)
   end
 
   def custom_links
