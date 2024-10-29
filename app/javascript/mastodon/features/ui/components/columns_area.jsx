@@ -46,6 +46,8 @@ import ThreadIcon from '@/material-icons/400-24px/thread.svg?react';
 import FeedIcon from '@/material-icons/400-24px/feed_icon.svg?.react';
 import ColumnLink from './column_link';
 import { defineMessages } from 'react-intl';
+import { custom_links } from 'mastodon/initial_state';
+import { icons } from './navIcons';
 
 const componentMap = {
   COMPOSE: Compose,
@@ -216,6 +218,8 @@ export default class ColumnsArea extends ImmutablePureComponent {
     const { columns, children, singleColumn, isModalOpen } = this.props;
     const { renderComposePanel, isMenuOpen, currentYear } = this.state;
 
+    const navItems = typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
+
     if (singleColumn) {
       return (
         <div className='columns-area__panels'>
@@ -260,85 +264,26 @@ export default class ColumnsArea extends ImmutablePureComponent {
                         <ColumnLink
                           transparent
                           badge={true}
-                          to='/explore-channels'
-                          icon='explore-channels'
+                          to='/public'
+                          icon='feed'
                           iconComponent={FeedIcon}
                           activeIconComponent={FeedIcon}
                           text='Feed'
-                          // text={intl.formatMessage(messages.explore)}
                         />
-                        <ColumnLink
-                          transparent
-                          badge={true}
-                          href='https://www.blog-pat.ch/'
-                          icon='blog'
-                          target='_blank'
-                          iconComponent={PenIcon}
-                          activeIconComponent={PenIcon}
-                          text='Blog'
-                          // text={intl.formatMessage(messages.blog)}
-                        />
-                        <ColumnLink
-                          transparent
-                          badge={true}
-                          to='/podcast'
-                          icon='podcast'
-                          iconComponent={PodcastIcon}
-                          activeIconComponent={PodcastIcon}
-                          text='Podcast'
-                          // text={intl.formatMessage(messages.podcast)}
-                        />
-                        <ColumnLink
-                          transparent
-                          badge={true}
-                          to='/chat'
-                          icon='chat'
-                          iconComponent={ChatIcon}
-                          activeIconComponent={ChatIcon}
-                          text='Chat/Forum'
-                          // text={intl.formatMessage(messages.chat)}
-                        />
-                        <ColumnLink
-                          transparent
-                          badge={true}
-                          href='https://home.channel.org/'
-                          icon='website'
-                          target='_blank'
-                          iconComponent={WebsiteIcon}
-                          activeIconComponent={WebsiteIcon}
-                          text='Website'
-                          // text={intl.formatMessage(messages.website)}
-                        />
-                        <ColumnLink
-                          transparent
-                          badge={true}
-                          to='/rss-feed'
-                          icon='rss-feed'
-                          iconComponent={RssFeedIcon}
-                          activeIconComponent={RssFeedIcon}
-                          text='RSS Feed'
-                          // text={intl.formatMessage(messages.rss)}
-                        />
-                        <ColumnLink
-                          transparent
-                          badge={true}
-                          to='/bluesky'
-                          icon='bluesky'
-                          iconComponent={ButterflyIcon}
-                          activeIconComponent={ButterflyIcon}
-                          text='Bluesky Account'
-                          // text={intl.formatMessage(messages.bluesky)}
-                        />
-                        <ColumnLink
-                          transparent
-                          badge={true}
-                          to='/thread'
-                          icon='thread'
-                          iconComponent={ThreadIcon}
-                          activeIconComponent={ThreadIcon}
-                          text='Thread Account'
-                          // text={intl.formatMessage(messages.thread)}
-                        />
+                        {
+                          Object.values(navItems).map((it,index)=>(
+                              <ColumnLink
+                                    key={index}
+                                    badge={true}
+                                    transparent
+                                    href={it.url}
+                                    icon={it.icon}
+                                    target='_blank'
+                                    iconComponent={icons[it.icon]}
+                                    activeIconComponent={icons[it.icon]}
+                                    text={it.name}
+                                  />
+                            ))}
                       </div>
 
                       <footer className='footer'>

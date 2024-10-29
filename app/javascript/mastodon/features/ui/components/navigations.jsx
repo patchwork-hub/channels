@@ -1,16 +1,10 @@
 import { defineMessages, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import ColumnLink from './column_link';
-import PenIcon from '@/material-icons/400-24px/pen_icon.svg?react';
 import FeedIcon from '@/material-icons/400-24px/feed_icon.svg?.react';
-import PodcastIcon from '@/material-icons/400-24px/podcast.svg?react';
-import ChatIcon from '@/material-icons/400-24px/chat.svg?react';
-import WebsiteIcon from '@/material-icons/400-24px/website_icon.svg?react';
-import RssFeedIcon from '@/material-icons/400-24px/rss_feed.svg?react';
-import ButterflyIcon from '@/material-icons/400-24px/butterfly.svg?react';
-import ThreadIcon from '@/material-icons/400-24px/thread.svg?react';
 import channelOrgImage from '../../../../images/wide_channel_logo.svg';
 import { custom_links } from 'mastodon/initial_state';
+import { icons } from './navIcons';
 
 const messages = defineMessages({
   home: { id: 'tabs_bar.home', defaultMessage: 'Home' },
@@ -32,16 +26,6 @@ const messages = defineMessages({
 const Navigations = () => {
   const intl = useIntl();
   const navItems = typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
-
-  const icons = {
-    "pen":PenIcon,
-    "podcast":PodcastIcon,
-    "chat":ChatIcon,
-    "website":WebsiteIcon,
-    "rss-feed":RssFeedIcon,
-    "bluesky":ButterflyIcon,
-    "thread":ThreadIcon
-  }
 
   return (
     <aside className='navigation-panel sidebar'>
