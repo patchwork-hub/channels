@@ -36,7 +36,7 @@ const Navigations = () => {
   const intl = useIntl();
   return (
     <aside className='navigation-panel sidebar'>
-      <div className='navigation-panel__logo'>
+      <div className='navigation-panel__logo' style={{ paddingInline:16 }}>
         <Link to='/' className='nav-header'>
           Channel.org
         </Link>
