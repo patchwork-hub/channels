@@ -43,6 +43,7 @@ import WebsiteIcon from '@/material-icons/400-24px/website_icon.svg?react';
 import RssFeedIcon from '@/material-icons/400-24px/rss_feed.svg?react';
 import ButterflyIcon from '@/material-icons/400-24px/butterfly.svg?react';
 import ThreadIcon from '@/material-icons/400-24px/thread.svg?react';
+import FeedIcon from '@/material-icons/400-24px/feed_icon.svg?.react';
 import ColumnLink from './column_link';
 import { defineMessages } from 'react-intl';
 
@@ -258,15 +259,17 @@ export default class ColumnsArea extends ImmutablePureComponent {
                       <div className='nav-links'>
                         <ColumnLink
                           transparent
+                          badge={true}
                           to='/explore-channels'
                           icon='explore-channels'
-                          iconComponent={SearchIcon}
-                          activeIconComponent={SearchIcon}
-                          text='Explore'
+                          iconComponent={FeedIcon}
+                          activeIconComponent={FeedIcon}
+                          text='Feed'
                           // text={intl.formatMessage(messages.explore)}
                         />
                         <ColumnLink
                           transparent
+                          badge={true}
                           href='https://www.blog-pat.ch/'
                           icon='blog'
                           target='_blank'
@@ -277,6 +280,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
                         />
                         <ColumnLink
                           transparent
+                          badge={true}
                           to='/podcast'
                           icon='podcast'
                           iconComponent={PodcastIcon}
@@ -286,6 +290,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
                         />
                         <ColumnLink
                           transparent
+                          badge={true}
                           to='/chat'
                           icon='chat'
                           iconComponent={ChatIcon}
@@ -295,6 +300,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
                         />
                         <ColumnLink
                           transparent
+                          badge={true}
                           href='https://home.channel.org/'
                           icon='website'
                           target='_blank'
@@ -305,6 +311,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
                         />
                         <ColumnLink
                           transparent
+                          badge={true}
                           to='/rss-feed'
                           icon='rss-feed'
                           iconComponent={RssFeedIcon}
@@ -314,6 +321,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
                         />
                         <ColumnLink
                           transparent
+                          badge={true}
                           to='/bluesky'
                           icon='bluesky'
                           iconComponent={ButterflyIcon}
@@ -323,6 +331,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
                         />
                         <ColumnLink
                           transparent
+                          badge={true}
                           to='/thread'
                           icon='thread'
                           iconComponent={ThreadIcon}

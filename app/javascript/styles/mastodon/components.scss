@@ -2634,6 +2634,18 @@ a.account__display-name {
     overflow-x: hidden;
   }
 
+  &__main {
+    margin-top: 79px;
+  }
+
+  &__top-nav-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+  }
+
   &__panels {
     display: flex;
     justify-content: center;
@@ -2710,11 +2722,12 @@ a.account__display-name {
       justify-content: flex-start;
       align-items: center;
       & > *:first-child {
-        margin-right: 10px;
+        margin-right: 16px;
       }
       &__btn {
         background-color: transparent;
         border: none;
+        padding: 0;
       }
       &__icon {
         width: 21px;
@@ -2733,7 +2746,7 @@ a.account__display-name {
 
   &__sidebar {
     position: fixed;
-    top: 67px;
+    top: 79px;
     left: 1px;
     width: 99.5%;
     height: 100%;
