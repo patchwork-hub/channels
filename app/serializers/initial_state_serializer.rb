@@ -90,7 +90,7 @@ class InitialStateSerializer < ActiveModel::Serializer
   end
 
   def custom_links
-    JSON.parse(ENV.fetch('LINKS', nil))
+    ENV.fetch('LINKS', nil)
   end
 
   private
