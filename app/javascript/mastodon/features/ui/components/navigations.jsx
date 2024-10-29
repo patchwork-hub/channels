@@ -1,10 +1,6 @@
-import { defineMessages, injectIntl, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
-import { NavLink } from 'react-router-dom';
 import ColumnLink from './column_link';
-import HomeActiveIcon from '@/material-icons/400-24px/home-fill.svg?react';
-import HomeIcon from '@/material-icons/400-24px/home.svg?react';
-import SearchIcon from '@/material-icons/400-24px/search.svg?react';
 import PenIcon from '@/material-icons/400-24px/pen_icon.svg?react';
 import FeedIcon from '@/material-icons/400-24px/feed_icon.svg?.react';
 import PodcastIcon from '@/material-icons/400-24px/podcast.svg?react';
@@ -14,6 +10,7 @@ import RssFeedIcon from '@/material-icons/400-24px/rss_feed.svg?react';
 import ButterflyIcon from '@/material-icons/400-24px/butterfly.svg?react';
 import ThreadIcon from '@/material-icons/400-24px/thread.svg?react';
 import channelOrgImage from '../../../../images/wide_channel_logo.svg';
+import { custom_links } from 'mastodon/initial_state';
 
 const messages = defineMessages({
   home: { id: 'tabs_bar.home', defaultMessage: 'Home' },
@@ -34,6 +31,18 @@ const messages = defineMessages({
 
 const Navigations = () => {
   const intl = useIntl();
+  const navItems = typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
+
+  const icons = {
+    "pen":PenIcon,
+    "podcast":PodcastIcon,
+    "chat":ChatIcon,
+    "website":WebsiteIcon,
+    "rss-feed":RssFeedIcon,
+    "bluesky":ButterflyIcon,
+    "thread":ThreadIcon
+  }
+
   return (
     <aside className='navigation-panel sidebar'>
       <div className='navigation-panel__logo' style={{ paddingInline:16 }}>
@@ -42,14 +51,6 @@ const Navigations = () => {
         </Link>
       </div>
       <div className='nav-links'>
-        {/* <ColumnLink
-          transparent
-          to='/explore-channels'
-          icon='explore-channels'
-          iconComponent={SearchIcon}
-          activeIconComponent={SearchIcon}
-          text={intl.formatMessage(messages.explore)}
-        /> */}
         <ColumnLink
           transparent
           to='/public'
@@ -59,80 +60,24 @@ const Navigations = () => {
           activeIconComponent={FeedIcon}
           text={intl.formatMessage(messages.feed)}
         />
-        <ColumnLink
-          badge={true}
-          transparent
-          href='https://www.blog-pat.ch/'
-          icon='blog'
-          target='_blank'
-          iconComponent={PenIcon}
-          activeIconComponent={PenIcon}
-          text={intl.formatMessage(messages.blog)}
-        />
-        <ColumnLink
-          badge={true}
-          transparent
-          to='/podcast'
-          icon='podcast'
-          iconComponent={PodcastIcon}
-          activeIconComponent={PodcastIcon}
-          text={intl.formatMessage(messages.podcast)}
-        />
-        <ColumnLink
-          badge={true}
-          transparent
-          to='/chat'
-          icon='chat'
-          iconComponent={ChatIcon}
-          activeIconComponent={ChatIcon}
-          text={intl.formatMessage(messages.chat)}
-        />
-        <ColumnLink
-          badge={true}
-          transparent
-          href='https://home.channel.org/'
-          icon='website'
-          target='_blank'
-          iconComponent={WebsiteIcon}
-          activeIconComponent={WebsiteIcon}
-          text={intl.formatMessage(messages.website)}
-        />
-        <ColumnLink
-          badge={true}
-          transparent
-          to='/rss-feed'
-          icon='rss-feed'
-          iconComponent={RssFeedIcon}
-          activeIconComponent={RssFeedIcon}
-          text={intl.formatMessage(messages.rss)}
-        />
-        <ColumnLink
-          badge={true}
-          transparent
-          to='/bluesky'
-          icon='bluesky'
-          iconComponent={ButterflyIcon}
-          activeIconComponent={ButterflyIcon}
-          text={intl.formatMessage(messages.bluesky)}
-        />
-        <ColumnLink
-          badge={true}
-          transparent
-          to='/thread'
-          icon='thread'
-          iconComponent={ThreadIcon}
-          activeIconComponent={ThreadIcon}
-          text={intl.formatMessage(messages.thread)}
-        />
+        {
+        Object.values(navItems).map((it,index)=>(
+            <ColumnLink
+                  key={index}
+                  badge={true}
+                  transparent
+                  href={it.url}
+                  icon={it.icon}
+                  target='_blank'
+                  iconComponent={icons[it.icon]}
+                  activeIconComponent={icons[it.icon]}
+                  text={it.name}
+                />
+          ))}
       </div>
 
       <footer className='footer'>
         <ul>
-          {/* <li>
-            <NavLink to='/terms' className='footer-link'>
-              Terms & Conditions
-            </NavLink>
-          </li> */}
           <li>
             <a
               href='https://channel.org/privacy-policy/'
@@ -155,7 +100,6 @@ const Navigations = () => {
 
         <p className='powered-by'>Powered by</p>
         <img src={channelOrgImage} alt='channel org' />
-        {/* <p>© {new Date().getFullYear()} Patchwork</p> */}
       </footer>
     </aside>
   );

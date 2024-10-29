@@ -150,11 +150,7 @@ class About extends PureComponent {
           title={intl.formatMessage(messages.title)}
           multiColumn={multiColumn}
         /> */}
-        <ChannelTopBanner
-          name='Science'
-          src='/temp-images/science-banner.jpeg'
-          participants={17280}
-        />
+        <ChannelTopBanner />
         <div className='account__section-headline'>
           {/* <NavLink exact to='/public/local'>
             <FormattedMessage tagName='div' id='firehose.local' defaultMessage='This server' />
