@@ -31,6 +31,7 @@ import NavigationPanel from './navigation_panel';
 import Navigations from './navigations';
 import { Link } from 'react-router-dom';
 import Search from '@/images/icons/icon-search.svg';
+import Logo from "@/images/icons/icon-logo.svg";
 import BurgerMenu from '@/images/icons/icon-burger-menu.svg';
 import BurgerMenuClose from '@/images/icons/icon-burger-menu-close.svg';
 import HomeIcon from '@/material-icons/400-24px/home.svg?react';
@@ -228,139 +229,150 @@ export default class ColumnsArea extends ImmutablePureComponent {
               <TabsBarPortal />
             </div>
             <div className='columns-area columns-area--mobile'>
-              <nav className='columns-area__top-nav'>
-                <div className='columns-area__top-nav__burger-menu'>
-                  <button className='columns-area__top-nav__burger-menu__btn' onClick={this.handleOpenMenu}>
-                    <img
-                      src={isMenuOpen ? BurgerMenuClose : BurgerMenu}
-                      className='columns-area__top-nav__burger-menu__icon'
-                      alt='menu'
-                    />
-                  </button>
-                  <Link to='/' className=''>
-                    Channel.org
-                  </Link>
-                </div>
-                <img
-                  src={Search}
-                  alt='search'
-                />
-
-                <div className={`columns-area__sidebar ${isMenuOpen && 'columns-area__sidebar__open'}`}>
-                  <div>
-                    <div className='nav-links'>
-                      <ColumnLink
-                        transparent
-                        to='/explore-channels'
-                        icon='explore-channels'
-                        iconComponent={SearchIcon}
-                        activeIconComponent={SearchIcon}
-                        text='Explore'
-                        // text={intl.formatMessage(messages.explore)}
+              <div className='columns-area__top-nav-wrap'>
+                <nav className='columns-area__top-nav'>
+                  <div className='columns-area__top-nav__burger-menu'>
+                    <button className='columns-area__top-nav__burger-menu__btn' onClick={this.handleOpenMenu}>
+                      <img
+                        src={isMenuOpen ? BurgerMenuClose : BurgerMenu}
+                        className='columns-area__top-nav__burger-menu__icon'
+                        alt='menu'
                       />
-                      <ColumnLink
-                        transparent
-                        href='https://www.blog-pat.ch/'
-                        icon='blog'
-                        target='_blank'
-                        iconComponent={PenIcon}
-                        activeIconComponent={PenIcon}
-                        text='Blog'
-                        // text={intl.formatMessage(messages.blog)}
-                      />
-                      <ColumnLink
-                        transparent
-                        to='/podcast'
-                        icon='podcast'
-                        iconComponent={PodcastIcon}
-                        activeIconComponent={PodcastIcon}
-                        text='Podcast'
-                        // text={intl.formatMessage(messages.podcast)}
-                      />
-                      <ColumnLink
-                        transparent
-                        to='/chat'
-                        icon='chat'
-                        iconComponent={ChatIcon}
-                        activeIconComponent={ChatIcon}
-                        text='Chat/Forum'
-                        // text={intl.formatMessage(messages.chat)}
-                      />
-                      <ColumnLink
-                        transparent
-                        href='https://home.channel.org/'
-                        icon='website'
-                        target='_blank'
-                        iconComponent={WebsiteIcon}
-                        activeIconComponent={WebsiteIcon}
-                        text='Website'
-                        // text={intl.formatMessage(messages.website)}
-                      />
-                      <ColumnLink
-                        transparent
-                        to='/rss-feed'
-                        icon='rss-feed'
-                        iconComponent={RssFeedIcon}
-                        activeIconComponent={RssFeedIcon}
-                        text='RSS Feed'
-                        // text={intl.formatMessage(messages.rss)}
-                      />
-                      <ColumnLink
-                        transparent
-                        to='/bluesky'
-                        icon='bluesky'
-                        iconComponent={ButterflyIcon}
-                        activeIconComponent={ButterflyIcon}
-                        text='Bluesky Account'
-                        // text={intl.formatMessage(messages.bluesky)}
-                      />
-                      <ColumnLink
-                        transparent
-                        to='/thread'
-                        icon='thread'
-                        iconComponent={ThreadIcon}
-                        activeIconComponent={ThreadIcon}
-                        text='Thread Account'
-                        // text={intl.formatMessage(messages.thread)}
-                      />
-                    </div>
-
-                    <footer className='footer'>
-                      <ul>
-                        {/* <li>
-                          <NavLink to='/terms' className='footer-link'>
-                            Terms & Conditions
-                          </NavLink>
-                        </li> */}
-                        <li>
-                          <a
-                            href='https://channel.org/privacy-policy/'
-                            target='_blank'
-                            className='footer-link'
-                          >
-                            Privacy Policy
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href='https://github.com/patchwork-hub/'
-                            target='_blank'
-                            className='footer-link'
-                          >
-                            Source Code
-                          </a>
-                        </li>
-                      </ul>
-                      {/* <p>© {new Date().getFullYear()} Patchwork</p> */}
-                    </footer>
-
-                    <p className='columns-area__copyright'>
-                      © {currentYear} Patchwork
-                    </p>
+                    </button>
+                    <Link to='/' className=''>
+                      Channel.org
+                    </Link>
                   </div>
-                </div>
-              </nav>
-              {children}
+
+                  <div className='columns-area__top-nav__explore-channels'>
+                    <button>Explore channels</button>
+                  </div>
+
+                  {/* <img
+                    src={Search}
+                    alt='search'
+                  /> */}
+
+                  <div className={`columns-area__sidebar ${isMenuOpen && 'columns-area__sidebar__open'}`}>
+                    <div>
+                      <div className='nav-links'>
+                        <ColumnLink
+                          transparent
+                          to='/explore-channels'
+                          icon='explore-channels'
+                          iconComponent={SearchIcon}
+                          activeIconComponent={SearchIcon}
+                          text='Explore'
+                          // text={intl.formatMessage(messages.explore)}
+                        />
+                        <ColumnLink
+                          transparent
+                          href='https://www.blog-pat.ch/'
+                          icon='blog'
+                          target='_blank'
+                          iconComponent={PenIcon}
+                          activeIconComponent={PenIcon}
+                          text='Blog'
+                          // text={intl.formatMessage(messages.blog)}
+                        />
+                        <ColumnLink
+                          transparent
+                          to='/podcast'
+                          icon='podcast'
+                          iconComponent={PodcastIcon}
+                          activeIconComponent={PodcastIcon}
+                          text='Podcast'
+                          // text={intl.formatMessage(messages.podcast)}
+                        />
+                        <ColumnLink
+                          transparent
+                          to='/chat'
+                          icon='chat'
+                          iconComponent={ChatIcon}
+                          activeIconComponent={ChatIcon}
+                          text='Chat/Forum'
+                          // text={intl.formatMessage(messages.chat)}
+                        />
+                        <ColumnLink
+                          transparent
+                          href='https://home.channel.org/'
+                          icon='website'
+                          target='_blank'
+                          iconComponent={WebsiteIcon}
+                          activeIconComponent={WebsiteIcon}
+                          text='Website'
+                          // text={intl.formatMessage(messages.website)}
+                        />
+                        <ColumnLink
+                          transparent
+                          to='/rss-feed'
+                          icon='rss-feed'
+                          iconComponent={RssFeedIcon}
+                          activeIconComponent={RssFeedIcon}
+                          text='RSS Feed'
+                          // text={intl.formatMessage(messages.rss)}
+                        />
+                        <ColumnLink
+                          transparent
+                          to='/bluesky'
+                          icon='bluesky'
+                          iconComponent={ButterflyIcon}
+                          activeIconComponent={ButterflyIcon}
+                          text='Bluesky Account'
+                          // text={intl.formatMessage(messages.bluesky)}
+                        />
+                        <ColumnLink
+                          transparent
+                          to='/thread'
+                          icon='thread'
+                          iconComponent={ThreadIcon}
+                          activeIconComponent={ThreadIcon}
+                          text='Thread Account'
+                          // text={intl.formatMessage(messages.thread)}
+                        />
+                      </div>
+
+                      <footer className='footer'>
+                        <ul>
+                          {/* <li>
+                            <NavLink to='/terms' className='footer-link'>
+                              Terms & Conditions
+                            </NavLink>
+                          </li> */}
+                          <li>
+                            <a
+                              href='https://channel.org/privacy-policy/'
+                              target='_blank'
+                              className='footer-link'
+                            >
+                              Privacy Policy
+                            </a>
+                          </li>
+                          <li>
+                            <a
+                              href='https://github.com/patchwork-hub/'
+                              target='_blank'
+                              className='footer-link'
+                            >
+                              Source Code
+                            </a>
+                          </li>
+                        </ul>
+                        {/* <p>© {new Date().getFullYear()} Patchwork</p> */}
+                        <img src={Logo} className='columns-area__footer-logo' alt='logo' />
+                      </footer>
+
+
+                      {/* <p className='columns-area__copyright'>
+                        © {currentYear} Patchwork
+                      </p> */}
+                    </div>
+                  </div>
+                </nav>
+              </div>
+              <main className='columns-area__main'>
+                {children}
+              </main>
             </div>
           </div>
 

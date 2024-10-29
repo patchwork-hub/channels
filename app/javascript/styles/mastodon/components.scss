@@ -2693,6 +2693,18 @@ a.account__display-name {
       display: none;
     }
 
+    &__explore-channels {
+      border: 1px solid rgba($white, 0.4);
+      border-radius: 8px;
+      padding: 8px 12px;
+      & button {
+        background: transparent;
+        color: $white;
+        border: none;
+        font-size: 14px;
+      }
+    }
+
     &__burger-menu {
       display: flex;
       justify-content: flex-start;
