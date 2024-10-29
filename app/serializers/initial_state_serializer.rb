@@ -5,7 +5,8 @@ class InitialStateSerializer < ActiveModel::Serializer
 
   attributes :meta, :compose, :accounts,
              :media_attachments, :settings,
-             :languages
+             :languages,
+             :header_image, :custom_links
 
   attribute :critical_updates_pending, if: -> { object&.role&.can?(:view_devops) && SoftwareUpdate.check_enabled? }
 
@@ -82,6 +83,14 @@ class InitialStateSerializer < ActiveModel::Serializer
 
   def languages
     LanguagesHelper::SUPPORTED_LOCALES.map { |(key, value)| [key, value[0], value[1]] }
+  end
+
+  def header_image
+    ENV.fetch('HEADER_IMAGE', nil)
+  end
+
+  def custom_links
+    ENV.fetch('LINKS', nil)
   end
 
   private
