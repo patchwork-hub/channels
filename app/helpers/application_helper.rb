@@ -215,6 +215,9 @@ module ApplicationHelper
 
     state_params[:owner] = Account.local.without_suspended.without_internal.first if single_user_mode?
 
+    state_params[:header_image] = ENV.fetch('HEADER_IMAGE', nil)
+    state_params[:custom_link] = ENV.fetch('LINKS', nil)
+
     json = ActiveModelSerializers::SerializableResource.new(InitialStatePresenter.new(state_params), serializer: InitialStateSerializer).to_json
     # rubocop:disable Rails/OutputSafety
     content_tag(:script, json_escape(json).html_safe, id: 'initial-state', type: 'application/json')
