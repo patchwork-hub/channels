@@ -25,7 +25,7 @@ const messages = defineMessages({
 
 const Navigations = () => {
   const intl = useIntl();
-  const navItems = typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
+  const navItems = custom_links && typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
 
   return (
     <aside className='navigation-panel sidebar'>

@@ -218,7 +218,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
     const { columns, children, singleColumn, isModalOpen } = this.props;
     const { renderComposePanel, isMenuOpen, currentYear } = this.state;
 
-    const navItems = typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
+    const navItems = custom_links && typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
 
     if (singleColumn) {
       return (
