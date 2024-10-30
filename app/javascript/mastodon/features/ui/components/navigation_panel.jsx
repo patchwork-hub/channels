@@ -129,7 +129,7 @@ class NavigationPanel extends Component {
 
     return (
       <div className='navigation-panel'>
-        <div className='navigation-panel__logo'>
+        <div className='navigation-panel__logo' style={{ paddingInline:16 }}>
           <Link to='/' className='column-link column-link--logo'>
             <ChannelOrgIcon />
           </Link>

@@ -3518,7 +3518,7 @@ $ui-header-logo-wordmark-width: 99px;
 .compose-panel {
   // width: 285px;
   width: 345px;
-  margin-top: 10px;
+  margin-top: 15px;
   display: flex;
   flex-direction: column;
   height: calc(100% - 10px);
@@ -3840,7 +3840,7 @@ $ui-header-logo-wordmark-width: 99px;
   align-items: center;
   gap: 15px;
   font-size: 16px;
-  padding: 12px;
+  padding: 12px 16px;
   text-decoration: none;
   overflow: hidden;
   white-space: nowrap;
@@ -3848,7 +3848,6 @@ $ui-header-logo-wordmark-width: 99px;
   border: 0;
   background: transparent;
   color: $secondary-text-color;
-  border-left: 4px solid transparent;
   cursor: pointer;
 
   &:hover,

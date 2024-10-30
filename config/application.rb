@@ -110,9 +110,6 @@ module Mastodon
       else
         require_relative '../lib/paperclip/lazy_thumbnail'
       end
-
-      config.x.custom_header_image = ENV.fetch('HEADER_IMAGE', nil)
-      config.x.custom_links = ENV.fetch('LINKS', nil)
     end
 
     config.to_prepare do

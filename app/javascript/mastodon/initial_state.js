@@ -61,6 +61,8 @@
  * @property {boolean=} critical_updates_pending
  * @property {InitialStateMeta} meta
  * @property {Role?} role
+ * @property {string} header_image
+ * @property {object} custom_links
  */
 
 const element = document.getElementById('initial-state');
@@ -118,6 +120,8 @@ export const criticalUpdatesPending = initialState?.critical_updates_pending;
 // @ts-expect-error
 export const statusPageUrl = getMeta('status_page_url');
 export const sso_redirect = getMeta('sso_redirect');
+export const header_image = initialState?.header_image;
+export const custom_links = initialState?.custom_links;
 
 /**
  * @returns {string | undefined}
