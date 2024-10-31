@@ -41,9 +41,6 @@ const channels: Channel[] = [
 const ChannelBanner = () => {
   return (
     <div>
-      <a href='https://home.channel.org/' target='_blank'>
-        <img src={channelOrgImage} alt='channel org' />
-      </a>
       <div className='explore-channels'>
         <div className='header'>
           <h2 className='channel-header'>Explore channels</h2>
