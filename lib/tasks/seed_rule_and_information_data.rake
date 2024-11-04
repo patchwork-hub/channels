@@ -4,24 +4,32 @@ namespace :db do
   desc 'Seed rule and information data'
   task seed_rule_and_information_data: :environment do
     begin
-      server_rules = JSON.parse(ENV.fetch('RULES', nil))
-      information = JSON.parse(ENV.fetch('INFORMATION', nil))
+      server_rules = JSON.parse(ENV.fetch('RULES', '{}'))
+      information = JSON.parse(ENV.fetch('INFORMATION', '{}'))
       site_contact_email = ENV.fetch('SITE_CONTACT_EMAIL', nil)
 
       server_rules.each_value do |rule|
-        Rule.create(text: rule, hint: rule)
+        Rule.find_or_create_by(text: rule) do |r|
+          r.hint = rule
+        end
       end
 
       information.each_value do |info|
-        Setting.create(var: 'site_extended_description', value: info['text'])
+        formatted_text = YAML.dump(info['text']).strip
+        Setting.create(var: 'site_extended_description', value: info['text']) unless Setting.where(var: 'site_extended_description', value: formatted_text).exists?
       end
 
-      Setting.create(var: 'site_contact_email', value: site_contact_email)
+      setting = Setting.find_or_initialize_by(var: 'site_contact_email')
+      setting.value = site_contact_email
+      setting.save
 
       owner_role = UserRole.find_by(name: 'Owner')
       owner_user = User.find_by(role: owner_role)
       owner_account = owner_user&.account
-      Setting.create(var: 'site_contact_username', value: owner_account&.username)
+
+      setting = Setting.find_or_initialize_by(var: 'site_contact_username')
+      setting.value = owner_account&.username
+      setting.save
 
       puts 'Seeding completed successfully!'
     rescue JSON::ParserError => e
