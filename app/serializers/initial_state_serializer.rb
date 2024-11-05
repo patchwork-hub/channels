@@ -6,7 +6,7 @@ class InitialStateSerializer < ActiveModel::Serializer
   attributes :meta, :compose, :accounts,
              :media_attachments, :settings,
              :languages,
-             :header_image, :custom_links
+             :header_image, :custom_links, :channel_display_name
 
   attribute :critical_updates_pending, if: -> { object&.role&.can?(:view_devops) && SoftwareUpdate.check_enabled? }
 
@@ -91,6 +91,10 @@ class InitialStateSerializer < ActiveModel::Serializer
 
   def custom_links
     JSON.parse(ENV.fetch('LINKS', nil).gsub('\n', '').gsub('\t', '').strip)
+  end
+
+  def channel_display_name
+    ENV.fetch('DISPLAY_NAME', nil)
   end
 
   private
