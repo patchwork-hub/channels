@@ -34,7 +34,7 @@ import BurgerMenu from '@/images/icons/icon-burger-menu.svg';
 import BurgerMenuClose from '@/images/icons/icon-burger-menu-close.svg';
 import FeedIcon from '@/material-icons/400-24px/feed_icon.svg?.react';
 import ColumnLink from './column_link';
-import { custom_links } from 'mastodon/initial_state';
+import { channel_display_name, custom_links } from 'mastodon/initial_state';
 import { icons } from './navIcons';
 
 const componentMap = {
@@ -216,8 +216,8 @@ export default class ColumnsArea extends ImmutablePureComponent {
                         alt='menu'
                       />
                     </button>
-                    <Link to='/' className=''>
-                      Channel.org
+                    <Link to='/'>
+                      {channel_display_name}
                     </Link>
                   </div>
 

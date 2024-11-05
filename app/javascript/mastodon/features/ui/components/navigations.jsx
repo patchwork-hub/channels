@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import ColumnLink from './column_link';
 import FeedIcon from '@/material-icons/400-24px/feed_icon.svg?.react';
 import channelOrgImage from '../../../../images/wide_channel_logo.svg';
-import { custom_links } from 'mastodon/initial_state';
+import { channel_display_name, custom_links } from 'mastodon/initial_state';
 import { icons } from './navIcons';
 
 const messages = defineMessages({
@@ -31,7 +31,7 @@ const Navigations = () => {
     <aside className='navigation-panel sidebar'>
       <div className='navigation-panel__logo' style={{ paddingInline:16 }}>
         <Link to='/' className='nav-header'>
-          Channel.org
+          {channel_display_name}
         </Link>
       </div>
       <div className='nav-links'>

@@ -63,6 +63,7 @@
  * @property {Role?} role
  * @property {string} header_image
  * @property {object} custom_links
+ * @property {string} channel_display_name
  */
 
 const element = document.getElementById('initial-state');
@@ -122,6 +123,7 @@ export const statusPageUrl = getMeta('status_page_url');
 export const sso_redirect = getMeta('sso_redirect');
 export const header_image = initialState?.header_image;
 export const custom_links = initialState?.custom_links;
+export const channel_display_name = initialState?.channel_display_name;
 
 /**
  * @returns {string | undefined}
