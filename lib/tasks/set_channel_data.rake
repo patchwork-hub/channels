@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 namespace :db do
-  desc 'Seed rule and information data'
-  task seed_rule_and_information_data: :environment do
+  desc 'Set Channel Data'
+  task set_channel_data: :environment do
     begin
       server_rules = JSON.parse(ENV.fetch('RULES', '{}'))
       information = JSON.parse(ENV.fetch('INFORMATION', '{}'))
       site_contact_email = ENV.fetch('SITE_CONTACT_EMAIL', nil)
+      content_type = ENV.fetch('CONTENT_TYPE', nil)
 
       server_rules.each_value do |rule|
         Rule.find_or_create_by(text: rule) do |r|
@@ -30,6 +31,11 @@ namespace :db do
       setting = Setting.find_or_initialize_by(var: 'site_contact_username')
       setting.value = owner_account&.username
       setting.save
+
+      is_lock = content_type == 'group_channel'
+      Chewy.strategy(:atomic) do
+        owner_account.update(locked: is_lock)
+      end
 
       puts 'Seeding completed successfully!'
     rescue JSON::ParserError => e
