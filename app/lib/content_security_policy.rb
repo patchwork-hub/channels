@@ -10,7 +10,7 @@ class ContentSecurityPolicy
   end
 
   def media_hosts
-    [assets_host, cdn_host_value, paperclip_root_url].compact
+    [assets_host, cdn_host_value, paperclip_root_url, 'https://s3-eu-west-2.amazonaws.com/patchwork-prod'].compact
   end
 
   private
