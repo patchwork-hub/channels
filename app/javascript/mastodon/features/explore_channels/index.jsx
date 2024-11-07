@@ -1,5 +1,7 @@
 import ArrowRightUpAltIcon from '@/material-icons/400-24px/arrow_right_up_red?.svg?react';
+import axios from 'axios';
 import { Icon } from 'mastodon/components/icon';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 const channels = [
   {
@@ -35,6 +37,17 @@ const channels = [
 ];
 
 const ExploreChannels = () => {
+  useEffect(() => {
+    axios
+      .get('https://jsonplaceholder.typicode.com/todos/1')
+      .then((response) => {
+        dispatch(fetchChannelsSuccess(response));
+        console.log('channe_response:', response)
+      })
+      .catch((error) => {
+        dispatch(fetchChannelsFail(error));
+      });
+  }), []
   return (
     <div className='channels'>
       <div className='channels__header'>
