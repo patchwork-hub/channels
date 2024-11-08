@@ -10,7 +10,7 @@ class ContentSecurityPolicy
   end
 
   def media_hosts
-    [assets_host, cdn_host_value, paperclip_root_url, dashboard_url].compact
+    [assets_host, cdn_host_value, paperclip_root_url, 'https://staging-dashboard.patchwork.online/', 'https://dashboard.channel.org/'].compact
   end
 
   private
@@ -30,10 +30,6 @@ class ContentSecurityPolicy
     (Addressable::URI.parse(assets_host) + root_url).tap do |uri|
       uri.path += '/' unless uri.path.blank? || uri.path.end_with?('/')
     end.to_s
-  end
-
-  def dashboard_url
-    ['https://staging-dashboard.patchwork.online/', 'https://dashboard.channel.org/']
   end
 
   def url_from_base_host
