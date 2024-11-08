@@ -2,7 +2,7 @@ import ArrowRightUpAltIcon from '@/material-icons/400-24px/arrow_right_up_red?.s
 import axios from 'axios';
 import { Icon } from 'mastodon/components/icon';
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+
 const channels = [
   {
     title: 'Newsmast',
@@ -39,7 +39,7 @@ const channels = [
 const ExploreChannels = () => {
   useEffect(() => {
     axios
-      .get('https://jsonplaceholder.typicode.com/todos/1')
+      .get('https://staging-dashboard.patchwork.online/api/v1/channels/recommend_channels')
       .then((response) => {
         dispatch(fetchChannelsSuccess(response));
         console.log('channe_response:', response)
