@@ -1,5 +1,4 @@
 import axios from 'axios';
-import api from 'mastodon/api';
 
 export const CHANNELS_FETCH_REQUEST = 'CHANNELS_FETCH_REQUEST';
 export const CHANNELS_FETCH_SUCCESS = 'CHANNELS_FETCH_SUCCESS';
@@ -12,8 +11,7 @@ export function fetchChannels() {
     axios
       .get('https://staging-dashboard.patchwork.online/api/v1/channels/recommend_channels')
       .then((response) => {
-        dispatch(fetchChannelsSuccess(response.data));
-        console.log('channe_response:', response)
+        dispatch(fetchChannelsSuccess(response.data.data));
       })
       .catch((error) => {
         dispatch(fetchChannelsFail(error));

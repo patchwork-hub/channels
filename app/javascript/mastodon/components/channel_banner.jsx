@@ -1,58 +1,18 @@
 import ArrowRightUpAltIcon from '@/material-icons/400-24px/arrow_right_up_red?.svg?react';
 import { Icon } from 'mastodon/components/icon';
-import channelOrgImage from '../../images/wide_white_channel_logo.svg';
 import { fetchChannels } from '../actions/channel_banner';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect , useState} from 'react';
-import axios from 'axios';
-
-// // Mock data for channels
-const channels = [
-  {
-    title: 'Newsmast',
-    subtitle: 'Broadcast',
-    imgSrc: 'temp-images/newsmast.jpg',
-    link: 'https://newsmast.channel.org/public',
-  },
-  {
-    title: 'WeDistribute',
-    subtitle: 'Multi-platform',
-    imgSrc: 'temp-images/wedistribute.jpg',
-    link: 'https://wedistribute.channel.org/public',
-  },
-  {
-    title: 'FediForum',
-    subtitle: 'Multi-contributor',
-    imgSrc: 'temp-images/mastodon.jpg',
-    link: 'https://fediforum.channel.org/public',
-  },
-  {
-    title: 'KamalaHarrisWin',
-    subtitle: 'Group',
-    imgSrc: 'temp-images/kamala.jpg',
-    link: 'https://kamalaharriswin.channel.org/public',
-  },
-];
+import { useEffect } from 'react';
 
 const ChannelBanner = () => {
-  const [channels, setChannels] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+
+  const channels  = useSelector(state=>state.recommended_channels.get("items"));
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchRecommendedChannels = async () => {
-      try {
-        const response = await axios.get('https://staging-dashboard.patchwork.online/api/v1/channels/recommend_channels');
-        setChannels(response.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRecommendedChannels();
+    dispatch(fetchChannels());
   }, []);
 
   return (
@@ -65,19 +25,19 @@ const ChannelBanner = () => {
           </NavLink>
         </div>
         <div className='channel-grid'>
-          {channels?.map((channel, index) => (
-            <a key={index} target='_blank' href={channel.link}>
+          {channels?.slice(0,4).map((channel, index) => (
+            <a key={index} target='_blank' href={'https://'+channel.attributes.domain_name}>
               <div className='channel-card'>
                 <img
-                  src={channel.imgSrc}
-                  alt={channel.title}
+                  src={channel.attributes.avatar_image_url}
+                  alt={channel.attributes.name}
                   className='channel-image'
                 />
                 <div className='channel-overlay' />
                 <div className='channel__info'>
                   <p className='channel__info-detail'>
-                    <span className='channel-title'>{channel.title}</span>
-                    <span className='channel-subtitle'>{channel.subtitle}</span>
+                    <span className='channel-title'>{channel.attributes.name}</span>
+                    <span className='channel-subtitle'>{channel.attributes.community_type.data.attributes.name}</span>
                   </p>
                   <Icon
                     icon={ArrowRightUpAltIcon}

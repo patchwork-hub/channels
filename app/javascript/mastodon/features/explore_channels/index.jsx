@@ -1,53 +1,11 @@
 import ArrowRightUpAltIcon from '@/material-icons/400-24px/arrow_right_up_red?.svg?react';
-import axios from 'axios';
 import { Icon } from 'mastodon/components/icon';
-import { useEffect } from 'react';
-
-const channels = [
-  {
-    title: 'Newsmast',
-    subtitle: 'Broadcast',
-    imgSrc: 'temp-images/newsmast.jpg',
-    link: 'https://newsmast.channel.org/public',
-  },
-  {
-    title: 'WeDistribute',
-    subtitle: 'Multi-platform',
-    imgSrc: 'temp-images/wedistribute.jpg',
-    link: 'https://wedistribute.channel.org/public',
-  },
-  {
-    title: 'FediForum',
-    subtitle: 'Multi-contributor',
-    imgSrc: 'temp-images/mastodon.jpg',
-    link: 'https://fediforum.channel.org/public',
-  },
-  {
-    title: 'KamalaHarrisWin',
-    subtitle: 'Group',
-    imgSrc: 'temp-images/kamala.jpg',
-    link: 'https://kamalaharriswin.channel.org/public',
-  },
-  {
-    title: 'Science',
-    subtitle: 'Curated',
-    imgSrc: 'temp-images/science.jpg',
-    link: 'https://science.channel.org/public',
-  },
-];
+import { useSelector } from 'react-redux';
 
 const ExploreChannels = () => {
-  useEffect(() => {
-    axios
-      .get('https://staging-dashboard.patchwork.online/api/v1/channels/recommend_channels')
-      .then((response) => {
-        dispatch(fetchChannelsSuccess(response));
-        console.log('channe_response:', response)
-      })
-      .catch((error) => {
-        dispatch(fetchChannelsFail(error));
-      });
-  }), []
+
+  const channels = useSelector(state => state.recommended_channels.get('items'));
+
   return (
     <div className='channels'>
       <div className='channels__header'>
@@ -58,14 +16,17 @@ const ExploreChannels = () => {
       </div>
       <div className='channels__list'>
         {channels.map((channel, index) => (
-          <a key={index} target='_blank' href={channel.link}>
+          <a key={index} target='_blank' href={'https://' + channel.attributes.domain_name}>
             <div className='card'>
-              <img src={channel.imgSrc} alt={channel.title} className='image' />
+              <img
+                src={channel.attributes.avatar_image_url}
+                alt={channel.attributes.name}
+                className='image' />
               <div className='overlay' />
               <div className='info'>
                 <p className='info__detail'>
-                  <span className='title'>{channel.title}</span>
-                  <span className='subtitle'>{channel.subtitle}</span>
+                  <span className='title'>{channel.attributes.name}</span>
+                  <span className='subtitle'>{channel.attributes.community_type.data.attributes.name}</span>
                 </p>
                 <Icon icon={ArrowRightUpAltIcon} id={''} className='icon' />
               </div>

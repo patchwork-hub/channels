@@ -15,13 +15,11 @@ export default function channelsReducer(state = initialState, action) {
   switch(action.type) {
     case CHANNELS_FETCH_REQUEST:
       return state.set('isLoading', true).set('error', null);
-
-    case CHANNELS_FETCH_SUCCESS:
+    case CHANNELS_FETCH_SUCCESS:{
       return state.set('isLoading', false).set('items', ImmutableList(action.channels));
-
+    }
     case CHANNELS_FETCH_FAIL:
       return state.set('isLoading', false).set('error', action.error);
-
     default:
       return state;
   }
