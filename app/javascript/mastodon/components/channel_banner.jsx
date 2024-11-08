@@ -36,24 +36,24 @@ const channels = [
 ];
 
 const ChannelBanner = () => {
-  // const [channels, setChannels] = useState([]);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
+  const [channels, setChannels] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // useEffect(() => {
-  //   const fetchRecommendedChannels = async () => {
-  //     try {
-  //       const response = await axios.get('https://staging-dashboard.patchwork.online/api/v1/channels/recommend_channels');
-  //       setChannels(response.data);
-  //     } catch (err) {
-  //       setError(err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchRecommendedChannels = async () => {
+      try {
+        const response = await axios.get('https://staging-dashboard.patchwork.online/api/v1/channels/recommend_channels');
+        setChannels(response.data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   fetchRecommendedChannels();
-  // }, []);
+    fetchRecommendedChannels();
+  }, []);
 
   return (
     <div>
