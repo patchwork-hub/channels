@@ -1,7 +1,6 @@
 import ArrowRightUpAltIcon from '@/material-icons/400-24px/arrow_right_up_red?.svg?react';
 import { Icon } from 'mastodon/components/icon';
-import channelOrgImage from '../../images/wide_white_channel_logo.svg';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 interface Channel {
   title: string;

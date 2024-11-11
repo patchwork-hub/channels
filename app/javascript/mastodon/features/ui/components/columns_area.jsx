@@ -222,7 +222,9 @@ export default class ColumnsArea extends ImmutablePureComponent {
                   </div>
 
                   <div className='columns-area__top-nav__explore-channels'>
-                    <button>Explore channels</button>
+                    <Link to='/explore-channels'>
+                      <button>Explore channels</button>
+                    </Link>
                   </div>
                 </nav>
               </div>
