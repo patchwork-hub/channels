@@ -5,6 +5,7 @@ import WebsiteIcon from '@/material-icons/400-24px/website_icon.svg?react';
 import RssFeedIcon from '@/material-icons/400-24px/rss_feed.svg?react';
 import ButterflyIcon from '@/material-icons/400-24px/butterfly.svg?react';
 import ThreadIcon from '@/material-icons/400-24px/thread.svg?react';
+import Mastodon from '@/material-icons/400-24px/mastodon.svg?react';
 
 export const icons = {
     "pen":PenIcon,
@@ -13,5 +14,6 @@ export const icons = {
     "website":WebsiteIcon,
     "rss-feed":RssFeedIcon,
     "bluesky":ButterflyIcon,
-    "thread":ThreadIcon
+    "thread":ThreadIcon,
+    "mastodon":Mastodon,
 }
