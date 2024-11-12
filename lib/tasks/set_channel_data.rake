@@ -7,7 +7,7 @@ namespace :db do
       server_rules = JSON.parse(ENV.fetch('RULES', '{}'))
       information = JSON.parse(ENV.fetch('INFORMATION', '{}'))
       site_contact_email = ENV.fetch('SITE_CONTACT_EMAIL', nil)
-      content_type = ENV.fetch('CONTENT_TYPE', nil)
+      channel_type = ENV.fetch('CHANNEL_TYPE', nil)
 
       server_rules.each_value do |rule|
         Rule.find_or_create_by(text: rule) do |r|
@@ -32,7 +32,7 @@ namespace :db do
       setting.value = owner_account&.username
       setting.save
 
-      is_lock = content_type == 'group_channel'
+      is_lock = channel_type == 'group_channel'
       Chewy.strategy(:atomic) do
         owner_account.update(locked: is_lock)
       end
