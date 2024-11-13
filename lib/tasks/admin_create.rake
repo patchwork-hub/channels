@@ -31,7 +31,7 @@ namespace :admin do
   def create_account(account_name, display_name: nil)
     display_name ||= account_name
     account = Account.where(username: account_name).first_or_initialize(username: account_name, display_name: display_name)
-    account.save!(validate: false)
+    account.save(validate: false)
     account
   end
 
