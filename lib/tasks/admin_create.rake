@@ -14,7 +14,7 @@ namespace :admin do
 
     admin = create_account(account_name)
 
-    account_email = "#{subdomain}-admin@#{domain}"
+    account_email = "#{subdomain}_admin@#{domain}"
     password = "#{subdomain}-Channel@uomu82sl18s82"
 
     create_user(account_email, password, admin, "Owner")
