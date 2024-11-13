@@ -65,7 +65,7 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
       
   deploy-channel:
-    name: Deploy to All Channel Server
+    name: Deploy to Main Channel Container
     runs-on: ubuntu-latest
     needs: Build
     steps:
