@@ -19,10 +19,12 @@ namespace :admin do
 
     create_user(account_email, password, admin, "Owner")
 
-    admins = JSON.parse(ENV.fetch('ADMINS', {}))
-    admins.each do |admin|
-      account = create_account(admin['username'], display_name: admin['display_name'])
-      create_user(admin['email'], admin['password'], account, "Admin")
+    admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
+    admins.each_value do |admin|
+      if admin['username'].to_s.strip != ''
+        account = create_account(admin['username'], display_name: admin['display_name'])
+        create_user(admin['email'], admin['password'], account, "Admin")
+      end
     end
 
     p "Finished Admin Creation"
@@ -43,6 +45,7 @@ namespace :admin do
       confirmed_at: Time.now.utc,
       role: UserRole.find_by(name: role_name),
       account: account,
+      agreement: true,
       approved: true
     )
     user.save!
