@@ -83,7 +83,9 @@ const Navigations = () => {
         </ul>
 
         <p className='powered-by'>Powered by</p>
-        <img src={channelOrgImage} alt='channel org' />
+        <a href='https://home.channel.org/' target='_blank'>
+          <img src={channelOrgImage} alt='channel org' />
+        </a>
       </footer>
     </aside>
   );
