@@ -8,7 +8,7 @@ namespace :admin do
     domain = ENV['WEB_DOMAIN'] || Rails.configuration.x.local_domain
     domain = domain.gsub(/:\d+$/, '')
 
-    subdomain = domain.split('.').first
+    subdomain = domain.split('.').first.underscore
     domain = domain.split('.').values_at(1, 2).join('.')
 
     channel_account = "@#{subdomain}@#{domain}"
