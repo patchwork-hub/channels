@@ -2954,7 +2954,7 @@ $ui-header-logo-wordmark-width: 99px;
 }
 
 .columns-area--mobile {
-  position: relative;
+  position:relative;
   flex-direction: column;
   width: 100%;
   height: 100%;
@@ -11059,17 +11059,6 @@ noscript {
 }
 
 /* Sidebar styles */
-.sidebar {
-  position: relative;
-}
-.footer_logo {
-  position: absolute;
-  left: 0;
-  bottom: 1rem;
-  a {
-    cursor: pointer;
-  }
-}
 .nav-header,
 .right-banner-logo {
   background: linear-gradient(180deg, #f8f8ff 10%, #babaf8 100%);
@@ -11227,3 +11216,15 @@ noscript {
   color: #ffffffb3;
   margin-block-end: 12px;
 }
+// .column-link_feed_badge {
+//   position: absolute;
+//   display: inline-block;
+//   border-radius: 5px;
+//   font-size: 12px;
+//   line-height: 19px;
+//   font-weight: 500;
+//   background: #ff3c26;
+//   padding: 5px 5px;
+//   top: 11px;
+//   left: 30px;
+// }
