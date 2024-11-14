@@ -7,6 +7,14 @@ GIT
       hkdf (~> 0.2)
       jwt (~> 2.0)
 
+GIT
+  remote: https://github.com/patchwork-hub/content_filters
+  revision: 404c5b7225978815b19011de62f442b0cf8f3473
+  branch: fitler_refactor
+  specs:
+    content_filters (0.1.0)
+      rails (>= 7.1.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -994,6 +1002,7 @@ DEPENDENCIES
   color_diff (~> 0.1)
   concurrent-ruby
   connection_pool
+  content_filters!
   csv (~> 3.2)
   database_cleaner-active_record
   debug (~> 1.8)
