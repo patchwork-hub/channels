@@ -49,6 +49,7 @@ namespace :admin do
       approved: true
     )
     user.save!
+    user.approve!
 
     Rails.logger.info "Created user #{user.email} successfully"
   end
