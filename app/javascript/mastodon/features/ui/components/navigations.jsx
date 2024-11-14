@@ -25,14 +25,11 @@ const messages = defineMessages({
 
 const Navigations = () => {
   const intl = useIntl();
-  const navItems =
-    custom_links && typeof custom_links === 'string'
-      ? JSON.parse(custom_links)
-      : custom_links;
+  const navItems = custom_links && typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
 
   return (
     <aside className='navigation-panel sidebar'>
-      <div className='navigation-panel__logo' style={{ paddingInline: 16 }}>
+      <div className='navigation-panel__logo' style={{ paddingInline:16 }}>
         <Link to='/' className='nav-header'>
           {channel_display_name}
         </Link>
@@ -47,19 +44,20 @@ const Navigations = () => {
           activeIconComponent={FeedIcon}
           text={intl.formatMessage(messages.feed)}
         />
-        {Object.values(navItems).map((it, index) => (
-          <ColumnLink
-            key={index}
-            badge={true}
-            transparent
-            href={it.url}
-            icon={it.icon}
-            target='_blank'
-            iconComponent={icons[it.icon]}
-            activeIconComponent={icons[it.icon]}
-            text={it.name}
-          />
-        ))}
+        {
+        Object.values(navItems).map((it,index)=>(
+            <ColumnLink
+                  key={index}
+                  badge={true}
+                  transparent
+                  href={it.url}
+                  icon={it.icon}
+                  target='_blank'
+                  iconComponent={icons[it.icon]}
+                  activeIconComponent={icons[it.icon]}
+                  text={it.name}
+                />
+          ))}
       </div>
 
       <footer className='footer'>
@@ -83,13 +81,10 @@ const Navigations = () => {
             </a>
           </li>
         </ul>
-      </footer>
-      <div className='footer_logo'>
+
         <p className='powered-by'>Powered by</p>
-        <a href='https://home.channel.org/' target='_blank'>
-          <img src={channelOrgImage} alt='channel org' />
-        </a>
-      </div>
+        <img src={channelOrgImage} alt='channel org' />
+      </footer>
     </aside>
   );
 };
