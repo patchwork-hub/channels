@@ -281,7 +281,9 @@ export default class ColumnsArea extends ImmutablePureComponent {
                       </a>
                     </li>
                   </ul>
-                  <img src={Logo} className='columns-area__footer-logo' alt='logo' />
+                  <a href='https://home.channel.org/' target='_blank'>
+                    <img src={Logo} className='columns-area__footer-logo' alt='logo' />
+                  </a>
                 </footer>
               </div>
               <main className='columns-area__main'>
