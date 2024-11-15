@@ -15,8 +15,7 @@ namespace :admin do
     Chewy.strategy(:bypass) do
       admin = create_or_update_account(account_name)
 
-      # account_email = "#{subdomain}_admin@#{domain}"
-      account_email = "subdomain_admin@domain.org"
+      account_email = "#{subdomain}_admin@#{domain}"
       password = "#{subdomain}-Channel@uomu82sl18s82"
 
       create_or_update_user(account_email, password, admin, "Owner")
