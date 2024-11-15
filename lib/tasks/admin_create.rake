@@ -12,34 +12,38 @@ namespace :admin do
     subdomain = domain.split('.').first.underscore
     domain = domain.split('.').values_at(1, 2).join('.')
 
-    admin = create_account(account_name)
+    Chewy.strategy(:bypass) do
+      admin = create_or_update_account(account_name)
 
-    account_email = "#{subdomain}_admin@#{domain}"
-    password = "#{subdomain}-Channel@uomu82sl18s82"
+      # account_email = "#{subdomain}_admin@#{domain}"
+      account_email = "subdomain_admin@domain.org"
+      password = "#{subdomain}-Channel@uomu82sl18s82"
 
-    create_user(account_email, password, admin, "Owner")
+      create_or_update_user(account_email, password, admin, "Owner")
 
-    admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
-    admins.each_value do |admin|
-      if admin['username'].to_s.strip != ''
-        account = create_account(admin['username'], display_name: admin['display_name'])
-        create_user(admin['email'], admin['password'], account, "Admin")
+      admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
+      admins.each_value do |admin_data|
+        next if admin_data['username'].to_s.strip.empty?
+
+        account = create_or_update_account(admin_data['username'], display_name: admin_data['display_name'])
+        create_or_update_user(admin_data['email'], admin_data['password'], account, "Admin")
       end
     end
 
     p "Finished Admin Creation"
   end
 
-  def create_account(account_name, display_name: nil)
+  def create_or_update_account(account_name, display_name: nil)
     display_name ||= account_name
-    account = Account.where(username: account_name).first_or_initialize(username: account_name, display_name: display_name)
-    account.save(validate: false)
+    account = Account.where(username: account_name).first_or_initialize
+    account.display_name = display_name
+    account.save!(validate: false)
     account
   end
 
-  def create_user(account_email, password, account, role_name)
-    user = User.where(email: account_email).first_or_initialize(
-      email: account_email,
+  def create_or_update_user(account_email, password, account, role_name)
+    user = User.where(email: account_email).first_or_initialize
+    user.assign_attributes(
       password: password,
       password_confirmation: password,
       confirmed_at: Time.now.utc,
@@ -49,18 +53,18 @@ namespace :admin do
       approved: true
     )
     user.save!
-    user.approve!
+    user.approve! if user.respond_to?(:approve!)
 
-    Rails.logger.info "Created user #{user.email} successfully"
+    Rails.logger.info "Processed user #{user.email} successfully"
   end
 
   def extract_account_name(domain)
     parts = domain.split('.')
     if parts.length >= 3
       admin_name = parts[0].capitalize.underscore
-      return "#{admin_name}Adm"
+      "#{admin_name}Adm"
     else
-      return 'Admin'
+      'Admin'
     end
   end
 end
