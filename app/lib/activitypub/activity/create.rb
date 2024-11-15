@@ -62,7 +62,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     end
 
     # Channel admin reblog related sub-channles service
-    ReblogChannelsService.new.call(@status) if ENV.fetch('MAIN_CHANNEL', nil) != 'false' && ENV.fetch('MAIN_CHANNEL', nil) != nil
+    # ReblogChannelsService.new.call(@status) if ENV.fetch('MAIN_CHANNEL', nil) != 'false' && ENV.fetch('MAIN_CHANNEL', nil) != nil
 
     @status
   end
