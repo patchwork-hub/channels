@@ -11,7 +11,7 @@ namespace :admin do
     subdomain = domain.split('.').first.underscore
     domain = domain.split('.').values_at(1, 2).join('.')
 
-    channel_account = "@#{subdomain}@#{domain}"
+    channel_account = "@#{subdomain}_channel@#{domain}"
 
     owner_role = UserRole.find_by(name: 'Owner')
     owner_user = User.find_by(role: owner_role)

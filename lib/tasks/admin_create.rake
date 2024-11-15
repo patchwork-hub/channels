@@ -9,7 +9,7 @@ namespace :admin do
 
     account_name = extract_account_name(domain)
 
-    subdomain = domain.split('.').first
+    subdomain = domain.split('.').first.underscore
     domain = domain.split('.').values_at(1, 2).join('.')
 
     admin = create_account(account_name)
@@ -57,7 +57,7 @@ namespace :admin do
   def extract_account_name(domain)
     parts = domain.split('.')
     if parts.length >= 3
-      admin_name = parts[0].capitalize
+      admin_name = parts[0].capitalize.underscore
       return "#{admin_name}Adm"
     else
       return 'Admin'
