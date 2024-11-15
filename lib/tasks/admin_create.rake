@@ -41,7 +41,7 @@ namespace :admin do
       account.username = account_name
       account.save(validate: false)
     else
-      account.update!(display_name: display_name)
+      account.update(display_name: display_name)
     end
 
     account
@@ -67,7 +67,7 @@ namespace :admin do
   def extract_account_name(domain)
     parts = domain.split('.')
     if parts.length >= 3
-      admin_name = parts[0].capitalize.underscore
+      admin_name = parts[0].capitalize
       "#{admin_name}Adm"
     else
       'Admin'
