@@ -35,8 +35,15 @@ namespace :admin do
   def create_or_update_account(account_name, display_name: nil)
     display_name ||= account_name
     account = Account.where(username: account_name).first_or_initialize
-    account.display_name = display_name
-    account.save!(validate: false)
+
+    if account.new_record?
+      account.display_name = display_name
+      account.username = account_name
+      account.save!(validate: false)
+    else
+      account.update!(display_name: display_name)
+    end
+
     account
   end
 
