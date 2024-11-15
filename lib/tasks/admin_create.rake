@@ -39,7 +39,7 @@ namespace :admin do
     if account.new_record?
       account.display_name = display_name
       account.username = account_name
-      account.save!(validate: false)
+      account.save(validate: false)
     else
       account.update!(display_name: display_name)
     end
