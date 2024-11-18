@@ -43,7 +43,7 @@ class ReblogService < BaseService
   def create_notification(reblog)
     reblogged_status = reblog.reblog
 
-    LocalNotificationWorker.perform_async(reblogged_status.account_id, reblog.id, reblog.class.name, 'reblog') if reblogged_status.account.local?
+    LocalNotificationWorker.perform_async(reblogged_status.account_id, reblog.id, reblog.class.name, 'reblog') if reblogged_status.account.local? && !check_channel_admin?(reblogged_status)
   end
 
   def increment_statistics
@@ -52,5 +52,10 @@ class ReblogService < BaseService
 
   def build_json(reblog)
     Oj.dump(serialize_payload(ActivityPub::ActivityPresenter.from_status(reblog), ActivityPub::ActivitySerializer, signer: reblog.account))
+  end
+
+  def check_channel_admin?(reblogged_status)
+    channel_admins = User.joins(:role).where(user_roles: { name: 'community-admin' }).pluck(:account_id)
+    channel_admins.include?(reblogged_status.account&.id)
   end
 end
