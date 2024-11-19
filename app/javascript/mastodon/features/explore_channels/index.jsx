@@ -11,7 +11,7 @@ const ExploreChannels = () => {
       <div className='channels__header'>
         <h2 className='title'>Explore channels</h2>
         <div className='text'>
-          Explore the power of Channel.org through our five demo channels
+          Explore the power of Channel.org through our demo channels
         </div>
       </div>
       <div className='channels__list'>
