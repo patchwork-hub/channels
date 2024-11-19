@@ -15,10 +15,9 @@ namespace :db do
         end
       end
 
-      information.each_value do |info|
-        formatted_text = YAML.dump(info['text']).strip
-        Setting.create(var: 'site_extended_description', value: info['text']) unless Setting.where(var: 'site_extended_description', value: formatted_text).exists?
-      end
+      Setting.where(var: 'site_extended_description').delete_all
+      formatted_info = information.values.map { |info| info['text'] }.join("\n")
+      Setting.create(var: 'site_extended_description', value: formatted_info)
 
       setting = Setting.find_or_initialize_by(var: 'site_contact_email')
       setting.value = site_contact_email
