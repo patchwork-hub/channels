@@ -17,6 +17,7 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
   def inboxes
     @inboxes ||= StatusReachFinder.new(@status).inboxes
     Rails.logger.info "ActivityPub::DistributionWorker************inboxes:#{@inboxes}"
+    @inboxes.delete('https://mastodon.social/inbox') unless @inboxes.empty?
     @inboxes
   end
 
