@@ -10,20 +10,20 @@ class ReblogChannelsService < BaseService
       next unless username
 
       # Eg: breaking_news_channel => breaking-news
-      community = Community.find_by(slug: username.sub('_channel', '').dasherize)
+      community = get_community(username)
 
-      channel_type = community&.content_type&.channel_type
+      ReblogChannelsWorker.perform_async(@status.id, admin_account.id) if community&.content_type&.custom_channel? && sharable_custom_channel?(community, admin_account)
+    end
 
-      case channel_type
-      when 'broadcast_channel'
-        ReblogChannelsWorker.perform_async(@status.id, admin_account.id) unless @status.reply?
-      when 'group_channel'
-        ReblogChannelsWorker.perform_async(@status.id, admin_account.id) if @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
-      when 'custom_channel'
-        ReblogChannelsWorker.perform_async(@status.id, admin_account.id) if sharable_custom_channel?(community, admin_account)
-      else
-        return false
-      end
+    community_admins = Account.where(id: User.joins(:role).where(user_roles: { name: 'community-admin' }).select(:account_id))
+    community_admins.each do |admin_account|
+      username = admin_account&.username
+      next unless username
+
+      # Eg: breaking_news_channel => breaking-news
+      community = get_community(username)
+
+      ReblogChannelsWorker.perform_async(@status.id, admin_account.id) if community&.content_type&.group_channel? && @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
     end
   end
 
@@ -37,11 +37,10 @@ class ReblogChannelsService < BaseService
     return false if all_post_types_excluded?(community_post_type)
 
     is_tag_exists = tag_exists?(community_hashtags)
-    is_mentioned = @status.mentioned_account?(admin_account)
 
     return false if post_type_rejected?(community_post_type)
 
-    evaluate_custom_condition(community_post_type, is_tag_exists, is_mentioned)
+    evaluate_custom_condition(community_post_type, is_tag_exists)
   end
 
   def fetch_community_post_type(community)
@@ -63,22 +62,26 @@ class ReblogChannelsService < BaseService
   def post_type_rejected?(community_post_type)
     case @status
     when @status.reply?
-      community_post_type.replies?
+      !community_post_type.replies?
     when @status.reblog?
-      community_post_type.reposts?
+      !community_post_type.reposts?
     else
-      community_post_type.posts?
+      !community_post_type.posts?
     end
   end
 
-  def evaluate_custom_condition(community_post_type, is_tag_exists, is_mentioned)
+  def evaluate_custom_condition(community_post_type, is_tag_exists)
     case community_post_type&.custom_condition
     when 'or_condition'
-      is_tag_exists || is_mentioned
+      true
     when 'and_condition'
-      is_tag_exists && is_mentioned
+      is_tag_exists
     else
       false
     end
+  end
+
+  def get_community(username)
+    Community.find_by(slug: username.sub('_channel', '').dasherize)
   end
 end
