@@ -192,6 +192,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
 
     const navItems = custom_links && typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
 
+    const subdomain = window.location.hostname.split('.')[0];
     if (singleColumn) {
       return (
         <div className='columns-area__panels'>
@@ -217,7 +218,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
                       />
                     </button>
                     <Link to='/'>
-                      {channel_display_name}
+                      {(subdomain==='news') ? <img width='60px' src='./temp-images/newsmast.png' alt='news logo' />:subdomain==='informationtechnology'?<img width='150px' alt='information technology logo' src='./temp-images/binarylab.png' />:channel_display_name}
                     </Link>
                   </div>
 
