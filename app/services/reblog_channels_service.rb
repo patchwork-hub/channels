@@ -81,11 +81,11 @@ class ReblogChannelsService < BaseService
   def post_type_rejected?(community_post_type)
     case @status
     when @status.reply?
-      !community_post_type.replies?
+      community_post_type.replies?
     when @status.reblog?
-      !community_post_type.reposts?
+      community_post_type.reposts?
     else
-      !community_post_type.posts?
+      community_post_type.posts?
     end
   end
 
