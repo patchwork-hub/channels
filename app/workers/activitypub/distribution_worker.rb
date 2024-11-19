@@ -16,10 +16,14 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
 
   def inboxes
     @inboxes ||= StatusReachFinder.new(@status).inboxes
+    Rails.logger.info "ActivityPub::DistributionWorker************inboxes:#{@inboxes}"
+    @inboxes
   end
 
   def payload
     @payload ||= Oj.dump(serialize_payload(activity, ActivityPub::ActivitySerializer, signer: @account))
+    Rails.logger.info "ActivityPub::DistributionWorker************@payload:#{@payload}"
+    @payload
   end
 
   def activity
