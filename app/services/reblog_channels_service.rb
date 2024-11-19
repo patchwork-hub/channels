@@ -30,18 +30,36 @@ class ReblogChannelsService < BaseService
   private
 
   def sharable_custom_channel?(community, admin_account)
+    logger.info "Evaluating if community #{community.id} is sharable for admin account #{admin_account.id}"
+
     community_post_type = fetch_community_post_type(community)
-    return false unless community_post_type
+    unless community_post_type
+      logger.warn "No community post type found for community #{community.id}"
+      return false
+    end
+    logger.info "Fetched community post type: #{community_post_type}"
 
     community_hashtags = fetch_community_hashtags(community)
-    return false if all_post_types_excluded?(community_post_type)
+    logger.info "Fetched community hashtags: #{community_hashtags}"
+
+    if all_post_types_excluded?(community_post_type)
+      logger.warn "All post types are excluded for community #{community.id}"
+      return false
+    end
 
     is_tag_exists = tag_exists?(community_hashtags)
+    logger.info "Tag existence check for community #{community.id}: #{is_tag_exists}"
 
-    return false if post_type_rejected?(community_post_type)
+    if post_type_rejected?(community_post_type)
+      logger.warn "Post type rejected for community #{community.id}"
+      return false
+    end
 
-    evaluate_custom_condition(community_post_type, is_tag_exists)
+    result = evaluate_custom_condition(community_post_type, is_tag_exists)
+    logger.info "Custom condition evaluation result for community #{community.id}: #{result}"
+    result
   end
+
 
   def fetch_community_post_type(community)
     community&.community_post_types&.last
