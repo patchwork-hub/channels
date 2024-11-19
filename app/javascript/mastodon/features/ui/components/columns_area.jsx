@@ -218,7 +218,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
                       />
                     </button>
                     <Link to='/'>
-                      {(subdomain==='news') ? <img width='120px' src='./temp-images/newsmast.png' alt='news logo' />:subdomain==='informationtechnology'?<img width='150px' alt='information technology logo' src='./temp-images/binarylab.png' />:channel_display_name}
+                      {(subdomain==='news') ? <img width='120px' src='./temp-images/newsmast.png' alt='news logo' />:subdomain==='informationtechnology'?<img width='120px' alt='information technology logo' src='./temp-images/binarylab.png' />:channel_display_name}
                     </Link>
                   </div>
 
