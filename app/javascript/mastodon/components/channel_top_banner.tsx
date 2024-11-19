@@ -9,7 +9,7 @@ const ChannelTopBanner:React.FC = ()=>{
             padding:20,
             width:'100%',
             aspectRatio:'1.96',
-            background:`linear-gradient(180deg, rgba(43, 43, 43, 0.00) 0%, rgba(37, 37, 37, 0.60) 56.93%), url(${header_image}) lightgray 50% / cover no-repeat`
+            background:`white, url(${header_image}) lightgray 50% / cover no-repeat`
         }}> </div>
     )
 }
