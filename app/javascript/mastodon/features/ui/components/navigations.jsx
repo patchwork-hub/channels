@@ -27,11 +27,12 @@ const Navigations = () => {
   const intl = useIntl();
   const navItems = custom_links && typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
 
+  const subdomain = window.location.hostname.split('.')[0];
   return (
     <aside className='navigation-panel sidebar'>
       <div className='navigation-panel__logo' style={{ paddingInline:16 }}>
         <Link to='/' className='nav-header'>
-          {channel_display_name}
+          {(subdomain==='news') ? <img src='./temp-images/newsmast.png' alt='news logo' />:subdomain==='informationtechnology'?<img alt='information technology logo' src='./temp-images/binarylab.png' />:channel_display_name}
         </Link>
       </div>
       <div className='nav-links'>
