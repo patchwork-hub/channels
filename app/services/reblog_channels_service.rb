@@ -49,7 +49,7 @@ class ReblogChannelsService < BaseService
     end
 
     is_tag_exists = tag_exists?(community_hashtags)
-    logger.info "Tag existence check for community #{community.id}: #{is_tag_exists}"
+    Rails.logger.info "Tag existence check for community #{community.id}: #{is_tag_exists}"
 
     if post_type_rejected?(community_post_type)
       Rails.logger.warn "Post type rejected for community #{community.id}"
