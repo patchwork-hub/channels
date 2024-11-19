@@ -56,7 +56,8 @@ class ReblogChannelsService < BaseService
       return false
     end
 
-    result = evaluate_custom_condition(community_post_type, is_tag_exists)
+    custom_content_type = fetch_custom_content_type(community)
+    result = evaluate_custom_condition(custom_content_type, is_tag_exists)
     Rails.logger.info "Custom condition evaluation result for community #{community.id}: #{result}"
     result
   end
@@ -68,6 +69,10 @@ class ReblogChannelsService < BaseService
 
   def fetch_community_hashtags(community)
     community&.community_hashtags&.pluck(:hashtag)&.map { |tag| tag.gsub('#', '') }
+  end
+
+  def fetch_custom_content_type(community)
+    community&.content_type
   end
 
   def tag_exists?(community_hashtags)
@@ -89,11 +94,10 @@ class ReblogChannelsService < BaseService
     end
   end
 
-  def evaluate_custom_condition(community_post_type, is_tag_exists)
-    case community_post_type&.custom_condition
-    when 'or_condition'
+  def evaluate_custom_condition(custom_content_type, is_tag_exists)
+    if custom_content_type&.or_condition?
       true
-    when 'and_condition'
+    elsif custom_content_type&.and_condition?
       is_tag_exists
     else
       false
