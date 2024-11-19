@@ -10959,7 +10959,7 @@ noscript {
   object-fit: cover;
 }
 .channel-header {
-  background: linear-gradient(180deg, #f8f8ff 10%, #babaf8 100%);
+  background: white;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -11061,7 +11061,7 @@ noscript {
 /* Sidebar styles */
 .nav-header,
 .right-banner-logo {
-  background: linear-gradient(180deg, #f8f8ff 10%, #babaf8 100%);
+  background: white;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -11120,7 +11120,7 @@ noscript {
   .channels__header {
     padding: 30px 20px;
     .title {
-      background: linear-gradient(180deg, #f8f8ff 10%, #babaf8 100%);
+      background: white;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -11134,7 +11134,7 @@ noscript {
     .text {
       font-weight: 400;
       font-size: 16px;
-      color: #d2d2ff;
+      color: white;
     }
   }
 }
