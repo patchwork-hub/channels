@@ -6,6 +6,7 @@ class ReblogChannelsService < BaseService
     community_admin_infos = User.joins(:role).where(user_roles: { name: 'community-admin' })
 
     @status.account.followers.local.channel_admins(community_admin_infos.pluck(:account_id)).each do |admin_account|
+      Rails.logger.info "Checking Custom Channel"
       username = admin_account&.username
       next unless username
 
@@ -30,20 +31,20 @@ class ReblogChannelsService < BaseService
   private
 
   def sharable_custom_channel?(community, admin_account)
-    logger.info "Evaluating if community #{community.id} is sharable for admin account #{admin_account.id}"
+    Rails.logger.info "Evaluating if community #{community.id} is sharable for admin account #{admin_account.id}"
 
     community_post_type = fetch_community_post_type(community)
     unless community_post_type
-      logger.warn "No community post type found for community #{community.id}"
+      Rails.logger.warn "No community post type found for community #{community.id}"
       return false
     end
-    logger.info "Fetched community post type: #{community_post_type}"
+    Rails.logger.info "Fetched community post type: #{community_post_type}"
 
     community_hashtags = fetch_community_hashtags(community)
-    logger.info "Fetched community hashtags: #{community_hashtags}"
+    Rails.logger.info "Fetched community hashtags: #{community_hashtags}"
 
     if all_post_types_excluded?(community_post_type)
-      logger.warn "All post types are excluded for community #{community.id}"
+      Rails.logger.warn "All post types are excluded for community #{community.id}"
       return false
     end
 
@@ -51,12 +52,12 @@ class ReblogChannelsService < BaseService
     logger.info "Tag existence check for community #{community.id}: #{is_tag_exists}"
 
     if post_type_rejected?(community_post_type)
-      logger.warn "Post type rejected for community #{community.id}"
+      Rails.logger.warn "Post type rejected for community #{community.id}"
       return false
     end
 
     result = evaluate_custom_condition(community_post_type, is_tag_exists)
-    logger.info "Custom condition evaluation result for community #{community.id}: #{result}"
+    Rails.logger.info "Custom condition evaluation result for community #{community.id}: #{result}"
     result
   end
 
