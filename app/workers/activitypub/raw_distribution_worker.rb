@@ -40,8 +40,6 @@ class ActivityPub::RawDistributionWorker
 
   def inboxes
     @inboxes ||= @account.followers.inboxes - @exclude_inboxes
-    Rails.logger.info "************inboxes:#{@inboxes}"
-    @inboxes
   end
 
   def options
