@@ -13,7 +13,10 @@ class ReblogChannelsService < BaseService
       # Eg: breaking_news_channel => breaking-news
       community = get_community(username)
 
-      ReblogChannelsWorker.perform_async(@status.id, admin_account.id) if community&.content_type&.custom_channel? && sharable_custom_channel?(community, admin_account)
+      is_status_ban = status_banned?(@status.id, community.id)
+      if community&.content_type&.custom_channel? && sharable_custom_channel?(community, admin_account) && !is_status_ban
+        ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
+      end
     end
 
     community_admins = Account.where(id: User.joins(:role).where(user_roles: { name: 'community-admin' }).select(:account_id))
@@ -24,7 +27,10 @@ class ReblogChannelsService < BaseService
       # Eg: breaking_news_channel => breaking-news
       community = get_community(username)
 
-      ReblogChannelsWorker.perform_async(@status.id, admin_account.id) if community&.content_type&.group_channel? && @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
+      is_status_ban = status_banned?(@status.id, community.id)
+      if community&.content_type&.group_channel? && @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id) && !is_status_ban
+        ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
+      end
     end
   end
 
@@ -106,5 +112,9 @@ class ReblogChannelsService < BaseService
 
   def get_community(username)
     Community.find_by(slug: username.sub('_channel', '').dasherize)
+  end
+
+  def status_banned?(status_id, community_id)
+    ContentFilters::BanStatusService.new.community_ban_status(status_id, community_id)
   end
 end
