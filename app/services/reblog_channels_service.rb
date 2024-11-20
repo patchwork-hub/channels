@@ -13,11 +13,7 @@ class ReblogChannelsService < BaseService
       # Eg: breaking_news_channel => breaking-news
       community = get_community(username)
 
-      is_status_ban = status_banned?(@status.id, community.id)
-      Rails.logger.info "******BAN_STATUS****** #{@status.text}"
-      Rails.logger.info "******IS_STATUS_BAN****** #{is_status_ban}"
-
-      if community&.content_type&.custom_channel? && sharable_custom_channel?(community, admin_account) && !is_status_ban
+      if community&.content_type&.custom_channel? && sharable_custom_channel?(community, admin_account) && !status_banned?(@status.id, community.id)
         ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
       end
     end
