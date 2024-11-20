@@ -117,6 +117,6 @@ class ReblogChannelsService < BaseService
   end
 
   def status_banned?(status_id, community_id)
-    ContentFilters::BanStatusService.new.community_ban_status(status_id, community_id)
+    ContentFilters::BanStatusService.new.check_and_ban_channel_status(status_id, community_id)
   end
 end
