@@ -212,6 +212,8 @@ group :development, :test do
 
   # RSpec runner for rails
   gem 'rspec-rails', '~> 6.0'
+
+  gem 'byebug'
 end
 
 group :production do

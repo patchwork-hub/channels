@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CustomMailer < ApplicationMailer
+class CustomPasswordsMailer < ApplicationMailer
   layout 'email'
   default from: %{Newsmast <#{ENV['SMTP_FROM_ADDRESS']}>}
 
