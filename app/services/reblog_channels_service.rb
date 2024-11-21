@@ -25,9 +25,10 @@ class ReblogChannelsService < BaseService
 
       # Eg: breaking_news_channel => breaking-news
       community = get_community(username)
-      Rails.logger.info "*****IS_GROUP_CHANNEL: #{community&.content_type&.group_channel?}*****"
-      Rails.logger.info "*****IS_STATUS_MENTION_ADMIN: #{@status.mentioned_account?(admin_account)}*****"
-      Rails.logger.info "*****IS_OWNER_FOLLOW_ADMIN: #{@status.account.follow_account?(admin_account.id)}*****"
+      Rails.logger.info "**************COMMUNITY_NAME: #{community&.name}"
+      Rails.logger.info "************IS_GROUP_CHANNEL: #{community&.content_type&.group_channel?}"
+      Rails.logger.info "*****IS_STATUS_MENTION_ADMIN: #{@status.mentioned_account?(admin_account)}"
+      Rails.logger.info "*******IS_OWNER_FOLLOW_ADMIN: #{@status.account.follow_account?(admin_account.id)}"
       if community&.content_type&.group_channel? && @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
         ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
       end
