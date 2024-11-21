@@ -6,13 +6,12 @@ class ReblogChannelsService < BaseService
     community_admin_infos = User.joins(:role).where(user_roles: { name: 'community-admin' })
 
     @status.account.followers.local.channel_admins(community_admin_infos.pluck(:account_id)).each do |admin_account|
-      Rails.logger.info "Checking Custom Channel"
+      Rails.logger.info "*****Checking Custom Channel*****"
       username = admin_account&.username
       next unless username
 
       # Eg: breaking_news_channel => breaking-news
       community = get_community(username)
-      Rails.logger.info "CUSTOM_CHANNEL_NAME: #{community.name}"
       if community&.content_type&.custom_channel? && sharable_custom_channel?(community, admin_account) && !status_banned?(@status.id, community.id)
         ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
       end
@@ -20,13 +19,12 @@ class ReblogChannelsService < BaseService
 
     community_admins = Account.where(id: User.joins(:role).where(user_roles: { name: 'community-admin' }).select(:account_id))
     community_admins.each do |admin_account|
-      Rails.logger.info "Checking Group Channel"
+      Rails.logger.info "*****Checking Group Channel*****"
       username = admin_account&.username
       next unless username
 
       # Eg: breaking_news_channel => breaking-news
       community = get_community(username)
-      Rails.logger.info "GROUP_CHANNEL_NAME: #{community.name}"
       if community&.content_type&.group_channel? && @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
         ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
       end
@@ -41,7 +39,7 @@ class ReblogChannelsService < BaseService
     community_post_type = fetch_community_post_type(community)
 
     if community_post_type.present?
-      Rails.logger.warn "No community post type found for community #{community.name}" unless community_post_type
+      Rails.logger.warn "No community post type found for community #{community&.name}" unless community_post_type
 
       Rails.logger.info "Fetched community post type: #{community_post_type}"
 
@@ -49,22 +47,22 @@ class ReblogChannelsService < BaseService
       Rails.logger.info "Fetched community hashtags: #{community_hashtags}"
 
       if all_post_types_excluded?(community_post_type)
-        Rails.logger.warn "All post types are excluded for community #{community.name}"
+        Rails.logger.warn "All post types are excluded for community #{community&.name}"
         return false
       end
 
       if post_type_rejected?(community_post_type)
-        Rails.logger.warn "Post type rejected for community #{community.name}"
+        Rails.logger.warn "Post type rejected for community #{community&.name}"
         return false
       end
     end
 
     is_tag_exists = tag_exists?(community_hashtags)
-    Rails.logger.info "Tag existence check for community #{community.name}: #{is_tag_exists}"
+    Rails.logger.info "Tag existence check for community #{community&.name}: #{is_tag_exists}"
 
     custom_content_type = fetch_custom_content_type(community)
     result = evaluate_custom_condition(custom_content_type, is_tag_exists)
-    Rails.logger.info "Custom condition evaluation result for community #{community.name}: #{result}"
+    Rails.logger.info "Custom condition evaluation result for community #{community&.name}: #{result}"
     result
   end
 
