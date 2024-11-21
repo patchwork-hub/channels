@@ -9,6 +9,7 @@ class ReblogRequestService < BaseService
     req = Net::HTTP::Post.new(url)
     req.content_type = 'application/json'
     req['Authorization'] = "Bearer #{access_token}"
+    req.body = { visibility: 'public' }.to_json
 
     response = Net::HTTP.start(url.host, url.port, use_ssl: url.scheme == 'https') do |http|
       http.request(req)
