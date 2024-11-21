@@ -40,25 +40,27 @@ class ReblogChannelsService < BaseService
 
     community_post_type = fetch_community_post_type(community)
 
-    Rails.logger.warn "No community post type found for community #{community.name}" unless community_post_type
+    if community_post_type.present?
+      Rails.logger.warn "No community post type found for community #{community.name}" unless community_post_type
 
-    Rails.logger.info "Fetched community post type: #{community_post_type}"
+      Rails.logger.info "Fetched community post type: #{community_post_type}"
 
-    community_hashtags = fetch_community_hashtags(community)
-    Rails.logger.info "Fetched community hashtags: #{community_hashtags}"
+      community_hashtags = fetch_community_hashtags(community)
+      Rails.logger.info "Fetched community hashtags: #{community_hashtags}"
 
-    if all_post_types_excluded?(community_post_type)
-      Rails.logger.warn "All post types are excluded for community #{community.name}"
-      return false
+      if all_post_types_excluded?(community_post_type)
+        Rails.logger.warn "All post types are excluded for community #{community.name}"
+        return false
+      end
+
+      if post_type_rejected?(community_post_type)
+        Rails.logger.warn "Post type rejected for community #{community.name}"
+        return false
+      end
     end
 
     is_tag_exists = tag_exists?(community_hashtags)
     Rails.logger.info "Tag existence check for community #{community.name}: #{is_tag_exists}"
-
-    if post_type_rejected?(community_post_type)
-      Rails.logger.warn "Post type rejected for community #{community.name}"
-      return false
-    end
 
     custom_content_type = fetch_custom_content_type(community)
     result = evaluate_custom_condition(custom_content_type, is_tag_exists)
