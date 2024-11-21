@@ -16,7 +16,7 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
 
   def inboxes
     @inboxes ||= StatusReachFinder.new(@status).inboxes
-    @inboxes.delete("https://#{@status.reblog.account&.domain}/inbox") unless @inboxes.empty? && @status.reblog.account&.domain.nil?
+    # @inboxes.delete("https://#{@status.reblog.account&.domain}/inbox") unless @inboxes.empty? && @status.reblog.account&.domain.nil?
     @inboxes
   end
 
