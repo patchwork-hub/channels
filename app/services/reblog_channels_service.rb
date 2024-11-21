@@ -25,10 +25,6 @@ class ReblogChannelsService < BaseService
 
       # Eg: breaking_news_channel => breaking-news
       community = get_community(username)
-      Rails.logger.info "**************COMMUNITY_NAME: #{community&.name}"
-      Rails.logger.info "************IS_GROUP_CHANNEL: #{community&.content_type&.group_channel?}"
-      Rails.logger.info "*****IS_STATUS_MENTION_ADMIN: #{@status.mentioned_account?(admin_account)}"
-      Rails.logger.info "*******IS_OWNER_FOLLOW_ADMIN: #{@status.account.follow_account?(admin_account.id)}"
       if community&.content_type&.group_channel? && @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
         ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
       end
@@ -47,9 +43,6 @@ class ReblogChannelsService < BaseService
 
       Rails.logger.info "Fetched community post type: #{community_post_type}"
 
-      community_hashtags = fetch_community_hashtags(community)
-      Rails.logger.info "Fetched community hashtags: #{community_hashtags}"
-
       if all_post_types_excluded?(community_post_type)
         Rails.logger.warn "All post types are excluded for community #{community&.name}"
         return false
@@ -60,6 +53,9 @@ class ReblogChannelsService < BaseService
         return false
       end
     end
+
+    community_hashtags = fetch_community_hashtags(community)
+    Rails.logger.info "Fetched community hashtags: #{community_hashtags}"
 
     is_tag_exists = tag_exists?(community_hashtags)
     Rails.logger.info "Tag existence check for community #{community&.name}: #{is_tag_exists}"
