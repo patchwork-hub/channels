@@ -21,10 +21,10 @@ class ReblogChannelsService < BaseService
       next unless username
 
       community = get_community(username)
-      if community&.content_type&.or_condition?
-        community&.content_type&.custom_channel?
+      if community&.content_type&.and_condition?
+        community&.content_type&.custom_channel? && tag_follower_admin_account_ids.include?(admin_account.id) && status_follower_admin_account_ids.include?(admin_account.id)
       else
-        community&.content_type&.custom_channel? && status_follower_admin_account_ids.include?(admin_account.id)
+        community&.content_type&.custom_channel?
       end
     end
 
