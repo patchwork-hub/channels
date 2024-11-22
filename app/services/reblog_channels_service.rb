@@ -16,31 +16,31 @@ class ReblogChannelsService < BaseService
 
     unique_admin_account_ids = (status_follower_admin_account_ids + tag_follower_admin_account_ids).uniq
 
-    unique_custom_channel_admins = Account.where(id: unique_admin_account_ids).select do |admin_account|
+    Account.where(id: unique_admin_account_ids).each do |admin_account|
       username = admin_account&.username
       next unless username
 
       community = get_community(username)
-      if community&.content_type&.and_condition?
-        community&.content_type&.custom_channel? && tag_follower_admin_account_ids.include?(admin_account.id) && status_follower_admin_account_ids.include?(admin_account.id)
-      else
-        community&.content_type&.custom_channel?
+      next unless community
+
+      content_type = community.content_type
+      next unless content_type&.custom_channel?
+
+      # Skip if the admin_account has muted the status account
+      next if Mute.exists?(account_id: admin_account.id, target_account_id: @status.account.id)
+
+      # Skip if `and_condition?` is true and admin_account is not in both follower lists
+      if content_type.and_condition?
+        next unless tag_follower_admin_account_ids.include?(admin_account.id) &&
+                    status_follower_admin_account_ids.include?(admin_account.id)
       end
-    end
 
-    Rails.logger.info "*****UNIQUE_CUSTOM_CHANNEL_ADMIN #{unique_custom_channel_admins}*****"
-    unique_custom_channel_admins.each do |admin_account|
-      Rails.logger.info "*****Checking Custom Channel (Unique Admin Accounts)*****"
-
-      community = get_community(admin_account.username)
-
-      if community && valid_post_type?(community, admin_account) && !status_banned?(@status.id, community.id)
+      if valid_post_type?(community, admin_account) && !status_banned?(@status.id, community.id)
         ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
       end
     end
 
     #Group Channel
-
     community_admins = Account.where(id: community_admin_account_ids)
 
     group_channel_admins = community_admins.select do |admin_account|
@@ -67,39 +67,28 @@ class ReblogChannelsService < BaseService
 
     community_post_type = fetch_community_post_type(community)
 
-    if community_post_type.present?
-      Rails.logger.warn "No community post type found for community #{community&.name}" unless community_post_type
-
-      Rails.logger.info "Fetched community post type: #{community_post_type}"
-
-      if all_post_types_excluded?(community_post_type)
-        Rails.logger.warn "All post types are excluded for community #{community&.name}"
-        return false
-      end
-
-      if post_type_rejected?(community_post_type)
-        Rails.logger.warn "Post type rejected for community #{community&.name}"
-        return false
-      end
-    else
-      true
+    unless community_post_type
+      Rails.logger.warn "No community post type found for community #{community&.name}"
+      return true
     end
+
+    Rails.logger.info "Fetched community post type: #{community_post_type}"
+
+    if all_post_types_excluded?(community_post_type)
+      Rails.logger.warn "All post types are excluded for community #{community&.name}"
+      return false
+    end
+
+    if post_type_rejected?(community_post_type)
+      Rails.logger.warn "Post type rejected for community #{community&.name}"
+      return false
+    end
+
+    true
   end
 
   def fetch_community_post_type(community)
     community&.community_post_types&.last
-  end
-
-  def fetch_community_hashtags(community)
-    community&.community_hashtags&.pluck(:hashtag)&.map { |tag| tag.gsub('#', '') }
-  end
-
-  def fetch_custom_content_type(community)
-    community&.content_type
-  end
-
-  def tag_exists?(community_hashtags)
-    @status&.tags.where(name: community_hashtags).exists?
   end
 
   def all_post_types_excluded?(community_post_type)
@@ -107,13 +96,10 @@ class ReblogChannelsService < BaseService
   end
 
   def post_type_rejected?(community_post_type)
-    case @status
-    when @status.reply?
-      community_post_type.replies?
-    when @status.reblog?
-      community_post_type.reposts?
-    else
-      community_post_type.posts?
+    case
+    when @status.reply? then community_post_type.replies?
+    when @status.reblog? then community_post_type.reposts?
+    else community_post_type.posts?
     end
   end
 
