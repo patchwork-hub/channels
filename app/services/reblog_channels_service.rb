@@ -82,8 +82,8 @@ class ReblogChannelsService < BaseService
         return false
       end
     end
+    true
   end
-
 
   def fetch_community_post_type(community)
     community&.community_post_types&.last
