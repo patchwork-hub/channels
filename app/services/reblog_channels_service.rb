@@ -5,16 +5,19 @@ class ReblogChannelsService < BaseService
     @status = status
     community_admin_infos = User.joins(:role).where(user_roles: { name: 'community-admin' })
 
-    @status.account.followers.local.channel_admins(community_admin_infos.pluck(:account_id)).each do |admin_account|
-      Rails.logger.info "*****Checking Custom Channel*****"
-      username = admin_account&.username
-      next unless username
+    community_admin_account_ids = community_admin_infos.pluck(:account_id)
 
-      # Eg: breaking_news_channel => breaking-news
-      community = get_community(username)
-      if community&.content_type&.custom_channel? && sharable_custom_channel?(community, admin_account) && !status_banned?(@status.id, community.id)
-        ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
-      end
+    status_follower_admin_account= @status.account.followers.local.channel_admins(community_admin_account_ids)
+    Rails.logger.info "*****STATUS_FOLLOWER_ADMIN_ACCOUNT #{status_follower_admin_account.inspect}*****"
+
+    tag_ids = @status.tags.ids
+    tag_follower_admin_account_ids = TagFollow.where(tag_id: tag_ids).pluck(:account_id)
+    Rails.logger.info "*****TAG_FOLLOWER_ADMIN_ACCOUNT #{tag_follower_admin_account_ids}*****"
+    unique_admin_account_ids = (status_follower_admin_account.pluck(:id) + tag_follower_admin_account_ids).uniq
+    Rails.logger.info "*****UNIQUE_FOLLOWER_ADMIN_ACCOUNT #{tunique_admin_account_ids}*****"
+    Account.where(id: unique_admin_account_ids).each do |admin_account|
+      Rails.logger.info "*****Checking Custom Channel (Unique Admin Accounts)*****"
+      process_custom_channel(@status, admin_account)
     end
 
     community_admins = Account.where(id: User.joins(:role).where(user_roles: { name: 'community-admin' }).select(:account_id))
@@ -23,7 +26,6 @@ class ReblogChannelsService < BaseService
       username = admin_account&.username
       next unless username
 
-      # Eg: breaking_news_channel => breaking-news
       community = get_community(username)
       if community&.content_type&.group_channel? && @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
         ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
@@ -32,6 +34,16 @@ class ReblogChannelsService < BaseService
   end
 
   private
+
+  def process_custom_channel(status, admin_account)
+    username = admin_account&.username
+    return unless username
+
+    community = get_community(username)
+    if community&.content_type&.custom_channel? && sharable_custom_channel?(community, admin_account) && !status_banned?(status.id, community.id)
+      ReblogChannelsWorker.perform_async(status.id, admin_account.id)
+    end
+  end
 
   def sharable_custom_channel?(community, admin_account)
     Rails.logger.info "Evaluating if community #{community&.name} is sharable for admin account #{admin_account&.username}"
@@ -109,6 +121,8 @@ class ReblogChannelsService < BaseService
   end
 
   def get_community(username)
+    # Eg: breaking_news_channel => breaking-news
+    # later we need to fix this logic, we will remove _channel from admin account
     Community.find_by(slug: username.sub('_channel', '').dasherize)
   end
 
