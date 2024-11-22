@@ -34,7 +34,7 @@ class ReblogChannelsService < BaseService
 
       community = get_community(admin_account.username)
 
-      if community && sharable_custom_channel?(community, admin_account) && !status_banned?(@status.id, community.id)
+      if community && valid_post_type?(community, admin_account) && !status_banned?(@status.id, community.id)
         ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
       end
     end
@@ -62,7 +62,7 @@ class ReblogChannelsService < BaseService
 
   private
 
-  def sharable_custom_channel?(community, admin_account)
+  def valid_post_type?(community, admin_account)
     Rails.logger.info "Evaluating if community #{community&.name} is sharable for admin account #{admin_account&.username}"
 
     community_post_type = fetch_community_post_type(community)
@@ -81,8 +81,9 @@ class ReblogChannelsService < BaseService
         Rails.logger.warn "Post type rejected for community #{community&.name}"
         return false
       end
+    else
+      true
     end
-    true
   end
 
   def fetch_community_post_type(community)
