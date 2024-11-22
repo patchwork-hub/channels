@@ -14,7 +14,7 @@ class ReblogChannelsService < BaseService
     tag_follower_admin_account_ids = TagFollow.where(tag_id: tag_ids).pluck(:account_id)
     Rails.logger.info "*****TAG_FOLLOWER_ADMIN_ACCOUNT #{tag_follower_admin_account_ids}*****"
     unique_admin_account_ids = (status_follower_admin_account.pluck(:id) + tag_follower_admin_account_ids).uniq
-    Rails.logger.info "*****UNIQUE_FOLLOWER_ADMIN_ACCOUNT #{tunique_admin_account_ids}*****"
+    Rails.logger.info "*****UNIQUE_FOLLOWER_ADMIN_ACCOUNT #{unique_admin_account_ids}*****"
     Account.where(id: unique_admin_account_ids).each do |admin_account|
       Rails.logger.info "*****Checking Custom Channel (Unique Admin Accounts)*****"
       process_custom_channel(@status, admin_account)
