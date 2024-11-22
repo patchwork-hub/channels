@@ -7,7 +7,7 @@ class ReblogChannelsService < BaseService
     community_admin_account_ids = community_admin_infos.pluck(:account_id)
 
     # Custom Channel
-    status_follower_admin_account_ids= @status.account.followers.local.channel_admins(community_admin_account_ids).pluck(:id)
+    status_follower_admin_account_ids = @status.account.followers.local.channel_admins(community_admin_account_ids).pluck(:id)
     Rails.logger.info "*****STATUS_FOLLOWER_ADMIN_ACCOUNT #{status_follower_admin_account_ids}*****"
 
     tag_ids = @status.tags.ids
@@ -21,7 +21,11 @@ class ReblogChannelsService < BaseService
       next unless username
 
       community = get_community(username)
-      community&.content_type&.custom_channel?
+      if community&.content_type&.or_condition?
+        community&.content_type&.custom_channel?
+      else
+        community&.content_type&.custom_channel? && status_follower_admin_account_ids.include?(admin_account.id)
+      end
     end
 
     Rails.logger.info "*****UNIQUE_CUSTOM_CHANNEL_ADMIN #{unique_custom_channel_admins}*****"
@@ -78,17 +82,6 @@ class ReblogChannelsService < BaseService
         return false
       end
     end
-
-    community_hashtags = fetch_community_hashtags(community)
-    Rails.logger.info "Fetched community hashtags: #{community_hashtags}"
-
-    is_tag_exists = tag_exists?(community_hashtags)
-    Rails.logger.info "Tag existence check for community #{community&.name}: #{is_tag_exists}"
-
-    custom_content_type = fetch_custom_content_type(community)
-    result = evaluate_custom_condition(custom_content_type, is_tag_exists)
-    Rails.logger.info "Custom condition evaluation result for community #{community&.name}: #{result}"
-    result
   end
 
 
@@ -120,16 +113,6 @@ class ReblogChannelsService < BaseService
       community_post_type.reposts?
     else
       community_post_type.posts?
-    end
-  end
-
-  def evaluate_custom_condition(custom_content_type, is_tag_exists)
-    if custom_content_type&.or_condition?
-      true
-    elsif custom_content_type&.and_condition?
-      is_tag_exists
-    else
-      false
     end
   end
 
