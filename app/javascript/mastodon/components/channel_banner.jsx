@@ -37,7 +37,7 @@ const ChannelBanner = () => {
                 <div className='channel__info'>
                   <p className='channel__info-detail'>
                     <span className='channel-title'>{channel.attributes.name}</span>
-                    <span className='channel-subtitle'>{channel.attributes.community_type.data !== null ? channel.attributes.community_type.data.attributes.name : ''}</span>
+                    <span className='channel-subtitle'>{channel.attributes.community_type?.data?.attributes?.name}</span>
                   </p>
                   <Icon
                     icon={ArrowRightUpAltIcon}
