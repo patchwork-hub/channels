@@ -11,7 +11,7 @@ const ExploreChannels = () => {
   const channels = useSelector(state => state.recommended_channels.get('items'));
 
   useEffect(()=>{
-    if(channels.length === 0){
+    if(channels.size === 0){
       dispatch(fetchChannels());
     }
   },[]);
