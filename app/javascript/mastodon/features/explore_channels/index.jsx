@@ -1,10 +1,20 @@
 import ArrowRightUpAltIcon from '@/material-icons/400-24px/arrow_right_up_red?.svg?react';
+import { fetchChannels } from 'mastodon/actions/channel_banner';
 import { Icon } from 'mastodon/components/icon';
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ExploreChannels = () => {
 
+  const dispatch = useDispatch();
+
   const channels = useSelector(state => state.recommended_channels.get('items'));
+
+  useEffect(()=>{
+    if(channels.length === 0){
+      dispatch(fetchChannels());
+    }
+  },[]);
 
   return (
     <div className='channels'>
