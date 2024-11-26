@@ -26,7 +26,7 @@ const ExploreChannels = () => {
       </div>
       <div className='channels__list'>
         {channels.map((channel, index) => (
-          <a key={index} target='_blank' href={'https://' + channel.attributes.domain_name}>
+          <a key={index} target='_blank' href={'https://' + channel.attributes.domain_name +'/public'}>
             <div className='card'>
               <img
                 src={channel.attributes.avatar_image_url}
