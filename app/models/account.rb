@@ -64,7 +64,7 @@ class Account < ApplicationRecord
   )
 
   BACKGROUND_REFRESH_INTERVAL = 1.week.freeze
-  DEFAULT_FIELDS_SIZE = 4
+  DEFAULT_FIELDS_SIZE = 9
   INSTANCE_ACTOR_ID = -99
 
   USERNAME_RE   = /[a-z0-9_]+([a-z0-9_.-]+[a-z0-9_]+)?/i

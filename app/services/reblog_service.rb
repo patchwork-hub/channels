@@ -32,8 +32,6 @@ class ReblogService < BaseService
     DistributionWorker.perform_async(reblog.id)
     ActivityPub::DistributionWorker.perform_async(reblog.id)
 
-    @enable_noti = options.fetch(:enable_noti, false)
-
     create_notification(reblog)
     increment_statistics
 
@@ -44,10 +42,8 @@ class ReblogService < BaseService
 
   def create_notification(reblog)
     reblogged_status = reblog.reblog
-    Rails.logger.info "--- Enable noti?: #{@enable_noti}"
-    Rails.logger.info "--- Is local?: #{reblogged_status.account.local?}"
 
-    LocalNotificationWorker.perform_async(reblogged_status.account_id, reblog.id, reblog.class.name, 'reblog') if reblogged_status.account.local? && @enable_noti
+    LocalNotificationWorker.perform_async(reblogged_status.account_id, reblog.id, reblog.class.name, 'reblog') if reblogged_status.account.local?
   end
 
   def increment_statistics

@@ -16,14 +16,12 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
 
   def inboxes
     @inboxes ||= StatusReachFinder.new(@status).inboxes
-    Rails.logger.info "ActivityPub::DistributionWorker************inboxes:#{@inboxes}"
+    @inboxes.delete("https://#{@status.reblog.account&.domain}/inbox") unless @inboxes.empty? && @status.reblog.account&.domain.nil?
     @inboxes
   end
 
   def payload
     @payload ||= Oj.dump(serialize_payload(activity, ActivityPub::ActivitySerializer, signer: @account))
-    Rails.logger.info "ActivityPub::DistributionWorker************@payload:#{@payload}"
-    @payload
   end
 
   def activity

@@ -4,79 +4,91 @@ class ReblogChannelsService < BaseService
   def call(status)
     @status = status
     community_admin_infos = User.joins(:role).where(user_roles: { name: 'community-admin' })
+    community_admin_account_ids = community_admin_infos.pluck(:account_id)
 
-    @status.account.followers.local.channel_admins(community_admin_infos.pluck(:account_id)).each do |admin_account|
-      Rails.logger.info "Checking Custom Channel"
+    # Custom Channel
+    status_follower_admin_account_ids = @status.account.followers.local.channel_admins(community_admin_account_ids).pluck(:id)
+    Rails.logger.info "*****STATUS_FOLLOWER_ADMIN_ACCOUNT #{status_follower_admin_account_ids}*****"
+
+    tag_ids = @status.tags.ids
+    tag_follower_admin_account_ids = TagFollow.where(tag_id: tag_ids).pluck(:account_id)
+    Rails.logger.info "*****TAG_FOLLOWER_ADMIN_ACCOUNT #{tag_follower_admin_account_ids}*****"
+
+    unique_admin_account_ids = (status_follower_admin_account_ids + tag_follower_admin_account_ids).uniq
+
+    Account.where(id: unique_admin_account_ids).each do |admin_account|
       username = admin_account&.username
       next unless username
 
-      # Eg: breaking_news_channel => breaking-news
       community = get_community(username)
+      next unless community
 
-      ReblogChannelsWorker.perform_async(@status.id, admin_account.id) if community&.content_type&.custom_channel? && sharable_custom_channel?(community, admin_account)
+      content_type = community.content_type
+      next unless content_type&.custom_channel?
+
+      # Skip if the admin_account has muted the status account
+      next if Mute.exists?(account_id: admin_account.id, target_account_id: @status.account.id)
+
+      # Skip if `and_condition?` is true and admin_account is not in both follower lists
+      if content_type&.and_condition?
+        next unless tag_follower_admin_account_ids.include?(admin_account.id) &&
+                    status_follower_admin_account_ids.include?(admin_account.id)
+      end
+
+      if valid_post_type?(community, admin_account) && !status_banned?(@status.id, community.id)
+        ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
+      end
     end
 
-    community_admins = Account.where(id: User.joins(:role).where(user_roles: { name: 'community-admin' }).select(:account_id))
-    community_admins.each do |admin_account|
+    #Group Channel
+    community_admins = Account.where(id: community_admin_account_ids)
+
+    group_channel_admins = community_admins.select do |admin_account|
       username = admin_account&.username
       next unless username
 
-      # Eg: breaking_news_channel => breaking-news
       community = get_community(username)
+      community&.content_type&.group_channel?
+    end
 
-      ReblogChannelsWorker.perform_async(@status.id, admin_account.id) if community&.content_type&.group_channel? && @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
+    group_channel_admins.each do |admin_account|
+      Rails.logger.info "*****Checking Group Channel for Admin Account: #{admin_account.username}*****"
+
+      if @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
+        ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
+      end
     end
   end
 
   private
 
-  def sharable_custom_channel?(community, admin_account)
-    Rails.logger.info "Evaluating if community #{community.id} is sharable for admin account #{admin_account.id}"
+  def valid_post_type?(community, admin_account)
+    Rails.logger.info "Evaluating if community #{community&.name} is sharable for admin account #{admin_account&.username}"
 
     community_post_type = fetch_community_post_type(community)
+
     unless community_post_type
-      Rails.logger.warn "No community post type found for community #{community.id}"
-      return false
+      Rails.logger.warn "No community post type found for community #{community&.name}"
+      return true
     end
+
     Rails.logger.info "Fetched community post type: #{community_post_type}"
 
-    community_hashtags = fetch_community_hashtags(community)
-    Rails.logger.info "Fetched community hashtags: #{community_hashtags}"
-
     if all_post_types_excluded?(community_post_type)
-      Rails.logger.warn "All post types are excluded for community #{community.id}"
+      Rails.logger.warn "All post types are excluded for community #{community&.name}"
       return false
     end
-
-    is_tag_exists = tag_exists?(community_hashtags)
-    Rails.logger.info "Tag existence check for community #{community.id}: #{is_tag_exists}"
 
     if post_type_rejected?(community_post_type)
-      Rails.logger.warn "Post type rejected for community #{community.id}"
+      Rails.logger.warn "Post type rejected for community #{community&.name}"
       return false
     end
 
-    custom_content_type = fetch_custom_content_type(community)
-    result = evaluate_custom_condition(custom_content_type, is_tag_exists)
-    Rails.logger.info "Custom condition evaluation result for community #{community.id}: #{result}"
-    result
+    true
   end
-
 
   def fetch_community_post_type(community)
     community&.community_post_types&.last
-  end
-
-  def fetch_community_hashtags(community)
-    community&.community_hashtags&.pluck(:hashtag)&.map { |tag| tag.gsub('#', '') }
-  end
-
-  def fetch_custom_content_type(community)
-    community&.content_type
-  end
-
-  def tag_exists?(community_hashtags)
-    @status&.tags.where(name: community_hashtags).exists?
   end
 
   def all_post_types_excluded?(community_post_type)
@@ -84,27 +96,20 @@ class ReblogChannelsService < BaseService
   end
 
   def post_type_rejected?(community_post_type)
-    case @status
-    when @status.reply?
-      community_post_type.replies?
-    when @status.reblog?
-      community_post_type.reposts?
-    else
-      community_post_type.posts?
-    end
-  end
-
-  def evaluate_custom_condition(custom_content_type, is_tag_exists)
-    if custom_content_type&.or_condition?
-      true
-    elsif custom_content_type&.and_condition?
-      is_tag_exists
-    else
-      false
+    case
+    when @status.reply? then community_post_type.replies?
+    when @status.reblog? then community_post_type.reposts?
+    else community_post_type.posts?
     end
   end
 
   def get_community(username)
+    # Eg: breaking_news_channel => breaking-news
+    # later we need to fix this logic, we will remove _channel from admin account
     Community.find_by(slug: username.sub('_channel', '').dasherize)
+  end
+
+  def status_banned?(status_id, community_id)
+    ContentFilters::BanStatusService.new.check_and_ban_channel_status(status_id, community_id)
   end
 end

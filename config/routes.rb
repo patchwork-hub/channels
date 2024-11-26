@@ -50,6 +50,9 @@ Rails.application.routes.draw do
 
   root 'home#index'
 
+  get 'custom_passwords', to: 'custom_passwords#edit', as: :custom_passwords_edit
+  patch 'custom_passwords', to: 'custom_passwords#update'
+
   mount LetterOpenerWeb::Engine, at: 'letter_opener' if Rails.env.development?
 
   get 'health', to: 'health#show'
