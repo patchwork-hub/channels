@@ -30,7 +30,7 @@ class ReblogChannelsService < BaseService
       next if Mute.exists?(account_id: admin_account.id, target_account_id: @status.account.id)
 
       # Skip if `and_condition?` is true and admin_account is not in both follower lists
-      if content_type.and_condition?
+      if content_type&.and_condition?
         next unless tag_follower_admin_account_ids.include?(admin_account.id) &&
                     status_follower_admin_account_ids.include?(admin_account.id)
       end
