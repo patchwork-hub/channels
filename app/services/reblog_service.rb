@@ -14,6 +14,9 @@ class ReblogService < BaseService
   def call(account, reblogged_status, options = {})
     reblogged_status = reblogged_status.reblog if reblogged_status.reblog?
 
+    @account     = account
+    @options     = options
+
     authorize_with account, reblogged_status, :reblog?
 
     reblog = account.statuses.find_by(reblog: reblogged_status)
@@ -26,7 +29,12 @@ class ReblogService < BaseService
                    options[:visibility] || account.user&.setting_default_privacy
                  end
 
-    reblog = account.statuses.create!(reblog: reblogged_status, text: '', visibility: visibility, rate_limit: options[:with_rate_limit])
+    validate_media!
+    text = @options.key?(:status) ? options[:status] : ' '
+    reblog = account.statuses.create!(reblog: reblogged_status, text: text, visibility: visibility, rate_limit: options[:with_rate_limit], media_attachments: @media || [])
+
+    process_mentions_service.call(reblog, save_records: false)
+    process_hashtags_service.call(reblog)
 
     Trends.register!(reblog)
     DistributionWorker.perform_async(reblog.id)
@@ -39,6 +47,28 @@ class ReblogService < BaseService
   end
 
   private
+
+  def validate_media!
+    if @options[:media_ids].blank? || !@options[:media_ids].is_a?(Enumerable)
+      @media = []
+      return
+    end
+
+    raise Mastodon::ValidationError, I18n.t('media_attachments.validations.too_many') if @options[:media_ids].size > Status::MEDIA_ATTACHMENTS_LIMIT || @options[:poll].present?
+
+    @media = @account.media_attachments.where(status_id: nil).where(id: @options[:media_ids].take(Status::MEDIA_ATTACHMENTS_LIMIT).map(&:to_i))
+
+    raise Mastodon::ValidationError, I18n.t('media_attachments.validations.images_and_video') if @media.size > 1 && @media.find(&:audio_or_video?)
+    raise Mastodon::ValidationError, I18n.t('media_attachments.validations.not_ready') if @media.any?(&:not_processed?)
+  end
+
+  def process_mentions_service
+    ProcessMentionsService.new
+  end
+
+  def process_hashtags_service
+    ProcessHashtagsService.new
+  end
 
   def create_notification(reblog)
     reblogged_status = reblog.reblog
