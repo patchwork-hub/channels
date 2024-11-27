@@ -48,7 +48,7 @@ namespace :api, format: false do
     get '/streaming/(*any)', to: 'streaming#index'
 
     resources :custom_emojis, only: [:index]
-    resources :custom_passwords, only: [:index]
+    resources :custom_passwords, only: [:index, :update]
     resources :suggestions, only: [:index, :destroy]
     resources :scheduled_statuses, only: [:index, :show, :update, :destroy]
     resources :preferences, only: [:index]
