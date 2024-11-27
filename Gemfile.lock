@@ -15,6 +15,14 @@ GIT
     content_filters (0.1.0)
       rails (>= 7.1.1)
 
+GIT
+  remote: https://github.com/patchwork-hub/posts
+  revision: 1b597f1adade4ddcf58ed7b8a4b6c4ef37a49d0f
+  specs:
+    posts (0.1.0)
+      byebug
+      rails (~> 7.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -1082,6 +1090,7 @@ DEPENDENCIES
   parslet
   pg (~> 1.5)
   pghero
+  posts!
   premailer-rails
   propshaft
   public_suffix (~> 6.0)
