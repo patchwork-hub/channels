@@ -6,6 +6,7 @@ class CustomPasswordsMailer < ApplicationMailer
 
   def reset_password_confirmation
     @user = params[:user]
+    @web = params[:web]
     if @user.present?
       @subject = 'Reset your password'
       mail(to: @user.email, subject: @subject)
