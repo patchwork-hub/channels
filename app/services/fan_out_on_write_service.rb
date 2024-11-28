@@ -41,7 +41,6 @@ class FanOutOnWriteService < BaseService
 
     unless @options[:skip_notifications]
       notify_mentioned_accounts!
-      Rails.logger.info "----- Will notify about update?: #{notify_about_update! if update?}"
       #notify_about_update! if update?
     end
 

@@ -8,11 +8,11 @@ class ReblogChannelsService < BaseService
 
     # Custom Channel
     status_follower_admin_account_ids = @status.account.followers.local.channel_admins(community_admin_account_ids).pluck(:id)
-    Rails.logger.info "*****STATUS_FOLLOWER_ADMIN_ACCOUNT #{status_follower_admin_account_ids}*****"
+    # Rails.logger.info "*****STATUS_FOLLOWER_ADMIN_ACCOUNT #{status_follower_admin_account_ids}*****"
 
     tag_ids = @status.tags.ids
     tag_follower_admin_account_ids = TagFollow.where(tag_id: tag_ids).pluck(:account_id)
-    Rails.logger.info "*****TAG_FOLLOWER_ADMIN_ACCOUNT #{tag_follower_admin_account_ids}*****"
+    # Rails.logger.info "*****TAG_FOLLOWER_ADMIN_ACCOUNT #{tag_follower_admin_account_ids}*****"
 
     unique_admin_account_ids = (status_follower_admin_account_ids + tag_follower_admin_account_ids).uniq
 
@@ -52,7 +52,7 @@ class ReblogChannelsService < BaseService
     end
 
     group_channel_admins.each do |admin_account|
-      Rails.logger.info "*****Checking Group Channel for Admin Account: #{admin_account.username}*****"
+      # Rails.logger.info "*****Checking Group Channel for Admin Account: #{admin_account.username}*****"
 
       if @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
         ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
@@ -63,16 +63,16 @@ class ReblogChannelsService < BaseService
   private
 
   def valid_post_type?(community, admin_account)
-    Rails.logger.info "Evaluating if community #{community&.name} is sharable for admin account #{admin_account&.username}"
+    # Rails.logger.info "Evaluating if community #{community&.name} is sharable for admin account #{admin_account&.username}"
 
     community_post_type = fetch_community_post_type(community)
 
     unless community_post_type
-      Rails.logger.warn "No community post type found for community #{community&.name}"
+      # Rails.logger.warn "No community post type found for community #{community&.name}"
       return true
     end
 
-    Rails.logger.info "Fetched community post type: #{community_post_type}"
+    # Rails.logger.info "Fetched community post type: #{community_post_type}"
 
     if all_post_types_excluded?(community_post_type)
       Rails.logger.warn "All post types are excluded for community #{community&.name}"
