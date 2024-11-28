@@ -4,7 +4,11 @@ class ActivityPub::Activity::Announce < ActivityPub::Activity
   include FormattingHelper
 
   def perform
+    # dereference_object!
+
     return reject_payload! if delete_arrived_first?(@json['id']) || !related_to_local_activity?
+
+    Rails.logger.info("**** Announce   @object: #{@object.inspect} ****")
 
     with_redis_lock("announce:#{value_or_id(@object)}") do
       original_status = status_from_object
@@ -19,8 +23,16 @@ class ActivityPub::Activity::Announce < ActivityPub::Activity
       @status_parser = ActivityPub::Parser::StatusParser.new(@json, followers_collection: @account.followers_url, object: @object)
 
       attachment_ids = process_attachments.take(Status::MEDIA_ATTACHMENTS_LIMIT).map(&:id)
-      Rails.logger.info("**** Announce   @status_parser: #{@status_parser} ****")
+
+      Rails.logger.info("**** Announce   @status_parser text: #{converted_object_type? ? converted_text : (@status_parser.text || '')} ****")
       Rails.logger.info("**** Announce   media_attachment_ids: #{attachment_ids} ****")
+
+      @tags                 = []
+      @mentions             = []
+      @silenced_account_ids = []
+
+      process_tags
+      process_audience
 
       @status = Status.create!(
         account: @account,
@@ -139,5 +151,66 @@ class ActivityPub::Activity::Announce < ActivityPub::Activity
   rescue Addressable::URI::InvalidURIError => e
     Rails.logger.debug { "Invalid URL in attachment: #{e}" }
     media_attachments
+  end
+
+  def process_tags
+    return if @object['tag'].nil?
+
+    as_array(@object['tag']).each do |tag|
+      if equals_or_includes?(tag['type'], 'Hashtag')
+        process_hashtag tag
+      elsif equals_or_includes?(tag['type'], 'Mention')
+        process_mention tag
+      elsif equals_or_includes?(tag['type'], 'Emoji')
+        process_emoji tag
+      end
+    end
+  end
+
+  def process_hashtag(tag)
+    return if tag['name'].blank?
+
+    Tag.find_or_create_by_names(tag['name']) do |hashtag|
+      @tags << hashtag unless @tags.include?(hashtag) || !hashtag.valid?
+    end
+  rescue ActiveRecord::RecordInvalid
+    nil
+  end
+
+  def process_mention(tag)
+    return if tag['href'].blank?
+
+    account = account_from_uri(tag['href'])
+    account = ActivityPub::FetchRemoteAccountService.new.call(tag['href'], request_id: @options[:request_id]) if account.nil?
+
+    return if account.nil?
+
+    @mentions << Mention.new(account: account, silent: false)
+  end
+
+  def process_emoji(tag)
+    return if skip_download?
+
+    custom_emoji_parser = ActivityPub::Parser::CustomEmojiParser.new(tag)
+
+    return if custom_emoji_parser.shortcode.blank? || custom_emoji_parser.image_remote_url.blank?
+
+    emoji = CustomEmoji.find_by(shortcode: custom_emoji_parser.shortcode, domain: @account.domain)
+
+    return unless emoji.nil? || custom_emoji_parser.image_remote_url != emoji.image_remote_url || (custom_emoji_parser.updated_at && custom_emoji_parser.updated_at >= emoji.updated_at)
+
+    begin
+      emoji ||= CustomEmoji.new(domain: @account.domain, shortcode: custom_emoji_parser.shortcode, uri: custom_emoji_parser.uri)
+      emoji.image_remote_url = custom_emoji_parser.image_remote_url
+      emoji.save
+    rescue Seahorse::Client::NetworkingError => e
+      Rails.logger.warn "Error storing emoji: #{e}"
+    end
+  end
+
+  def skip_download?
+    return @skip_download if defined?(@skip_download)
+
+    @skip_download ||= DomainBlock.reject_media?(@account.domain)
   end
 end
