@@ -4,7 +4,7 @@ class ActivityPub::Activity::Announce < ActivityPub::Activity
   include FormattingHelper
 
   def perform
-    # dereference_object!
+    dereference_object!
 
     return reject_payload! if delete_arrived_first?(@json['id']) || !related_to_local_activity?
 
