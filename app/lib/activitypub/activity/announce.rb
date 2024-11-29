@@ -32,7 +32,6 @@ class ActivityPub::Activity::Announce < ActivityPub::Activity
       @silenced_account_ids = []
 
       process_tags
-      process_audience
 
       @status = Status.create!(
         account: @account,
