@@ -19,10 +19,22 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   end
 
   def verify_otp
-    return render_password_error(message: 'Invalid otp!') unless @user && verify_otp?(params[:otp_secret])
+    return render_password_error(message: 'Invalid otp!') unless @user && verify_otp?(params[:otp_secret], reset_password: reset_password?)
 
-    @user.update(otp_secret: nil)
-    render json: { message: 'OTP verify successfully' }, status: 200
+    ActiveRecord::Base.transaction do
+      # This stage is known as the user was just registered
+      # If confirmation_sent_at is present, that account was unconfirmed yet
+      if @user.confirmation_sent_at.present?
+        @user.account.update!(discoverable: true)
+        @user.update!(otp_secret: nil, confirmed_at: Time.now.utc, confirmation_sent_at: nil)
+      else
+        # Reset password
+        @user.update!(otp_secret: nil)
+      end
+    end
+    render json: { message: 'OTP verified successfully' }, status: 200
+  rescue ActiveRecord::RecordInvalid => e
+    render_password_error(message: e.message)
   end
 
   def update
@@ -45,15 +57,24 @@ class Api::V1::CustomPasswordsController < Api::BaseController
 
   def set_user
     @user = User.find_by(reset_password_token: params[:id])
+    unless @user
+      token = Doorkeeper::AccessToken.find_by(token: params[:id])
+      @user = User.find_by(id: token&.resource_owner_id) if token
+    end
+    @user
   end
 
   def render_password_error(message:)
     render json: { message: message }, status: 422
   end
 
-  def verify_otp?(otp_secret)
-    return false if @user.reset_password_sent_at.nil? || @user.reset_password_sent_at < 30.minutes.ago
+  def verify_otp?(otp_secret, reset_password: false)
+    return false if reset_password && (@user.reset_password_sent_at.nil? || @user.reset_password_sent_at < 30.minutes.ago)
 
     @user&.otp_secret == otp_secret
+  end
+
+  def reset_password?
+    params[:is_reset_password].nil? ? true : params[:is_reset_password]
   end
 end

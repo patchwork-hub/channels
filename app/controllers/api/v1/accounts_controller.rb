@@ -38,6 +38,7 @@ class Api::V1::AccountsController < Api::BaseController
 
     self.response_body = Oj.dump(response.body)
     self.status        = response.status
+    generate_opt_token
   rescue ActiveRecord::RecordInvalid => e
     render json: ValidationErrorFormatter.new(e, 'account.username': :username, 'invite_request.text': :reason).as_json, status: 422
   end
@@ -123,5 +124,12 @@ class Api::V1::AccountsController < Api::BaseController
 
   def check_enabled_registrations
     forbidden unless allowed_registration?(request.remote_ip, invite)
+  end
+
+  def generate_opt_token
+    user = User.find_by(email: account_params[:email])
+    user.otp_secret = SecureRandom.random_number(10_000).to_s.rjust(4, '0')
+    user.save!
+    CustomPasswordsMailer.with(user: user).reset_password_confirmation.deliver_later
   end
 end
