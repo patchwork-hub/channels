@@ -323,6 +323,7 @@ namespace :api, format: false do
 
   namespace :v2 do
     get '/search', to: 'search#index', as: :search
+    get '/search_federation', to: 'search_federation#index', as: :search_federation
 
     resources :media, only: [:create]
     resources :suggestions, only: [:index]
