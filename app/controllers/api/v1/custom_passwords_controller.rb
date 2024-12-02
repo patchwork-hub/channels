@@ -2,7 +2,7 @@
 
 class Api::V1::CustomPasswordsController < Api::BaseController
   skip_before_action :require_authenticated_user!
-  before_action :set_user, only: [:update, :verify_otp]
+  before_action :set_user, only: [:update, :verify_otp, :request_otp]
 
   layout 'email'
   def create
@@ -13,6 +13,29 @@ class Api::V1::CustomPasswordsController < Api::BaseController
       user.save!
       CustomPasswordsMailer.with(user: user).reset_password_confirmation.deliver_later
       render json: { reset_password_token: user.reload.reset_password_token }, status: 200
+    else
+      render json: { error: 'Email not found!' }, status: 404
+    end
+  end
+
+  def update
+    return render_password_error(message: 'Missing required fields') unless @user && password_params[:password].present? && password_params[:password_confirmation].present? && @user&.otp_secret.nil?
+
+    return render_password_error(message: 'Password unmatch.') unless password_params[:password] == password_params[:password_confirmation]
+
+    @user.password = password_params[:password]
+    @user.save(validate: false)
+    render json: { message: 'Password update successfully.' }, status: 200
+  rescue ActiveSupport::MessageVerifier::InvalidSignature
+    render_password_error(message: 'Password update unsuccessfully.')
+  end
+
+  def request_otp
+    if @user
+      @user.otp_secret = SecureRandom.random_number(10_000).to_s.rjust(4, '0')
+      @user.save!
+      CustomPasswordsMailer.with(user: @user).reset_password_confirmation.deliver_later
+      render json: { access_token: params[:id] }, status: 200
     else
       render json: { error: 'Email not found!' }, status: 404
     end
@@ -35,18 +58,6 @@ class Api::V1::CustomPasswordsController < Api::BaseController
     render json: { message: 'OTP verified successfully' }, status: 200
   rescue ActiveRecord::RecordInvalid => e
     render_password_error(message: e.message)
-  end
-
-  def update
-    return render_password_error(message: 'Missing required fields') unless @user && password_params[:password].present? && password_params[:password_confirmation].present? && @user&.otp_secret.nil?
-
-    return render_password_error(message: 'Password unmatch.') unless password_params[:password] == password_params[:password_confirmation]
-
-    @user.password = password_params[:password]
-    @user.save(validate: false)
-    render json: { message: 'Password update successfully.' }, status: 200
-  rescue ActiveSupport::MessageVerifier::InvalidSignature
-    render_password_error(message: 'Password update unsuccessfully.')
   end
 
   private
