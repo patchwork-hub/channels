@@ -4,11 +4,11 @@ class ActivityPub::Activity::Announce < ActivityPub::Activity
   include FormattingHelper
 
   def perform
-    dereference_object!
+    #dereference_object!
 
     return reject_payload! if delete_arrived_first?(@json['id']) || !related_to_local_activity?
 
-    Rails.logger.info("**** Announce   @object: #{@object.inspect} ****")
+    #Rails.logger.info("**** Announce   @object: #{@object.inspect} ****")
 
     with_redis_lock("announce:#{value_or_id(@object)}") do
       original_status = status_from_object
@@ -20,18 +20,18 @@ class ActivityPub::Activity::Announce < ActivityPub::Activity
 
       return @status unless @status.nil?
 
-      @status_parser = ActivityPub::Parser::StatusParser.new(@json, followers_collection: @account.followers_url, object: @object)
+      #@status_parser = ActivityPub::Parser::StatusParser.new(@json, followers_collection: @account.followers_url, object: @object)
 
-      attachment_ids = process_attachments.take(Status::MEDIA_ATTACHMENTS_LIMIT).map(&:id)
+      #attachment_ids = process_attachments.take(Status::MEDIA_ATTACHMENTS_LIMIT).map(&:id)
 
-      Rails.logger.info("**** Announce   @status_parser text: #{converted_object_type? ? converted_text : (@status_parser.text || '')} ****")
-      Rails.logger.info("**** Announce   media_attachment_ids: #{attachment_ids} ****")
+      #Rails.logger.info("**** Announce   @status_parser text: #{converted_object_type? ? converted_text : (@status_parser.text || '')} ****")
+      #Rails.logger.info("**** Announce   media_attachment_ids: #{attachment_ids} ****")
 
-      @tags                 = []
-      @mentions             = []
-      @silenced_account_ids = []
+      #@tags                 = []
+      #@mentions             = []
+      #@silenced_account_ids = []
 
-      process_tags
+      #process_tags
 
       @status = Status.create!(
         account: @account,
@@ -111,105 +111,105 @@ class ActivityPub::Activity::Announce < ActivityPub::Activity
     status_from_uri(object_uri)&.account&.local?
   end
 
-  def process_attachments
-    return [] if @object['attachment'].nil?
+  # def process_attachments
+  #   return [] if @object['attachment'].nil?
 
-    media_attachments = []
+  #   media_attachments = []
 
-    as_array(@object['attachment']).each do |attachment|
-      media_attachment_parser = ActivityPub::Parser::MediaAttachmentParser.new(attachment)
+  #   as_array(@object['attachment']).each do |attachment|
+  #     media_attachment_parser = ActivityPub::Parser::MediaAttachmentParser.new(attachment)
 
-      next if media_attachment_parser.remote_url.blank? || media_attachments.size >= Status::MEDIA_ATTACHMENTS_LIMIT
+  #     next if media_attachment_parser.remote_url.blank? || media_attachments.size >= Status::MEDIA_ATTACHMENTS_LIMIT
 
-      begin
-        media_attachment = MediaAttachment.create(
-          account: @account,
-          remote_url: media_attachment_parser.remote_url,
-          thumbnail_remote_url: media_attachment_parser.thumbnail_remote_url,
-          description: media_attachment_parser.description,
-          focus: media_attachment_parser.focus,
-          blurhash: media_attachment_parser.blurhash
-        )
+  #     begin
+  #       media_attachment = MediaAttachment.create(
+  #         account: @account,
+  #         remote_url: media_attachment_parser.remote_url,
+  #         thumbnail_remote_url: media_attachment_parser.thumbnail_remote_url,
+  #         description: media_attachment_parser.description,
+  #         focus: media_attachment_parser.focus,
+  #         blurhash: media_attachment_parser.blurhash
+  #       )
 
-        media_attachments << media_attachment
+  #       media_attachments << media_attachment
 
-        next if unsupported_media_type?(media_attachment_parser.file_content_type) || skip_download?
+  #       next if unsupported_media_type?(media_attachment_parser.file_content_type) || skip_download?
 
-        media_attachment.download_file!
-        media_attachment.download_thumbnail!
-        media_attachment.save
-      rescue Mastodon::UnexpectedResponseError, HTTP::TimeoutError, HTTP::ConnectionError, OpenSSL::SSL::SSLError
-        RedownloadMediaWorker.perform_in(rand(30..600).seconds, media_attachment.id)
-      rescue Seahorse::Client::NetworkingError => e
-        Rails.logger.warn "Error storing media attachment: #{e}"
-        RedownloadMediaWorker.perform_async(media_attachment.id)
-      end
-    end
+  #       media_attachment.download_file!
+  #       media_attachment.download_thumbnail!
+  #       media_attachment.save
+  #     rescue Mastodon::UnexpectedResponseError, HTTP::TimeoutError, HTTP::ConnectionError, OpenSSL::SSL::SSLError
+  #       RedownloadMediaWorker.perform_in(rand(30..600).seconds, media_attachment.id)
+  #     rescue Seahorse::Client::NetworkingError => e
+  #       Rails.logger.warn "Error storing media attachment: #{e}"
+  #       RedownloadMediaWorker.perform_async(media_attachment.id)
+  #     end
+  #   end
 
-    media_attachments
-  rescue Addressable::URI::InvalidURIError => e
-    Rails.logger.debug { "Invalid URL in attachment: #{e}" }
-    media_attachments
-  end
+  #   media_attachments
+  # rescue Addressable::URI::InvalidURIError => e
+  #   Rails.logger.debug { "Invalid URL in attachment: #{e}" }
+  #   media_attachments
+  # end
 
-  def process_tags
-    return if @object['tag'].nil?
+  # def process_tags
+  #   return if @object['tag'].nil?
 
-    as_array(@object['tag']).each do |tag|
-      if equals_or_includes?(tag['type'], 'Hashtag')
-        process_hashtag tag
-      elsif equals_or_includes?(tag['type'], 'Mention')
-        process_mention tag
-      elsif equals_or_includes?(tag['type'], 'Emoji')
-        process_emoji tag
-      end
-    end
-  end
+  #   as_array(@object['tag']).each do |tag|
+  #     if equals_or_includes?(tag['type'], 'Hashtag')
+  #       process_hashtag tag
+  #     elsif equals_or_includes?(tag['type'], 'Mention')
+  #       process_mention tag
+  #     elsif equals_or_includes?(tag['type'], 'Emoji')
+  #       process_emoji tag
+  #     end
+  #   end
+  # end
 
-  def process_hashtag(tag)
-    return if tag['name'].blank?
+  # def process_hashtag(tag)
+  #   return if tag['name'].blank?
 
-    Tag.find_or_create_by_names(tag['name']) do |hashtag|
-      @tags << hashtag unless @tags.include?(hashtag) || !hashtag.valid?
-    end
-  rescue ActiveRecord::RecordInvalid
-    nil
-  end
+  #   Tag.find_or_create_by_names(tag['name']) do |hashtag|
+  #     @tags << hashtag unless @tags.include?(hashtag) || !hashtag.valid?
+  #   end
+  # rescue ActiveRecord::RecordInvalid
+  #   nil
+  # end
 
-  def process_mention(tag)
-    return if tag['href'].blank?
+  # def process_mention(tag)
+  #   return if tag['href'].blank?
 
-    account = account_from_uri(tag['href'])
-    account = ActivityPub::FetchRemoteAccountService.new.call(tag['href'], request_id: @options[:request_id]) if account.nil?
+  #   account = account_from_uri(tag['href'])
+  #   account = ActivityPub::FetchRemoteAccountService.new.call(tag['href'], request_id: @options[:request_id]) if account.nil?
 
-    return if account.nil?
+  #   return if account.nil?
 
-    @mentions << Mention.new(account: account, silent: false)
-  end
+  #   @mentions << Mention.new(account: account, silent: false)
+  # end
 
-  def process_emoji(tag)
-    return if skip_download?
+  # def process_emoji(tag)
+  #   return if skip_download?
 
-    custom_emoji_parser = ActivityPub::Parser::CustomEmojiParser.new(tag)
+  #   custom_emoji_parser = ActivityPub::Parser::CustomEmojiParser.new(tag)
 
-    return if custom_emoji_parser.shortcode.blank? || custom_emoji_parser.image_remote_url.blank?
+  #   return if custom_emoji_parser.shortcode.blank? || custom_emoji_parser.image_remote_url.blank?
 
-    emoji = CustomEmoji.find_by(shortcode: custom_emoji_parser.shortcode, domain: @account.domain)
+  #   emoji = CustomEmoji.find_by(shortcode: custom_emoji_parser.shortcode, domain: @account.domain)
 
-    return unless emoji.nil? || custom_emoji_parser.image_remote_url != emoji.image_remote_url || (custom_emoji_parser.updated_at && custom_emoji_parser.updated_at >= emoji.updated_at)
+  #   return unless emoji.nil? || custom_emoji_parser.image_remote_url != emoji.image_remote_url || (custom_emoji_parser.updated_at && custom_emoji_parser.updated_at >= emoji.updated_at)
 
-    begin
-      emoji ||= CustomEmoji.new(domain: @account.domain, shortcode: custom_emoji_parser.shortcode, uri: custom_emoji_parser.uri)
-      emoji.image_remote_url = custom_emoji_parser.image_remote_url
-      emoji.save
-    rescue Seahorse::Client::NetworkingError => e
-      Rails.logger.warn "Error storing emoji: #{e}"
-    end
-  end
+  #   begin
+  #     emoji ||= CustomEmoji.new(domain: @account.domain, shortcode: custom_emoji_parser.shortcode, uri: custom_emoji_parser.uri)
+  #     emoji.image_remote_url = custom_emoji_parser.image_remote_url
+  #     emoji.save
+  #   rescue Seahorse::Client::NetworkingError => e
+  #     Rails.logger.warn "Error storing emoji: #{e}"
+  #   end
+  # end
 
-  def skip_download?
-    return @skip_download if defined?(@skip_download)
+  # def skip_download?
+  #   return @skip_download if defined?(@skip_download)
 
-    @skip_download ||= DomainBlock.reject_media?(@account.domain)
-  end
+  #   @skip_download ||= DomainBlock.reject_media?(@account.domain)
+  # end
 end
