@@ -51,6 +51,7 @@ namespace :api, format: false do
     resources :custom_passwords, only: [:create, :update] do
       collection do
         post :verify_otp, to: 'custom_passwords#verify_otp'
+        get :request_otp, to: 'custom_passwords#request_otp'
       end
     end
 
