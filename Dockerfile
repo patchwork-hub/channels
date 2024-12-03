@@ -43,20 +43,14 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
 
 WORKDIR /opt/mastodon
 
-# Use a different Debian mirror and add retry logic to apt-get commands
-RUN sed -i 's|http://deb.debian.org/debian|http://ftp.us.debian.org/debian|g' /etc/apt/sources.list && \
-  --mount=type=cache,id=apt-cache-${TARGETPLATFORM},target=/var/cache/apt,sharing=locked \
+RUN --mount=type=cache,id=apt-cache-${TARGETPLATFORM},target=/var/cache/apt,sharing=locked \
   --mount=type=cache,id=apt-lib-${TARGETPLATFORM},target=/var/lib/apt,sharing=locked \
   apt-get update && \
   apt-get dist-upgrade -yq && \
   apt-get install -y --no-install-recommends \
   curl file libjemalloc2 patchelf procps tini tzdata wget && \
   patchelf --add-needed libjemalloc.so.2 /usr/local/bin/ruby && \
-  apt-get purge -y patchelf || \
-  (sleep 30 && apt-get update && apt-get install -y --no-install-recommends \
-  curl file libjemalloc2 patchelf procps tini tzdata wget && \
-  patchelf --add-needed libjemalloc.so.2 /usr/local/bin/ruby && \
-  apt-get purge -y patchelf)
+  apt-get purge -y patchelf
 
 FROM ruby AS build
 
