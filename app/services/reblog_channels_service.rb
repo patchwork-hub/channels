@@ -3,8 +3,7 @@
 class ReblogChannelsService < BaseService
   def call(status)
     @status = status
-    community_admin_infos = User.joins(:role).where(user_roles: { name: 'community-admin' })
-    community_admin_account_ids = community_admin_infos.pluck(:account_id)
+    community_admin_account_ids = CommunityAdmin.where(is_boost_bot: true).pluck(:account_id)
 
     # Custom Channel
     status_follower_admin_account_ids = @status.account.followers.local.channel_admins(community_admin_account_ids).pluck(:id)

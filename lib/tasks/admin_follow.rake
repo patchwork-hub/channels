@@ -8,25 +8,25 @@ namespace :admin do
     domain = ENV['WEB_DOMAIN'] || Rails.configuration.x.local_domain
     domain = domain.gsub(/:\d+$/, '')
 
-    subdomain = domain.split('.').first.underscore
     domain = domain.split('.').values_at(1, 2).join('.')
 
-    channel_account = "@#{subdomain}@#{domain}"
+    admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
+    channel_account = "@#{admins.values.first["username"]}@#{domain}"
 
     owner_role = UserRole.find_by(name: 'Owner')
     owner_user = User.find_by(role: owner_role)
     AdminAccountManager.new(owner_user.email).follow_admin_account(channel_account)
 
-    admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
-    if admins.empty?
-      Rails.logger.error("No admins found in the ADMINS environment variable.")
-    end
+    # admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
+    # if admins.empty?
+    #   Rails.logger.error("No admins found in the ADMINS environment variable.")
+    # end
 
-    admins.each_value do |admin|
-      if admin['email'].to_s.strip != ''
-        AdminAccountManager.new(admin['email']).follow_admin_account(channel_account)
-      end
-    end
+    # admins.each_value do |admin|
+    #   if admin['email'].to_s.strip != ''
+    #     AdminAccountManager.new(admin['email']).follow_admin_account(channel_account)
+    #   end
+    # end
   end
 end
 
