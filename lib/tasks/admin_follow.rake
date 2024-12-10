@@ -11,9 +11,8 @@ namespace :admin do
     domain = domain.split('.').values_at(1, 2).join('.')
 
     admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
-    # channel_account = "@#{admins.values.first["username"]}@#{domain}"
-    channel_account = "@#{admins.values.first["username"]}@channel.org"
-
+    channel_account = "@#{admins.values.first["username"]}@#{domain}"
+    p "CHANNEL_ACCOUNT_TO_FOLLOW #{channel_account}"
     owner_role = UserRole.find_by(name: 'Owner')
     owner_user = User.find_by(role: owner_role)
     AdminAccountManager.new(owner_user.email).follow_admin_account(channel_account)
@@ -80,6 +79,7 @@ class AdminAccountManager
   def search_and_find_account(search_param)
     response = search_account(search_param)
     accounts = response.parsed_response['accounts']
+    p "SEARCHED_RESULT #{accounts.inspect}"
     find_saved_accounts_with_retry(accounts).first
   end
 
@@ -105,7 +105,7 @@ class AdminAccountManager
     response = follow_account_on_api(target_account, reblogs)
 
     if response.code == 200
-      Rails.logger.info("Successfully followed #{target_account.username}.")
+      Rails.logger.info("Successfully followed #{target_account.inspect}.")
     else
       Rails.logger.error("Failed to follow account #{target_account.username}: #{response.body}")
     end
