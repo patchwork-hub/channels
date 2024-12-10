@@ -67,7 +67,7 @@ namespace :admin do
   def extract_account_name(domain)
     parts = domain.split('.')
     if parts.length >= 3
-      admin_name = parts[0].capitalize
+      admin_name = parts[0].capitalize.underscore
       "#{admin_name}Adm"
     else
       'Admin'

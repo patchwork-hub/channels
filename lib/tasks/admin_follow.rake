@@ -11,7 +11,8 @@ namespace :admin do
     domain = domain.split('.').values_at(1, 2).join('.')
 
     admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
-    channel_account = "@#{admins.values.first["username"]}@#{domain}"
+    # channel_account = "@#{admins.values.first["username"]}@#{domain}"
+    channel_account = "@#{admins.values.first["username"]}@channel.org"
 
     owner_role = UserRole.find_by(name: 'Owner')
     owner_user = User.find_by(role: owner_role)
