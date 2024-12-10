@@ -93,10 +93,10 @@ jobs:
       - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.PROD_SERVER_IP }}
+          host: ${{ secrets.PROD_MAIN_CHANNEL_IP }}
           username: ${{ secrets.PROD_SERVER_USERNAME }}
           port: ${{ secrets.PORT }}
-          key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+          key: ${{ secrets.PROD_MAIN_CHANNEL_IP }}
           script: |
             eval "$(ssh-agent -s)"
             ssh-add ~/.ssh/id_rsa
