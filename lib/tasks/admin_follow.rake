@@ -8,10 +8,10 @@ namespace :admin do
     domain = ENV['WEB_DOMAIN'] || Rails.configuration.x.local_domain
     domain = domain.gsub(/:\d+$/, '')
 
-    domain = domain.split('.').values_at(1, 2).join('.')
+    @domain = domain.split('.').values_at(1, 2).join('.')
 
     admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
-    channel_account = "@#{admins.values.first["username"]}@#{domain}"
+    channel_account = "@#{admins.values.first["username"]}@#{@domain}"
     p "CHANNEL_ACCOUNT_TO_FOLLOW #{channel_account}"
     owner_role = UserRole.find_by(name: 'Owner')
     owner_user = User.find_by(role: owner_role)
@@ -69,6 +69,7 @@ class AdminAccountManager
 
   def follow_account(channel_account)
     account_data = search_and_find_account(channel_account)
+    p "ACCOUNT_DATA_AFTER_SEARCH: #{account_data}"
     if account_data
       follow_contributor!(account_data)
     else
