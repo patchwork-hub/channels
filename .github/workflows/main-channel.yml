@@ -96,7 +96,7 @@ jobs:
           host: ${{ secrets.PROD_MAIN_CHANNEL_IP }}
           username: ${{ secrets.PROD_SERVER_USERNAME }}
           port: ${{ secrets.PORT }}
-          key: ${{ secrets.PROD_MAIN_CHANNEL_IP }}
+          key: ${{ secrets.PROD_MAIN_CHANNEL_KEY }}
           script: |
             eval "$(ssh-agent -s)"
             ssh-add ~/.ssh/id_rsa
