@@ -94,7 +94,7 @@ class AdminAccountManager
 
     saved_accounts = []
     while saved_accounts.empty?
-      saved_accounts = Account.where(username: accounts.map { |account| account['username'] })
+      saved_accounts = Account.where(username: accounts.map { |account| account['username'] }, domain: @domain)
       sleep(2) if saved_accounts.empty?
     end
 
