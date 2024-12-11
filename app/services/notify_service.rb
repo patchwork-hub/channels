@@ -198,6 +198,7 @@ class NotifyService < BaseService
       push_notification!
       push_to_conversation! if direct_message?
       send_email! if email_needed?
+      CustomNotificationService.new.call(@recipient, @notification)
     end
   rescue ActiveRecord::RecordInvalid
     nil
