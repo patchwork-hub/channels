@@ -103,7 +103,13 @@ class ReblogChannelsService < BaseService
   end
 
   def get_community(account_id)
-    Community.find_by(id: CommunityAdmin.find_by(account_id: account_id).patchwork_community_id)
+    community_admin = CommunityAdmin.find_by(account_id: account_id)
+    raise "CommunityAdmin not found for account_id: #{account_id}" unless community_admin
+
+    community = Community.find_by(id: community_admin.patchwork_community_id)
+    raise "Community not found for patchwork_community_id: #{community_admin.patchwork_community_id}" unless community
+
+    community
   end
 
   def status_banned?(status_id, community_id)
