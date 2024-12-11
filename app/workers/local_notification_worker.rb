@@ -21,6 +21,8 @@ class LocalNotificationWorker
       return
     end
 
+    Rails.logger.info("*********** NotifyService receiver: #{receiver}, type: #{type || activity_class_name.underscore}, activity: #{activity}")
+
     NotifyService.new.call(receiver, type || activity_class_name.underscore, activity)
   rescue ActiveRecord::RecordNotFound
     true
