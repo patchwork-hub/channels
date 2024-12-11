@@ -10,7 +10,7 @@ class FirebaseNotificationService
 
   def self.send_notification(token, title, body, data = {})
     # Path to your service account JSON file
-    service_account_file = '../config/fcm_acc_service.json'
+    service_account_file = 'config/fcm_acc_service.json'
 
     # Define the required scope
     scope = 'https://www.googleapis.com/auth/firebase.messaging'
