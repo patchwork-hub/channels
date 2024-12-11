@@ -16,10 +16,10 @@ class ReblogChannelsService < BaseService
     unique_admin_account_ids = (status_follower_admin_account_ids + tag_follower_admin_account_ids).uniq
 
     Account.where(id: unique_admin_account_ids).each do |admin_account|
-      username = admin_account&.username
-      next unless username
+      id = admin_account&.id
+      next unless id
 
-      community = get_community(username)
+      community = get_community(id)
       next unless community
 
       content_type = community.content_type
@@ -43,10 +43,10 @@ class ReblogChannelsService < BaseService
     community_admins = Account.where(id: community_admin_account_ids)
 
     group_channel_admins = community_admins.select do |admin_account|
-      username = admin_account&.username
-      next unless username
+      id = admin_account&.id
+      next unless id
 
-      community = get_community(username)
+      community = get_community(id)
       community&.content_type&.group_channel?
     end
 
@@ -102,10 +102,8 @@ class ReblogChannelsService < BaseService
     end
   end
 
-  def get_community(username)
-    # Eg: breaking_news_channel => breaking-news
-    # later we need to fix this logic, we will remove _channel from admin account
-    Community.find_by(slug: username.sub('_channel', '').dasherize)
+  def get_community(account_id)
+    Community.find_by(id: CommunityAdmin.find_by(account_id: account_id).patchwork_community_id)
   end
 
   def status_banned?(status_id, community_id)
