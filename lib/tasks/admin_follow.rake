@@ -5,6 +5,7 @@ require 'httparty'
 namespace :admin do
   desc 'Sub-channel admins search and follow the main channel super admin account.'
   task follow: :environment do
+    sleep(2)
     domain = ENV['WEB_DOMAIN'] || Rails.configuration.x.local_domain
     domain = domain.gsub(/:\d+$/, '')
 
