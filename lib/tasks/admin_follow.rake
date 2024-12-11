@@ -5,18 +5,17 @@ require 'httparty'
 namespace :admin do
   desc 'Sub-channel admins search and follow the main channel super admin account.'
   task follow: :environment do
+    sleep(2)
     domain = ENV['WEB_DOMAIN'] || Rails.configuration.x.local_domain
     domain = domain.gsub(/:\d+$/, '')
 
     domain = domain.split('.').values_at(1, 2).join('.')
 
     admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
-    # channel_account = "@#{admins.values.first["username"]}@#{domain}"
-    channel_account = "@#{admins.values.first["username"]}@channel.org"
-
+    channel_account = "@#{admins.values.first["username"]}@#{domain}"
     owner_role = UserRole.find_by(name: 'Owner')
     owner_user = User.find_by(role: owner_role)
-    AdminAccountManager.new(owner_user.email).follow_admin_account(channel_account)
+    AdminAccountManager.new(owner_user.email, domain).follow_admin_account(channel_account)
 
     # admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
     # if admins.empty?
@@ -34,8 +33,9 @@ end
 class AdminAccountManager
   ACCESS_TOKEN_SCOPES = 'read write follow'
 
-  def initialize(account_email)
+  def initialize(account_email, domain)
     @account_email = account_email
+    @domain = domain
     @admin_user = find_admin_user
     @token = generate_admin_access_token if @admin_user
     return Rails.logger.error("Invalid token for #{@account_email}.") unless @token
@@ -80,6 +80,7 @@ class AdminAccountManager
   def search_and_find_account(search_param)
     response = search_account(search_param)
     accounts = response.parsed_response['accounts']
+    p "SEARCHED_RESULT #{accounts.inspect}"
     find_saved_accounts_with_retry(accounts).first
   end
 
@@ -94,7 +95,7 @@ class AdminAccountManager
 
     saved_accounts = []
     while saved_accounts.empty?
-      saved_accounts = Account.where(username: accounts.map { |account| account['username'] })
+      saved_accounts = Account.where(username: accounts.map { |account| account['username'] }, domain: @domain)
       sleep(2) if saved_accounts.empty?
     end
 
@@ -105,7 +106,7 @@ class AdminAccountManager
     response = follow_account_on_api(target_account, reblogs)
 
     if response.code == 200
-      Rails.logger.info("Successfully followed #{target_account.username}.")
+      Rails.logger.info("Successfully followed #{target_account.inspect}.")
     else
       Rails.logger.error("Failed to follow account #{target_account.username}: #{response.body}")
     end
@@ -123,7 +124,7 @@ class AdminAccountManager
 
   def generate_admin_access_token
     access_token = get_or_create_admin_access_token
-    access_token&.token || log_error('Failed to generate or retrieve an access token.')
+    access_token&.token || Rails.logger.error("[AdminAccountManager] Failed to generate or retrieve an access token.")
   end
 
   def get_or_create_admin_access_token
@@ -142,10 +143,5 @@ class AdminAccountManager
       app.redirect_uri = Doorkeeper.configuration.native_redirect_uri
       app.scopes = 'read write follow push'
     end
-  end
-
-  def log_error(message)
-    Rails.logger.error("[AdminAccountManager] #{message}")
-    nil
   end
 end
