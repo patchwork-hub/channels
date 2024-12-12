@@ -10,7 +10,7 @@ class ReblogChannelsService < BaseService
     Rails.logger.info "*****STATUS_FOLLOWER_ADMIN_ACCOUNT #{status_follower_admin_account_ids}*****"
 
     tag_ids = @status.tags.ids
-    Rails.logger.info "*****STATUS_OF_TAGS #{@status.tags}*****"
+    Rails.logger.info "*****STATUS_OF_TAGS #{@status.tags.inspect}*****"
     tag_follower_admin_account_ids = TagFollow.where(tag_id: tag_ids).pluck(:account_id)
     Rails.logger.info "*****TAG_FOLLOWER_ADMIN_ACCOUNT #{tag_follower_admin_account_ids}*****"
 
