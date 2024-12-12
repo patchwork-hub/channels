@@ -5,7 +5,5 @@ class NotificationToken < ApplicationRecord
   belongs_to :account
 
   validates :platform_type, :notification_token, presence: true
-  validates :notification_token, uniqueness: { scope: :account_id }
-
-
+  validates :notification_token, presence: true, uniqueness: true
 end
