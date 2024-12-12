@@ -56,7 +56,7 @@ namespace :api, format: false do
       end
     end
 
-    resources :notification_tokens, only: [:index] do
+    resources :notification_tokens, only: [:create] do
       collection do
         post :revoke_token, to: 'notification_tokens#revoke_notification_token'
       end
