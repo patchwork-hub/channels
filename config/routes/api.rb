@@ -56,7 +56,11 @@ namespace :api, format: false do
       end
     end
 
-    resources :notification_tokens, only: :create
+    resources :notification_tokens, only: [:index] do
+      collection do
+        post :revoke_token, to: 'notification_tokens#revoke_notification_token'
+      end
+    end
 
     resources :suggestions, only: [:index, :destroy]
     resources :scheduled_statuses, only: [:index, :show, :update, :destroy]
