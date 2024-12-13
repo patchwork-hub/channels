@@ -13,20 +13,10 @@ namespace :admin do
 
     admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
     channel_account = "@#{admins&.values&.first["username"]}@#{domain}"
+    puts "CHANNEL_ACCOUNT_TO_FOLLOW: #{channel_account}"
     owner_role = UserRole.find_by(name: 'Owner')
     owner_user = User.find_by(role: owner_role)
     AdminAccountManager.new(owner_user.email, domain).follow_admin_account(channel_account) if channel_account.present?
-
-    # admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
-    # if admins.empty?
-    #   Rails.logger.error("No admins found in the ADMINS environment variable.")
-    # end
-
-    # admins.each_value do |admin|
-    #   if admin['email'].to_s.strip != ''
-    #     AdminAccountManager.new(admin['email']).follow_admin_account(channel_account)
-    #   end
-    # end
   end
 end
 
@@ -104,6 +94,8 @@ class AdminAccountManager
 
   def follow_contributor!(target_account, reblogs: true)
     response = follow_account_on_api(target_account, reblogs)
+
+    p "RESPONSE_AFTER_FOLLOW: #{response}"
 
     if response.code == 200
       Rails.logger.info("Successfully followed #{target_account.inspect}.")
