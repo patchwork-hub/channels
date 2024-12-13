@@ -16,7 +16,7 @@ namespace :admin do
     puts "**********CHANNEL_ACCOUNT_TO_FOLLOW**********: #{channel_account}"
     owner_role = UserRole.find_by(name: 'Owner')
     owner_user = User.find_by(role: owner_role)
-    puts "**********OWNER_ACCOUNT**********: #{owner_user}"
+    puts "**********OWNER_ACCOUNT**********: #{owner_user.inspect}"
     AdminAccountManager.new(owner_user.email, domain).follow_admin_account(channel_account) if channel_account.present?
   end
 end
@@ -61,7 +61,7 @@ class AdminAccountManager
 
   def follow_account(channel_account)
     account_data = search_and_find_account(channel_account)
-    puts "**********CHANNEL_ORG_ACCOUNT_AFTER_SEARCH**********"
+    puts "**********CHANNEL_ORG_ACCOUNT_AFTER_SEARCH********** #{account_data}"
     if account_data
       follow_contributor!(account_data)
     else
@@ -100,7 +100,7 @@ class AdminAccountManager
     p "**********RESPONSE_AFTER_FOLLOW**********: #{response}"
 
     if response.code == 200
-      Rails.logger.info("Successfully followed #{target_account.inspect}.")
+      Rails.logger.info("**********Successfully followed********** #{target_account.inspect}.")
     else
       Rails.logger.error("Failed to follow account #{target_account.username}: #{response.body}")
     end
@@ -118,6 +118,7 @@ class AdminAccountManager
 
   def generate_admin_access_token
     access_token = get_or_create_admin_access_token
+    puts "ACCESS_TOKEN_OWNER_ACCOUNT: #{@admin_user.inspect}"
     access_token&.token || Rails.logger.error("[AdminAccountManager] Failed to generate or retrieve an access token.")
   end
 
