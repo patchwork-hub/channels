@@ -37,6 +37,7 @@ class ReblogChannelsService < BaseService
       end
 
       if valid_post_type?(community, admin_account) && !status_banned?(@status.id, community.id)
+        Rails.logger.info "*****STATUS_HAS_BEEN_SHARED_BY #{admin_account.username}*****"
         ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
       end
     end
