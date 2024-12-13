@@ -13,9 +13,10 @@ namespace :admin do
 
     admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
     channel_account = "@#{admins&.values&.first["username"]}@#{domain}"
-    puts "CHANNEL_ACCOUNT_TO_FOLLOW: #{channel_account}"
+    puts "**********CHANNEL_ACCOUNT_TO_FOLLOW**********: #{channel_account}"
     owner_role = UserRole.find_by(name: 'Owner')
     owner_user = User.find_by(role: owner_role)
+    puts "**********OWNER_ACCOUNT**********: #{owner_user}"
     AdminAccountManager.new(owner_user.email, domain).follow_admin_account(channel_account) if channel_account.present?
   end
 end
@@ -60,6 +61,7 @@ class AdminAccountManager
 
   def follow_account(channel_account)
     account_data = search_and_find_account(channel_account)
+    put "**********CHANNEL_ORG_ACCOUNT_AFTER_SEARCH**********"
     if account_data
       follow_contributor!(account_data)
     else
@@ -70,7 +72,7 @@ class AdminAccountManager
   def search_and_find_account(search_param)
     response = search_account(search_param)
     accounts = response.parsed_response['accounts']
-    p "SEARCHED_RESULT #{accounts.inspect}"
+    p "**********SEARCHED_RESULT**********: #{accounts.inspect}"
     find_saved_accounts_with_retry(accounts).first
   end
 
@@ -95,7 +97,7 @@ class AdminAccountManager
   def follow_contributor!(target_account, reblogs: true)
     response = follow_account_on_api(target_account, reblogs)
 
-    p "RESPONSE_AFTER_FOLLOW: #{response}"
+    p "**********RESPONSE_AFTER_FOLLOW**********: #{response}"
 
     if response.code == 200
       Rails.logger.info("Successfully followed #{target_account.inspect}.")
