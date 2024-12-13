@@ -16,17 +16,6 @@ namespace :admin do
     owner_role = UserRole.find_by(name: 'Owner')
     owner_user = User.find_by(role: owner_role)
     AdminAccountManager.new(owner_user.email, domain).follow_admin_account(channel_account) if channel_account.present?
-
-    # admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
-    # if admins.empty?
-    #   Rails.logger.error("No admins found in the ADMINS environment variable.")
-    # end
-
-    # admins.each_value do |admin|
-    #   if admin['email'].to_s.strip != ''
-    #     AdminAccountManager.new(admin['email']).follow_admin_account(channel_account)
-    #   end
-    # end
   end
 end
 
@@ -50,7 +39,6 @@ class AdminAccountManager
 
   def follow_admin_account(channel_account)
     if @admin_user.nil?
-      puts "Admin user with email #{@account_email} not found."
       Rails.logger.error("Admin user with email #{@account_email} not found.")
       return
     end
@@ -80,7 +68,6 @@ class AdminAccountManager
   def search_and_find_account(search_param)
     response = search_account(search_param)
     accounts = response.parsed_response['accounts']
-    p "SEARCHED_RESULT #{accounts.inspect}"
     find_saved_accounts_with_retry(accounts).first
   end
 
@@ -106,7 +93,7 @@ class AdminAccountManager
     response = follow_account_on_api(target_account, reblogs)
 
     if response.code == 200
-      Rails.logger.info("Successfully followed #{target_account.inspect}.")
+      Rails.logger.info("**********Successfully followed********** #{target_account.inspect}.")
     else
       Rails.logger.error("Failed to follow account #{target_account.username}: #{response.body}")
     end
