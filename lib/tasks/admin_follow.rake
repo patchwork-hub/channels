@@ -13,10 +13,8 @@ namespace :admin do
 
     admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
     channel_account = "@#{admins&.values&.first["username"]}@#{domain}"
-    puts "**********CHANNEL_ACCOUNT_TO_FOLLOW**********: #{channel_account}"
     owner_role = UserRole.find_by(name: 'Owner')
     owner_user = User.find_by(role: owner_role)
-    puts "**********OWNER_ACCOUNT**********: #{owner_user.inspect}"
     AdminAccountManager.new(owner_user.email, domain).follow_admin_account(channel_account) if channel_account.present?
   end
 end
@@ -41,7 +39,6 @@ class AdminAccountManager
 
   def follow_admin_account(channel_account)
     if @admin_user.nil?
-      puts "Admin user with email #{@account_email} not found."
       Rails.logger.error("Admin user with email #{@account_email} not found.")
       return
     end
@@ -61,7 +58,6 @@ class AdminAccountManager
 
   def follow_account(channel_account)
     account_data = search_and_find_account(channel_account)
-    puts "**********CHANNEL_ORG_ACCOUNT_AFTER_SEARCH********** #{account_data}"
     if account_data
       follow_contributor!(account_data)
     else
@@ -72,7 +68,6 @@ class AdminAccountManager
   def search_and_find_account(search_param)
     response = search_account(search_param)
     accounts = response.parsed_response['accounts']
-    p "**********SEARCHED_RESULT**********: #{accounts.inspect}"
     find_saved_accounts_with_retry(accounts).first
   end
 
@@ -97,8 +92,6 @@ class AdminAccountManager
   def follow_contributor!(target_account, reblogs: true)
     response = follow_account_on_api(target_account, reblogs)
 
-    p "**********RESPONSE_AFTER_FOLLOW**********: #{response}"
-
     if response.code == 200
       Rails.logger.info("**********Successfully followed********** #{target_account.inspect}.")
     else
@@ -118,7 +111,6 @@ class AdminAccountManager
 
   def generate_admin_access_token
     access_token = get_or_create_admin_access_token
-    puts "ACCESS_TOKEN_OWNER_ACCOUNT: #{@admin_user.inspect}"
     access_token&.token || Rails.logger.error("[AdminAccountManager] Failed to generate or retrieve an access token.")
   end
 
