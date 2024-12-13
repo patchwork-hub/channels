@@ -61,7 +61,7 @@ class AdminAccountManager
 
   def follow_account(channel_account)
     account_data = search_and_find_account(channel_account)
-    put "**********CHANNEL_ORG_ACCOUNT_AFTER_SEARCH**********"
+    puts "**********CHANNEL_ORG_ACCOUNT_AFTER_SEARCH**********"
     if account_data
       follow_contributor!(account_data)
     else
