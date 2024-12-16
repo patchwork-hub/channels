@@ -31,7 +31,7 @@ import { fetchFollowRequests } from 'mastodon/actions/accounts';
 import { IconWithBadge } from 'mastodon/components/icon_with_badge';
 import { NavigationPortal } from 'mastodon/components/navigation_portal';
 import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
-import { channel_display_name, timelinePreview, trendsEnabled } from 'mastodon/initial_state';
+import { channel_display_name, logo_image, timelinePreview, trendsEnabled } from 'mastodon/initial_state';
 import { transientSingleColumn } from 'mastodon/is_mobile';
 import { selectUnreadNotificationGroupsCount } from 'mastodon/selectors/notifications';
 
@@ -132,7 +132,7 @@ class NavigationPanel extends Component {
       <div className='navigation-panel'>
         <div className='navigation-panel__logo' style={{ paddingInline:16 }}>
           <Link to='/' className='column-link column-link--logo'>
-            {(subdomain==='news') ? <img width='175px' src='./temp-images/newsmast.png' alt='news logo' />:subdomain==='informationtechnology'?<img width='150px' alt='information technology logo' src='./temp-images/binarylab.png' />:channel_display_name}
+            {(subdomain==='news') ? <img width='175px' src='./temp-images/newsmast.png' alt='news logo' />:subdomain==='informationtechnology'?<img width='150px' alt='information technology logo' src='./temp-images/binarylab.png' />:logo_image?<img src={logo_image} style={{ maxWidth:200 }} alt='channel logo' />:channel_display_name}
           </Link>
         </div>
 

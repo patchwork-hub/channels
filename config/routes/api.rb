@@ -48,7 +48,20 @@ namespace :api, format: false do
     get '/streaming/(*any)', to: 'streaming#index'
 
     resources :custom_emojis, only: [:index]
-    resources :custom_passwords, only: [:index]
+
+    resources :custom_passwords, only: [:create, :update] do
+      collection do
+        post :verify_otp, to: 'custom_passwords#verify_otp'
+        get :request_otp, to: 'custom_passwords#request_otp'
+      end
+    end
+
+    resources :notification_tokens, only: [:create] do
+      collection do
+        post :revoke_token, to: 'notification_tokens#revoke_notification_token'
+      end
+    end
+
     resources :suggestions, only: [:index, :destroy]
     resources :scheduled_statuses, only: [:index, :show, :update, :destroy]
     resources :preferences, only: [:index]
@@ -318,6 +331,7 @@ namespace :api, format: false do
 
   namespace :v2 do
     get '/search', to: 'search#index', as: :search
+    get '/search_federation', to: 'search_federation#index', as: :search_federation
 
     resources :media, only: [:create]
     resources :suggestions, only: [:index]

@@ -54,6 +54,10 @@ class Api::V1::StatusesController < Api::BaseController
     loaded_ancestors    = preload_collection(ancestors_results, Status)
     loaded_descendants  = preload_collection(descendants_results, Status)
 
+    # Custom code for mobile needs [ Conversations ]
+    custom_sort_flag = params[:reverse_sort].nil? ? false : params[:reverse_sort]
+    loaded_ancestors = loaded_ancestors.sort.reverse if custom_sort_flag
+
     @context = Context.new(ancestors: loaded_ancestors, descendants: loaded_descendants)
     statuses = [@status] + @context.ancestors + @context.descendants
 

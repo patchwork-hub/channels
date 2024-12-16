@@ -233,4 +233,7 @@ gem 'hcaptcha', '~> 7.1'
 gem 'httparty'
 gem 'mail', '~> 2.8'
 
-# gem 'content_filters', git: 'https://github.com/patchwork-hub/content_filters', branch: 'fitler_refactor'
+gem 'googleauth'
+
+gem 'content_filters', git: 'https://github.com/patchwork-hub/content_filters', branch: 'fitler_refactor'
+gem 'posts', git: 'https://github.com/patchwork-hub/posts'

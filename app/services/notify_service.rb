@@ -180,9 +180,6 @@ class NotifyService < BaseService
     @recipient    = recipient
     @activity     = activity
     @notification = Notification.new(account: @recipient, type: type, activity: @activity)
-    
-    #Disable sending out notifications
-    return if @notification.from_account.domain.nil?
 
     # For certain conditions we don't need to create a notification at all
     return if dismiss?
@@ -201,6 +198,7 @@ class NotifyService < BaseService
       push_notification!
       push_to_conversation! if direct_message?
       send_email! if email_needed?
+      CustomNotificationService.new.call(@recipient, @notification)
     end
   rescue ActiveRecord::RecordInvalid
     nil
