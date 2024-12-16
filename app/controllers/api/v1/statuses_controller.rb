@@ -54,10 +54,6 @@ class Api::V1::StatusesController < Api::BaseController
     loaded_ancestors    = preload_collection(ancestors_results, Status)
     loaded_descendants  = preload_collection(descendants_results, Status)
 
-    # Custom code for sorting status by id in descending order
-    loaded_ancestors = loaded_ancestors.sort_by { |status| status[:created_at] }
-    loaded_descendants = loaded_descendants.sort_by { |status| status[:created_at] }
-
     # Custom code for mobile needs [ Conversations ]
     custom_sort_flag = params[:reverse_sort].nil? ? false : params[:reverse_sort]
     loaded_ancestors = loaded_ancestors.sort.reverse if custom_sort_flag
