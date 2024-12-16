@@ -132,7 +132,7 @@ class NavigationPanel extends Component {
       <div className='navigation-panel'>
         <div className='navigation-panel__logo' style={{ paddingInline:16 }}>
           <Link to='/' className='column-link column-link--logo'>
-            {(subdomain==='news') ? <img width='175px' src='./temp-images/newsmast.png' alt='news logo' />:subdomain==='informationtechnology'?<img width='150px' alt='information technology logo' src='./temp-images/binarylab.png' />:logo_image?<img src={logo_image} style={{ maxWidth:200 }} alt='channel logo' />:channel_display_name}
+            {(subdomain==='news') ? <img width='175px' src='./temp-images/newsmast.png' alt='news logo' />:subdomain==='informationtechnology'?<img width='150px' alt='information technology logo' src='./temp-images/binarylab.png' />:logo_image?<img src={logo_image} width={200} alt='channel logo' />:channel_display_name}
           </Link>
         </div>
 
