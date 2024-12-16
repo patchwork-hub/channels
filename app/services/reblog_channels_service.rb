@@ -36,7 +36,7 @@ class ReblogChannelsService < BaseService
                     status_follower_admin_account_ids.include?(admin_account.id)
       end
 
-      if valid_post_type?(community, admin_account) && !status_banned?(@status.id, community.id)
+      if valid_post_type?(community, admin_account) && status_has_keyword?(@status.id, community.id, 'filter_in') && !status_has_keyword?(@status.id, community.id, 'filter_out')
         Rails.logger.info "*****STATUS_HAS_BEEN_SHARED_BY #{admin_account.username}*****"
         ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
       end
@@ -109,7 +109,7 @@ class ReblogChannelsService < BaseService
     Community.find_by(id: CommunityAdmin.find_by(account_id: account_id)&.patchwork_community_id)
   end
 
-  def status_banned?(status_id, community_id)
-    ContentFilters::BanStatusService.new.check_and_ban_channel_status(status_id, community_id)
+  def status_has_keyword?(status_id, community_id, filter_type)
+    ContentFilters::BanStatusService.new.keyword_matches_in_status?(status_id, community_id, filter_type)
   end
 end
