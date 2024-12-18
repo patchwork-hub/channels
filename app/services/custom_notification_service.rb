@@ -10,6 +10,7 @@ class CustomNotificationService < BaseService
     body = ''
     destination_id = 0
     reblogged_id = 0
+    visibility = ''
     from_account_username = Account.find(notification.from_account_id).username
 
     case notification.type
@@ -31,7 +32,9 @@ class CustomNotificationService < BaseService
     when :mention
       body = "#{from_account_username} mentioned you"
       mention = Mention.find(notification.activity_id)
-      destination_id = Status.find(mention.status_id).id
+      status = Status.find(mention.status_id)
+      destination_id = status.id
+      visibility = status.visibility
     when :poll
       poll = Poll.find(notification.activity_id)
       body = notification.from_account_id == poll.account_id ? 'Your poll has ended' : 'A poll you voted in has ended'
@@ -45,6 +48,7 @@ class CustomNotificationService < BaseService
       noti_type: notification.type,
       destination_id: destination_id.to_s,
       reblogged_id: reblogged_id.to_s,
+      visibility: visibility,
     }
     Rails.logger.info("**********data: #{data} **********")
     ## ios & android
