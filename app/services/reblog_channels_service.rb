@@ -3,61 +3,63 @@
 class ReblogChannelsService < BaseService
   def call(status)
     @status = status
-    community_admin_account_ids = CommunityAdmin.where(is_boost_bot: true).pluck(:account_id)
+    unless @status.sensitive? || @status.account.bot
+      community_admin_account_ids = CommunityAdmin.where(is_boost_bot: true).pluck(:account_id)
 
-    # Custom Channel
-    status_follower_admin_account_ids = @status.account.followers.local.channel_admins(community_admin_account_ids).pluck(:id)
-    Rails.logger.info "*****STATUS_FOLLOWER_ADMIN_ACCOUNT #{status_follower_admin_account_ids}*****"
+      # Custom Channel
+      status_follower_admin_account_ids = @status.account.followers.local.channel_admins(community_admin_account_ids).pluck(:id)
+      Rails.logger.info "*****STATUS_FOLLOWER_ADMIN_ACCOUNT #{status_follower_admin_account_ids}*****"
 
-    tag_ids = @status.tags.ids
-    Rails.logger.info "*****STATUS_OF_TAGS #{@status.tags.inspect}*****"
-    tag_follower_admin_account_ids = TagFollow.where(tag_id: tag_ids).pluck(:account_id)
-    Rails.logger.info "*****TAG_FOLLOWER_ADMIN_ACCOUNT #{tag_follower_admin_account_ids}*****"
+      tag_ids = @status.tags.ids
+      Rails.logger.info "*****STATUS_OF_TAGS #{@status.tags.inspect}*****"
+      tag_follower_admin_account_ids = TagFollow.where(tag_id: tag_ids).pluck(:account_id)
+      Rails.logger.info "*****TAG_FOLLOWER_ADMIN_ACCOUNT #{tag_follower_admin_account_ids}*****"
 
-    unique_admin_account_ids = (status_follower_admin_account_ids + tag_follower_admin_account_ids).uniq
+      unique_admin_account_ids = (status_follower_admin_account_ids + tag_follower_admin_account_ids).uniq
 
-    Account.where(id: unique_admin_account_ids).each do |admin_account|
-      Rails.logger.info "*****TAG_FOLLOWER_ADMIN #{admin_account&.username}*****"
-      id = admin_account&.id
-      next unless id
+      Account.where(id: unique_admin_account_ids).each do |admin_account|
+        Rails.logger.info "*****TAG_FOLLOWER_ADMIN #{admin_account&.username}*****"
+        id = admin_account&.id
+        next unless id
 
-      community = get_community(id)
-      next unless community
+        community = get_community(id)
+        next unless community
 
-      content_type = community.content_type
-      next unless content_type&.custom_channel?
+        content_type = community.content_type
+        next unless content_type&.custom_channel?
 
-      # Skip if the admin_account has muted the status account
-      next if Mute.exists?(account_id: admin_account.id, target_account_id: @status.account.id)
+        # Skip if the admin_account has muted the status account
+        next if Mute.exists?(account_id: admin_account.id, target_account_id: @status.account.id)
 
-      # Skip if `and_condition?` is true and admin_account is not in both follower lists
-      if content_type&.and_condition?
-        next unless tag_follower_admin_account_ids.include?(admin_account.id) &&
-                    status_follower_admin_account_ids.include?(admin_account.id)
+        # Skip if `and_condition?` is true and admin_account is not in both follower lists
+        if content_type&.and_condition?
+          next unless tag_follower_admin_account_ids.include?(admin_account.id) &&
+                      status_follower_admin_account_ids.include?(admin_account.id)
+        end
+
+        if valid_post_type?(community, admin_account) && status_has_keyword?(@status.id, community.id, 'filter_in') && !status_has_keyword?(@status.id, community.id, 'filter_out')
+          Rails.logger.info "*****STATUS_HAS_BEEN_SHARED_BY #{admin_account.username}*****"
+          ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
+        end
       end
 
-      if valid_post_type?(community, admin_account) && status_has_keyword?(@status.id, community.id, 'filter_in') && !status_has_keyword?(@status.id, community.id, 'filter_out')
-        Rails.logger.info "*****STATUS_HAS_BEEN_SHARED_BY #{admin_account.username}*****"
-        ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
+      #Group Channel
+      community_admins = Account.where(id: community_admin_account_ids)
+
+      group_channel_admins = community_admins.select do |admin_account|
+        id = admin_account&.id
+        next unless id
+
+        community = get_community(id)
+        community&.content_type&.group_channel?
       end
-    end
 
-    #Group Channel
-    community_admins = Account.where(id: community_admin_account_ids)
+      group_channel_admins.each do |admin_account|
+        Rails.logger.info "*****Checking Group Channel for Admin Account: #{admin_account.username}*****"
 
-    group_channel_admins = community_admins.select do |admin_account|
-      id = admin_account&.id
-      next unless id
-
-      community = get_community(id)
-      community&.content_type&.group_channel?
-    end
-
-    group_channel_admins.each do |admin_account|
-      Rails.logger.info "*****Checking Group Channel for Admin Account: #{admin_account.username}*****"
-
-      if @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
-        ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
+        if @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
+          ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
+        end
       end
     end
   end
