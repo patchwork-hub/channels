@@ -17,28 +17,28 @@ class Api::V1::Patchwork::ConversationsController < Api::BaseController
   private
 
   def paginated_conversations
-    accounts = if params[:target_account_id].present?
-                 ids = [current_account.id, params[:target_account_id]]
-                 both_exist = AccountConversation.where(account_id: ids).count == ids.size
-                 Account.where(id: ids) if both_exist
-               end
+    return [] if params[:target_account_id].blank?
 
-    return [] if accounts.nil?
+    account_conversation = AccountConversation
+                           .where(account: current_account)
+                           .where(participant_account_ids: [params[:target_account_id]])
 
-    AccountConversation.where(account: accounts)
-                       .includes(
-                         account: [:account_stat, user: :role],
-                         last_status: [
-                           :media_attachments,
-                           :status_stat,
-                           :tags,
-                           {
-                             preview_cards_status: { preview_card: { author_account: [:account_stat, user: :role] } },
-                             active_mentions: :account,
-                             account: [:account_stat, user: :role],
-                           },
-                         ]
-                       )
-                       .to_a_paginated_by_id(limit_param(LIMIT), params_slice(:max_id, :since_id, :min_id))
+    return [] if account_conversation.blank?
+
+    account_conversation
+      .includes(
+        account: [:account_stat, user: :role],
+        last_status: [
+          :media_attachments,
+          :status_stat,
+          :tags,
+          {
+            preview_cards_status: { preview_card: { author_account: [:account_stat, user: :role] } },
+            active_mentions: :account,
+            account: [:account_stat, user: :role],
+          },
+        ]
+      )
+      .to_a_paginated_by_id(limit_param(LIMIT), params_slice(:max_id, :since_id, :min_id))
   end
 end
