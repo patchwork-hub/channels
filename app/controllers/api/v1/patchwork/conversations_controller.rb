@@ -9,7 +9,7 @@ class Api::V1::Patchwork::ConversationsController < Api::BaseController
 
   def check_conversation
     @conversations = paginated_conversations
-    return render json: { message: 'Record not found' }, status: 404 unless @conversations.any?
+    return render json: {}, status: 200 unless @conversations.any?
 
     render json: @conversations.last, serializer: REST::ConversationSerializer, relationships: StatusRelationshipsPresenter.new(@conversations.map(&:last_status), current_user&.account_id)
   end
