@@ -42,6 +42,9 @@ class CustomNotificationService < BaseService
     when :follow
       body = "#{from_account_username} followed you"
       destination_id = notification.from_account_id
+    when :follow_request
+      body = "#{from_account_username} has requested to follow you"
+      destination_id = notification.from_account_id
     end
 
     data = {
