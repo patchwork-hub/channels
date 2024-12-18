@@ -62,6 +62,14 @@ namespace :api, format: false do
       end
     end
 
+    namespace :patchwork do
+      resources :conversations, only: [''] do
+        collection do
+          get 'check_conversation', to: 'conversations#check_conversation'
+        end
+      end
+    end
+
     resources :suggestions, only: [:index, :destroy]
     resources :scheduled_statuses, only: [:index, :show, :update, :destroy]
     resources :preferences, only: [:index]
