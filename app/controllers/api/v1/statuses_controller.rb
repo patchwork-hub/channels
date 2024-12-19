@@ -56,7 +56,10 @@ class Api::V1::StatusesController < Api::BaseController
 
     # Custom code for mobile needs [ Conversations ]
     custom_sort_flag = params[:reverse_sort].nil? ? false : params[:reverse_sort]
-    loaded_ancestors = loaded_ancestors.sort.reverse if custom_sort_flag
+    if custom_sort_flag
+      loaded_ancestors = loaded_ancestors.sort.reverse
+      loaded_descendants = loaded_descendants.sort.reverse
+    end
 
     @context = Context.new(ancestors: loaded_ancestors, descendants: loaded_descendants)
     statuses = [@status] + @context.ancestors + @context.descendants
