@@ -63,11 +63,12 @@ COPY --from=node /usr/local/lib /usr/local/lib
 RUN --mount=type=cache,id=apt-cache-${TARGETPLATFORM},target=/var/cache/apt,sharing=locked \
   --mount=type=cache,id=apt-lib-${TARGETPLATFORM},target=/var/lib/apt,sharing=locked \
   apt-get install -y --no-install-recommends \
-  autoconf automake build-essential cmake git libgdbm-dev libglib2.0-dev libgmp-dev \
-  libicu-dev libidn-dev libpq-dev libssl-dev libtool meson nasm pkg-config shared-mime-info xz-utils \
-  libcgif-dev libexif-dev libexpat1-dev libgirepository1.0-dev libheif-dev libimagequant-dev \
-  libjpeg62-turbo-dev liblcms2-dev liborc-dev libspng-dev libtiff-dev libwebp-dev \
-  libdav1d-dev liblzma-dev libmp3lame-dev libopus-dev libsnappy-dev libvorbis-dev libvpx-dev \
+  autoconf automake build-essential cmake git libgdbm-dev libglib2.0-dev \
+  libgmp-dev libicu-dev libidn-dev libpq-dev libssl-dev libtool meson nasm \
+  pkg-config shared-mime-info xz-utils libcgif-dev libexif-dev libexpat1-dev \
+  libgirepository1.0-dev libheif-dev libimagequant-dev libjpeg62-turbo-dev \
+  liblcms2-dev liborc-dev libspng-dev libtiff-dev libwebp-dev libdav1d-dev \
+  liblzma-dev libmp3lame-dev libopus-dev libsnappy-dev libvorbis-dev libvpx-dev \
   libx264-dev libx265-dev && \
   rm /usr/local/bin/yarn* && \
   corepack enable && \
@@ -98,10 +99,11 @@ WORKDIR /usr/local/ffmpeg/src
 RUN curl -sSL -o ffmpeg-${FFMPEG_VERSION}.tar.xz ${FFMPEG_URL}/ffmpeg-${FFMPEG_VERSION}.tar.xz && \
   tar xf ffmpeg-${FFMPEG_VERSION}.tar.xz && \
   cd ffmpeg-${FFMPEG_VERSION} && \
-  ./configure --prefix=/usr/local/ffmpeg --toolchain=hardened --disable-debug --disable-devices \
-  --disable-doc --disable-ffplay --disable-network --disable-static --enable-ffmpeg --enable-ffprobe \
-  --enable-gpl --enable-libdav1d --enable-libmp3lame --enable-libopus --enable-libsnappy --enable-libvorbis \
-  --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-shared --enable-version3 && \
+  ./configure --prefix=/usr/local/ffmpeg --toolchain=hardened --disable-debug \
+  --disable-devices --disable-doc --disable-ffplay --disable-network --disable-static \
+  --enable-ffmpeg --enable-ffprobe --enable-gpl --enable-libdav1d --enable-libmp3lame \
+  --enable-libopus --enable-libsnappy --enable-libvorbis --enable-libvpx --enable-libwebp \
+  --enable-libx264 --enable-libx265 --enable-shared --enable-version3 && \
   make -j$(nproc) && \
   make install
 
@@ -148,9 +150,9 @@ RUN --mount=type=cache,id=apt-cache-${TARGETPLATFORM},target=/var/cache/apt,shar
   apt-get install -y --no-install-recommends \
   libexpat1 libglib2.0-0 libicu72 libidn12 libpq5 libreadline8 libssl3 libyaml-0-2 \
   libcgif0 libexif12 libheif1 libimagequant0 libjpeg62-turbo liblcms2-2 liborc-0.4-0 \
-  libspng0 libtiff6 libwebp7 libwebpdemux2 libwebpmux3 libdav1d6 libmp3lame0 libopencore-amrnb0 \
-  libopencore-amrwb0 libopus0 libsnappy1v5 libtheora0 libvorbis0a libvorbisenc2 libvorbisfile3 \
-  libvpx7 libx264-164 libx265-199
+  libspng0 libtiff6 libwebp7 libwebpdemux2 libwebpmux3 libdav1d6 libmp3lame0 \
+  libopencore-amrnb0 libopencore-amrwb0 libopus0 libsnappy1v5 libtheora0 libvorbis0a \
+  libvorbisenc2 libvorbisfile3 libvpx7 libx264-164 libx265-199
 
 COPY . /opt/mastodon/
 COPY --from=precompiler /opt/mastodon/public/packs /opt/mastodon/public/packs
@@ -171,7 +173,5 @@ RUN ldconfig && \
   chown -R mastodon:mastodon /opt/mastodon/tmp
 
 USER mastodon
-# Expose default Puma ports
 EXPOSE 3000 4000
-# Set container tini as default entry point
 ENTRYPOINT ["/usr/bin/tini", "--"]
