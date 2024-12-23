@@ -4,19 +4,16 @@ namespace :admin do
   desc 'Create admin account'
   task :create => :environment do
     p "Start Admin Creation"
-    domain = ENV['LOCAL_DOMAIN'] || Rails.configuration.x.local_domain
-    domain = domain.gsub(/:\d+$/, '')
 
-    account_name = extract_account_name(domain)
+    domain =  ENV.fetch('LOCAL_DOMAIN', nil) || Rails.configuration.x.local_domain
 
-    subdomain = domain.split('.').first.underscore
-    domain = domain.split('.').values_at(1, 2).join('.')
+    account_name = domain.split('.').first.underscore.capitalize + "Adm"
 
     Chewy.strategy(:bypass) do
       admin = create_or_update_account(account_name)
 
-      account_email = "#{subdomain}@#{domain}"
-      password = "#{subdomain}-Channel@uomu82sl18s82"
+      account_email = domain.sub('.', '@')
+      password = ENV.fetch('OWNER_PASSWORD', nil).to_s
 
       create_or_update_user(account_email, password, admin, "Owner")
 
@@ -62,15 +59,5 @@ namespace :admin do
     user.approve! if user.respond_to?(:approve!)
 
     Rails.logger.info "Processed user #{user.email} successfully"
-  end
-
-  def extract_account_name(domain)
-    parts = domain.split('.')
-    if parts.length >= 3
-      admin_name = parts[0].capitalize.underscore
-      "#{admin_name}Adm"
-    else
-      'Admin'
-    end
   end
 end
