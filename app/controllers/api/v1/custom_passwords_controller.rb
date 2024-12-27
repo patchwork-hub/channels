@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class Api::V1::CustomPasswordsController < Api::BaseController
-  skip_before_action :require_authenticated_user!
-  before_action :set_user, only: [:update, :verify_otp, :request_otp]
+  skip_before_action :require_authenticated_user!, except: [:change_password]
+  before_action :require_authenticated_user!, only: [:change_password]
+  before_action :set_user, only: [:update, :verify_otp, :request_otp, :change_password]
 
   layout 'email'
   def create
@@ -58,6 +59,20 @@ class Api::V1::CustomPasswordsController < Api::BaseController
     render json: { message: 'OTP verified successfully' }, status: 200
   rescue ActiveRecord::RecordInvalid => e
     render_password_error(message: e.message)
+  end
+
+  def change_password
+    return render_password_error(message: 'Missing required fields') unless @user && password_params[:password].present? && password_params[:password_confirmation].present? && params[:current_password].present? && @user&.otp_secret.nil?
+
+    return render_password_error(message: 'Password unmatch.') unless password_params[:password] == password_params[:password_confirmation]
+
+    return render_password_error(message: 'Current password is incorrect.') unless @user.valid_password?(params[:current_password])
+
+    @user.password = password_params[:password]
+    @user.save(validate: false)
+    render json: { message: 'Password update successfully.' }, status: 200
+  rescue ActiveSupport::MessageVerifier::InvalidSignature
+    render_password_error(message: 'Password update unsuccessfully.')
   end
 
   private
