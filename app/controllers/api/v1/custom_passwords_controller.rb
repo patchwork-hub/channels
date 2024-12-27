@@ -3,7 +3,7 @@
 class Api::V1::CustomPasswordsController < Api::BaseController
   skip_before_action :require_authenticated_user!, except: [:change_password]
   before_action :require_authenticated_user!, only: [:change_password]
-  before_action :set_user, only: [:update, :verify_otp, :request_otp, :change_password]
+  before_action :set_user, only: [:update, :verify_otp, :request_otp]
 
   layout 'email'
   def create
@@ -62,6 +62,7 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   end
 
   def change_password
+    @user = current_user
     return render_password_error(message: 'Missing required fields') unless @user && password_params[:password].present? && password_params[:password_confirmation].present? && params[:current_password].present? && @user&.otp_secret.nil?
 
     return render_password_error(message: 'Password unmatch.') unless password_params[:password] == password_params[:password_confirmation]
@@ -83,8 +84,11 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   end
 
   def set_user
-    @user = User.find_by(reset_password_token: params[:id])
-    unless @user
+    return nil if params[:id].nil?
+
+    if reset_password?
+      @user = User.find_by(reset_password_token: params[:id])
+    else
       token = Doorkeeper::AccessToken.find_by(token: params[:id])
       @user = User.find_by(id: token&.resource_owner_id) if token
     end
