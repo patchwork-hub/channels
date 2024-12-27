@@ -70,6 +70,7 @@ class Api::V1::CustomPasswordsController < Api::BaseController
 
     @user.password = password_params[:password]
     @user.save(validate: false)
+
     render json: { message: 'Password update successfully.' }, status: 200
   rescue ActiveSupport::MessageVerifier::InvalidSignature
     render_password_error(message: 'Password update unsuccessfully.')
