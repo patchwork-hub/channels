@@ -5,12 +5,15 @@ require 'securerandom'
 require 'time'
 require 'eventmachine'
 require 'em-http-request'
+require 'digest'
+require 'openssl'
+require 'base64'
 
 class FedibuzzStreamer
   MASTODON_INSTANCE = 'https://channel.org'.freeze
-  MASTODON_ACCESS_TOKEN = 'MASTODON_TOKEN'.freeze
   FEDIBUZZ_API_URL = 'https://fedi.buzz/api/v1/streaming/public'.freeze
   STATUS_LIMIT = 400
+  PRIVATE_KEY_PATH = '/Users/kiru/Desktop/private_key.pem'.freeze
 
   def generate_activity_id
     "urn:uuid:#{SecureRandom.uuid}"
@@ -63,9 +66,19 @@ class FedibuzzStreamer
       request = Net::HTTP::Post.new(uri.request_uri)
       request.body = activity.to_json
       request['Content-Type'] = 'application/activity+json'
-      request['Authorization'] = "Bearer #{MASTODON_ACCESS_TOKEN}"
+
+      digest = Digest::SHA256.base64digest(request.body)
+      request['Digest'] = "SHA-256=#{digest}"
+
+      date = Time.now.httpdate
+      request['Date'] = date
+
+      string_to_sign = "(request-target): post #{uri.path}\ndigest: SHA-256=#{digest}\ndate: #{date}"
+      signature = generate_signature(string_to_sign)
+      request['Signature'] = "keyId=\"acct:admin@channel.org\",algorithm=\"rsa-sha256\",headers=\"(request-target) digest date\",signature=\"#{signature}\""
 
       response = http.request(request)
+
       if response.code.to_i == 202
         puts 'Successfully injected status'
       else
@@ -80,6 +93,12 @@ class FedibuzzStreamer
       puts "Error processing status: #{e.message}"
       processed_count
     end
+  end
+
+  def generate_signature(string_to_sign)
+    private_key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY_PATH))
+    signature = private_key.sign(OpenSSL::Digest.new('SHA256'), string_to_sign)
+    Base64.strict_encode64(signature)
   end
 
   def stream_from_fedi_buzz(status_limit)
@@ -102,7 +121,6 @@ class FedibuzzStreamer
 
             puts "Reached status limit of #{status_limit}. Stopping."
             EM.stop
-            break
           end
         rescue => e
           puts "Error in stream: #{e.message}"
@@ -135,10 +153,10 @@ class FedibuzzStreamer
     rescue JSON::ParserError => e
       puts "JSON parsing error (inner data): #{e.message} - data: #{data}"
     end
-    processed_count
+    processed_count + 1
   end
 
-  def lambda_handler(_event:, _context:)
+  def lambda_handler(event: {}, context: {})
     puts 'Starting Lambda execution...'
     stream_from_fedi_buzz(STATUS_LIMIT)
   end
@@ -147,6 +165,7 @@ end
 namespace :stream do
   desc 'Fetch and feed the public streaming API from fedi.buzz to Channel instance'
   task public_posts: :environment do
+    puts 'Running local test'
     FedibuzzStreamer.new.lambda_handler(event: {}, context: {})
   end
 end

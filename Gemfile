@@ -192,6 +192,9 @@ group :development do
 
   # Validate missing i18n keys
   gem 'i18n-tasks', '~> 1.0', require: false
+
+  gem 'em-http-request', '~> 1.1', '>= 1.1.7'
+  gem 'eventmachine', '~> 1.2', '>= 1.2.7'
 end
 
 group :development, :test do
