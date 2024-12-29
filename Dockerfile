@@ -48,7 +48,7 @@ RUN --mount=type=cache,id=apt-cache-${TARGETPLATFORM},target=/var/cache/apt,shar
   apt-get update && \
   apt-get dist-upgrade -yq && \
   apt-get install -y --no-install-recommends \
-  curl file libjemalloc2 patchelf procps tini tzdata wget vim && \
+  curl file libjemalloc2 patchelf procps tini tzdata wget && \
   patchelf --add-needed libjemalloc.so.2 /usr/local/bin/ruby && \
   apt-get purge -y patchelf
 
