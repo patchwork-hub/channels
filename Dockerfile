@@ -152,7 +152,7 @@ RUN --mount=type=cache,id=apt-cache-${TARGETPLATFORM},target=/var/cache/apt,shar
   libcgif0 libexif12 libheif1 libimagequant0 libjpeg62-turbo liblcms2-2 liborc-0.4-0 \
   libspng0 libtiff6 libwebp7 libwebpdemux2 libwebpmux3 libdav1d6 libmp3lame0 \
   libopencore-amrnb0 libopencore-amrwb0 libopus0 libsnappy1v5 libtheora0 libvorbis0a \
-  libvorbisenc2 libvorbisfile3 libvpx7 libx264-164 libx265-199 vim
+  libvorbisenc2 libvorbisfile3 libvpx7 libx264-164 libx265-199
 
 COPY . /opt/mastodon/
 COPY --from=precompiler /opt/mastodon/public/packs /opt/mastodon/public/packs
