@@ -48,7 +48,7 @@ RUN --mount=type=cache,id=apt-cache-${TARGETPLATFORM},target=/var/cache/apt,shar
   apt-get update && \
   apt-get dist-upgrade -yq && \
   apt-get install -y --no-install-recommends \
-  curl file libjemalloc2 patchelf procps tini tzdata wget && \
+  curl file libjemalloc2 patchelf procps tini tzdata wget vim && \
   patchelf --add-needed libjemalloc.so.2 /usr/local/bin/ruby && \
   apt-get purge -y patchelf
 
@@ -152,7 +152,7 @@ RUN --mount=type=cache,id=apt-cache-${TARGETPLATFORM},target=/var/cache/apt,shar
   libcgif0 libexif12 libheif1 libimagequant0 libjpeg62-turbo liblcms2-2 liborc-0.4-0 \
   libspng0 libtiff6 libwebp7 libwebpdemux2 libwebpmux3 libdav1d6 libmp3lame0 \
   libopencore-amrnb0 libopencore-amrwb0 libopus0 libsnappy1v5 libtheora0 libvorbis0a \
-  libvorbisenc2 libvorbisfile3 libvpx7 libx264-164 libx265-199
+  libvorbisenc2 libvorbisfile3 libvpx7 libx264-164 libx265-199 vim
 
 COPY . /opt/mastodon/
 COPY --from=precompiler /opt/mastodon/public/packs /opt/mastodon/public/packs
