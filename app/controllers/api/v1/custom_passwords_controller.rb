@@ -22,7 +22,7 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   def update
     return render_password_error(message: 'Missing required fields') unless @user && password_params[:password].present? && password_params[:password_confirmation].present? && @user&.otp_secret.nil?
 
-    return render_password_error(message: 'Password unmatch.') unless password_params[:password] == password_params[:password_confirmation]
+    return render_password_error(message: 'Password unmatch.') unless password_params[:password].eql?(password_params[:password_confirmation])
 
     @user.password = password_params[:password]
     @user.save(validate: false)
@@ -65,7 +65,7 @@ class Api::V1::CustomPasswordsController < Api::BaseController
     @user = current_user
     return render_password_error(message: 'Missing required fields') unless @user && password_params[:password].present? && password_params[:password_confirmation].present? && params[:current_password].present? && @user&.otp_secret.nil?
 
-    return render_password_error(message: 'Password unmatch.') unless password_params[:password] == password_params[:password_confirmation]
+    return render_password_error(message: 'Password unmatch.') unless password_params[:password].eql?(password_params[:password_confirmation])
 
     return render_password_error(message: 'Current password is incorrect.') unless @user.valid_password?(params[:current_password])
 
