@@ -9,8 +9,8 @@ class ActivityPub::InboxesController < ActivityPub::BaseController
 
   def create
     Rails.logger.info 'INBOX: Received a new request'
-    Rails.logger.debug "INBOX: Request Headers: #{request.headers.to_h}"
-    Rails.logger.debug "INBOX: Request Body: #{body}"
+    Rails.logger.debug { "INBOX: Request Headers: #{request.headers.to_h}" }
+    Rails.logger.debug { "INBOX: Request Body: #{body}" }
 
     Rails.logger.info 'INBOX: Attempting upgrade_account'
     upgrade_account
@@ -31,9 +31,9 @@ class ActivityPub::InboxesController < ActivityPub::BaseController
   private
 
   def skip_unknown_actor_activity
-    Rails.logger.info "INBOX: Checking for skip_unknown_actor_activity"
+    Rails.logger.info 'INBOX: Checking for skip_unknown_actor_activity'
     if unknown_affected_account?
-      Rails.logger.warn "INBOX: Skipping unknown actor activity"
+      Rails.logger.warn 'INBOX: Skipping unknown actor activity'
       head 202
     end
   end
@@ -47,8 +47,8 @@ class ActivityPub::InboxesController < ActivityPub::BaseController
       false
     end
   rescue Oj::ParseError => e
-      Rails.logger.warn "INBOX: Oj::ParseError in unknown_affected_account?: #{e.message}"
-      false
+    Rails.logger.warn "INBOX: Oj::ParseError in unknown_affected_account?: #{e.message}"
+    false
   end
 
   def account_required?
@@ -71,7 +71,7 @@ class ActivityPub::InboxesController < ActivityPub::BaseController
   end
 
   def upgrade_account
-    Rails.logger.info "INBOX: Starting upgrade_account"
+    Rails.logger.info 'INBOX: Starting upgrade_account'
     if signed_request_account&.ostatus?
       Rails.logger.info "INBOX: Updating account #{signed_request_account.acct}"
       signed_request_account.update(last_webfingered_at: nil)
@@ -84,14 +84,14 @@ class ActivityPub::InboxesController < ActivityPub::BaseController
   end
 
   def process_collection_synchronization
-    Rails.logger.info "INBOX: Starting process_collection_synchronization"
+    Rails.logger.info 'INBOX: Starting process_collection_synchronization'
     raw_params = request.headers['Collection-Synchronization']
-    Rails.logger.debug "INBOX: Collection-Synchronization Header: #{raw_params}"
+    Rails.logger.debug { "INBOX: Collection-Synchronization Header: #{raw_params}" }
     return if raw_params.blank? || ENV['DISABLE_FOLLOWERS_SYNCHRONIZATION'] == 'true' || signed_request_account.nil?
 
     # Re-using the syntax for signature parameters
     params = SignatureParser.parse(raw_params)
-    Rails.logger.debug "INBOX: Collection-Synchronization Parameters: #{params}"
+    Rails.logger.debug { "INBOX: Collection-Synchronization Parameters: #{params}" }
     ActivityPub::PrepareFollowersSynchronizationService.new.call(signed_request_account, params)
   rescue SignatureParser::ParsingError
     Rails.logger.warn 'Error parsing Collection-Synchronization header'
@@ -99,7 +99,7 @@ class ActivityPub::InboxesController < ActivityPub::BaseController
 
   def process_payload
     Rails.logger.info "INBOX: Starting process_payload for actor: #{signed_request_actor.id}"
-    ActivityPub::ProcessingWorker.perform_async(signed_request_actor.id, body, @account&.id, signed_request_actor.class.name)
-    Rails.logger.info "INBOX: Scheduled ActivityPub::ProcessingWorker for actor: #{signed_request_actor.id}"
+    job_id = ActivityPub::ProcessingWorker.perform_async(signed_request_actor.id, body, @account&.id, signed_request_actor.class.name)
+    Rails.logger.info "INBOX: Scheduled ActivityPub::ProcessingWorker for actor: #{signed_request_actor.id} and Sidekiq job ID: #{job_id}"
   end
 end
