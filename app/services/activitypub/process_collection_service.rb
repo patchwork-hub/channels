@@ -28,13 +28,18 @@ class ActivityPub::ProcessCollectionService < BaseService
       patch_for_forwarding!(original_json, @json)
       @json.delete('signature') unless safe_for_forwarding?(original_json, @json)
     end
+    Rails.logger.info "PROCESS COLLECTION: Processing a #{@json['type']} object."
+
 
     case @json['type']
     when 'Collection', 'CollectionPage'
+      Rails.logger.debug "PROCESS COLLECTION: Collection items: #{@json['items']}"
       process_items @json['items']
     when 'OrderedCollection', 'OrderedCollectionPage'
+      Rails.logger.debug "PROCESS COLLECTION: Ordered collection items: #{@json['orderedItems']}"
       process_items @json['orderedItems']
     else
+      Rails.logger.debug "PROCESS COLLECTION: Single item object: #{@json}"
       process_items [@json]
     end
   rescue Oj::ParseError
@@ -56,8 +61,14 @@ class ActivityPub::ProcessCollectionService < BaseService
   end
 
   def process_items(items)
-    items.reverse_each.filter_map { |item| process_item(item) }
+    Rails.logger.info "PROCESS COLLECTION: Processing #{items.size} items."
+    items.reverse_each.filter_map do |item|
+      processed_item = process_item(item)
+      Rails.logger.info "PROCESS COLLECTION: Item processed and status created: #{processed_item.is_a?(Status) ? processed_item.id : 'no'}"
+      processed_item
+    end
   end
+
 
   def supported_context?
     super(@json)
