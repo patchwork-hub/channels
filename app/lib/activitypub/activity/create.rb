@@ -59,9 +59,14 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
       @status = find_existing_status
 
       if @status.nil?
+        Rails.logger.info "INBOX: No existing status found, proceeding to create a new status. Account URI: #{@account.uri}, Object URI: #{object_uri}"
         process_status
+        Rails.logger.info "INBOX: Finished processing and attempting to create status. Status created: #{@status.present?}. Account URI: #{@account.uri}, Object URI: #{object_uri}"
       elsif @options[:delivered_to_account_id].present?
+        Rails.logger.info "INBOX: Existing status found, post-processing audience and delivering. Account URI: #{@account.uri}, Object URI: #{object_uri}, Existing Status ID: #{@status.id}"
         postprocess_audience_and_deliver
+      else
+        Rails.logger.info "INBOX: Existing status found, skipping creation. Account URI: #{@account.uri}, Object URI: #{object_uri}, Existing Status ID: #{@status.id}"
       end
     end
 
@@ -90,11 +95,18 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
       @status = Status.create!(@params)
       attach_tags(@status)
     end
-    Rails.logger.info 'INBOX: after sucessfully creating status in db.'
+    Rails.logger.info 'INBOX: after successfully creating status in db. Status ID: #{@status.id}, URI: #{@status.uri}'
     resolve_thread(@status)
     fetch_replies(@status)
     distribute
     forward_for_reply
+  rescue ActiveRecord::RecordInvalid => e
+    Rails.logger.warn "INBOX: Failed to create status due to validation errors: #{e.message}. Account URI: #{@account.uri}, Object URI: #{object_uri}"
+    @status = nil
+  rescue => e
+    Rails.logger.error "INBOX: An unexpected error occurred during status creation: #{e.class} - #{e.message}. Account URI: #{@account.uri}, Object URI: #{object_uri}"
+    Rails.logger.error e.backtrace.join("\n")
+    @status = nil
   end
 
   def distribute
