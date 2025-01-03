@@ -12,7 +12,9 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     when 'EncryptedMessage'
       create_encrypted_message
     else
+      Rails.logger.info "INBOX: Starting create_status Account URI: #{@account.uri} and Object URI: #{object_uri}"
       create_status
+      Rails.logger.info "INBOX: Ending create_status Account URI: #{@account.uri} and Object URI: #{object_uri}"
     end
   end
 
@@ -47,8 +49,10 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def create_status
+    Rails.logger.info "INBOX: Before rejection check: Account URI: #{@account.uri} and Object URI: #{object_uri}"
     return reject_payload! if unsupported_object_type? || non_matching_uri_hosts?(@account.uri, object_uri) || tombstone_exists? || !related_to_local_activity?
 
+    Rails.logger.info "INBOX: After rejection check: Account URI: #{@account.uri} and Object URI: #{object_uri}"
     with_redis_lock("create:#{object_uri}") do
       return if delete_arrived_first?(object_uri) || poll_vote?
 
@@ -81,12 +85,12 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     process_status_params
     process_tags
     process_audience
-
+    Rails.logger.info 'INBOX: before starting to create status in db.'
     ApplicationRecord.transaction do
       @status = Status.create!(@params)
       attach_tags(@status)
     end
-
+    Rails.logger.info 'INBOX: after sucessfully creating status in db.'
     resolve_thread(@status)
     fetch_replies(@status)
     distribute
