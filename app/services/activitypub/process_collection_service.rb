@@ -28,18 +28,18 @@ class ActivityPub::ProcessCollectionService < BaseService
       patch_for_forwarding!(original_json, @json)
       @json.delete('signature') unless safe_for_forwarding?(original_json, @json)
     end
-    Rails.logger.info "PROCESS COLLECTION: Processing a #{@json['type']} object."
+    p "*****PROCESS COLLECTION: Processing a #{@json['type']} object."
 
 
     case @json['type']
     when 'Collection', 'CollectionPage'
-      Rails.logger.debug "PROCESS COLLECTION: Collection items: #{@json['items']}"
+      p "*****PROCESS COLLECTION: Collection items: #{@json['items']}"
       process_items @json['items']
     when 'OrderedCollection', 'OrderedCollectionPage'
-      Rails.logger.debug "PROCESS COLLECTION: Ordered collection items: #{@json['orderedItems']}"
+      p "*****PROCESS COLLECTION: Ordered collection items: #{@json['orderedItems']}"
       process_items @json['orderedItems']
     else
-      Rails.logger.debug "PROCESS COLLECTION: Single item object: #{@json}"
+      p "*****PROCESS COLLECTION: Single item object: #{@json}"
       process_items [@json]
     end
   rescue Oj::ParseError
@@ -75,6 +75,7 @@ class ActivityPub::ProcessCollectionService < BaseService
   end
 
   def process_item(item)
+    p "*****PROCESS COLLECTION: Run ACTIVITY FACTORY for item: #{item}"
     activity = ActivityPub::Activity.factory(item, @account, **@options)
     activity&.perform
   end
