@@ -12,9 +12,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     when 'EncryptedMessage'
       create_encrypted_message
     else
-      Rails.logger.info "INBOX: Starting create_status Account URI: #{@account.uri} and Object URI: #{object_uri}"
       create_status
-      Rails.logger.info "INBOX: Ending create_status Account URI: #{@account.uri} and Object URI: #{object_uri}"
     end
   end
 
@@ -49,24 +47,17 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def create_status
-    Rails.logger.info "INBOX: Before rejection check: Account URI: #{@account.uri} and Object URI: #{object_uri}"
     return reject_payload! if unsupported_object_type? || non_matching_uri_hosts?(@account.uri, object_uri) || tombstone_exists? || !related_to_local_activity?
 
-    Rails.logger.info "INBOX: After rejection check: Account URI: #{@account.uri} and Object URI: #{object_uri}"
     with_redis_lock("create:#{object_uri}") do
       return if delete_arrived_first?(object_uri) || poll_vote?
 
       @status = find_existing_status
 
       if @status.nil?
-        Rails.logger.info "INBOX: No existing status found, proceeding to create a new status. Account URI: #{@account.uri}, Object URI: #{object_uri}"
         process_status
-        Rails.logger.info "INBOX: Finished processing and attempting to create status. Status created: #{@status.present?}. Account URI: #{@account.uri}, Object URI: #{object_uri}"
       elsif @options[:delivered_to_account_id].present?
-        Rails.logger.info "INBOX: Existing status found, post-processing audience and delivering. Account URI: #{@account.uri}, Object URI: #{object_uri}, Existing Status ID: #{@status.id}"
         postprocess_audience_and_deliver
-      else
-        Rails.logger.info "INBOX: Existing status found, skipping creation. Account URI: #{@account.uri}, Object URI: #{object_uri}, Existing Status ID: #{@status.id}"
       end
     end
 
@@ -90,23 +81,16 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     process_status_params
     process_tags
     process_audience
-    Rails.logger.info 'INBOX: before starting to create status in db.'
+
     ApplicationRecord.transaction do
       @status = Status.create!(@params)
       attach_tags(@status)
     end
-    Rails.logger.info 'INBOX: after successfully creating status in db. Status ID: #{@status.id}, URI: #{@status.uri}'
+
     resolve_thread(@status)
     fetch_replies(@status)
     distribute
     forward_for_reply
-  rescue ActiveRecord::RecordInvalid => e
-    Rails.logger.warn "INBOX: Failed to create status due to validation errors: #{e.message}. Account URI: #{@account.uri}, Object URI: #{object_uri}"
-    @status = nil
-  rescue => e
-    Rails.logger.error "INBOX: An unexpected error occurred during status creation: #{e.class} - #{e.message}. Account URI: #{@account.uri}, Object URI: #{object_uri}"
-    Rails.logger.error e.backtrace.join("\n")
-    @status = nil
   end
 
   def distribute
