@@ -1,90 +1,19 @@
 require 'net/http'
 require 'uri'
 require 'json'
-require 'securerandom'
-require 'time'
 require 'eventmachine'
 require 'em-http-request'
-require 'digest'
-require 'openssl'
-require 'base64'
 
 class FedibuzzStreamer
   MASTODON_INSTANCE = 'https://channel.org'.freeze
   FEDIBUZZ_API_URL = 'https://fedi.buzz/api/v1/streaming/public'.freeze
+  MASTODON_ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN'.freeze
   STATUS_LIMIT = 400
-  PRIVATE_KEY_PATH = '/Users/kiru/Desktop/private_key.pem'.freeze
-
-  def generate_activity_id
-    "urn:uuid:#{SecureRandom.uuid}"
-  end
-
-  def generate_actor_id(acct)
-    return unless acct.include?('@')
-
-    username, domain = acct.split('@')
-    "https://#{domain}/users/#{username}"
-  end
-
-  def create_activitypub_object(status)
-    acct = status['account']['acct']
-    actor_id = generate_actor_id(acct)
-    activity_id = generate_activity_id
-
-    published = status.fetch('created_at', Time.now.utc.iso8601)
-    content = status['content']
-
-    content = "<details><summary>#{status['spoiler_text']}</summary>#{content}</details>" if status['spoiler_text'].present?
-
-    {
-      id: activity_id,
-      type: 'Create',
-      actor: actor_id,
-      published: published,
-      object: {
-        id: status['url'],
-        type: 'Note',
-        content: content,
-        published: published,
-        to: ['https://www.w3.org/ns/activitystreams#Public'],
-        cc: [actor_id, 'https://www.w3.org/ns/activitystreams#Public'],
-      },
-      to: ['https://www.w3.org/ns/activitystreams#Public'],
-    }
-  end
 
   def process_status(status_json, processed_count)
     begin
       status = JSON.parse(status_json)
-
-      activity = create_activitypub_object(status)
-      puts "Created the activity #{activity}"
-      uri = URI("#{MASTODON_INSTANCE}/inbox")
-
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = uri.scheme == 'https'
-      request = Net::HTTP::Post.new(uri.request_uri)
-      request.body = activity.to_json
-      request['Content-Type'] = 'application/activity+json'
-
-      digest = Digest::SHA256.base64digest(request.body)
-      request['Digest'] = "SHA-256=#{digest}"
-
-      date = Time.now.httpdate
-      request['Date'] = date
-
-      string_to_sign = "(request-target): post #{uri.path}\ndigest: SHA-256=#{digest}\ndate: #{date}"
-      signature = generate_signature(string_to_sign)
-      request['Signature'] = "keyId=\"acct:admin@channel.org\",algorithm=\"rsa-sha256\",headers=\"(request-target) digest date\",signature=\"#{signature}\""
-
-      response = http.request(request)
-
-      if response.code.to_i == 202
-        puts 'Successfully injected status'
-      else
-        puts "Failed to inject status: #{response.code} - #{response.body}"
-      end
-
+      search_mastodon_posts(status['uri'])
       processed_count + 1
     rescue JSON::ParserError => e
       puts "JSON parsing error: #{e.message} - data: #{status_json}"
@@ -95,10 +24,22 @@ class FedibuzzStreamer
     end
   end
 
-  def generate_signature(string_to_sign)
-    private_key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY_PATH))
-    signature = private_key.sign(OpenSSL::Digest.new('SHA256'), string_to_sign)
-    Base64.strict_encode64(signature)
+  def search_mastodon_posts(uri)
+    search_uri = URI("#{MASTODON_INSTANCE}/api/v2/search")
+    search_uri.query = URI.encode_www_form({ q: uri, resolve: true })
+
+    http = Net::HTTP.new(search_uri.host, search_uri.port)
+    http.use_ssl = search_uri.scheme == 'https'
+    request = Net::HTTP::Get.new(search_uri.request_uri)
+    request['Authorization'] = "Bearer #{MASTODON_ACCESS_TOKEN}"
+
+    response = http.request(request)
+    if response.code.to_i == 200
+      results = JSON.parse(response.body)
+      puts "Search results: #{results}"
+    else
+      puts "Failed to search posts: #{response.code} - #{response.body}"
+    end
   end
 
   def stream_from_fedi_buzz(status_limit)
@@ -153,7 +94,7 @@ class FedibuzzStreamer
     rescue JSON::ParserError => e
       puts "JSON parsing error (inner data): #{e.message} - data: #{data}"
     end
-    processed_count + 1
+    processed_count
   end
 
   def lambda_handler(event: {}, context: {})
@@ -165,7 +106,6 @@ end
 namespace :stream do
   desc 'Fetch and feed the public streaming API from fedi.buzz to Channel instance'
   task public_posts: :environment do
-    puts 'Running local test'
     FedibuzzStreamer.new.lambda_handler(event: {}, context: {})
   end
 end
