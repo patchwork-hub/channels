@@ -4,10 +4,12 @@ require 'json'
 require 'eventmachine'
 require 'em-http-request'
 
-class FedibuzzStreamer
+class FedibuzzStreamService < BaseService
   MASTODON_INSTANCE = 'https://channel.org'.freeze
   FEDIBUZZ_API_URL = 'https://fedi.buzz/api/v1/streaming/public'.freeze
   MASTODON_ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN'.freeze
+  ACCESS_TOKEN_SCOPES = 'read write follow push'.freeze
+  MASTODON_ADMIN_EMAIL = "admin@channel.org".freeze
   STATUS_LIMIT = 400
 
   def process_status(status_json, processed_count)
@@ -31,7 +33,8 @@ class FedibuzzStreamer
     http = Net::HTTP.new(search_uri.host, search_uri.port)
     http.use_ssl = search_uri.scheme == 'https'
     request = Net::HTTP::Get.new(search_uri.request_uri)
-    request['Authorization'] = "Bearer #{MASTODON_ACCESS_TOKEN}"
+    token = generate_admin_access_token
+    request['Authorization'] = "Bearer #{token}"
 
     response = http.request(request)
     if response.code.to_i == 200
@@ -42,7 +45,7 @@ class FedibuzzStreamer
     end
   end
 
-  def stream_from_fedi_buzz(status_limit)
+  def stream_from_fedi_buzz
     puts 'Connecting to fedi.buzz API via SSE...'
     processed_count = 0
     EM.run do
@@ -57,10 +60,10 @@ class FedibuzzStreamer
           buffer += chunk
           while buffer.include?("\n\n")
             event, buffer = buffer.split("\n\n", 2)
-            processed_count = process_sse_event(event, processed_count, status_limit)
-            next unless processed_count >= status_limit
+            processed_count = process_sse_event(event, processed_count, STATUS_LIMIT)
+            next unless processed_count >= STATUS_LIMIT
 
-            puts "Reached status limit of #{status_limit}. Stopping."
+            puts "Reached status limit of #{STATUS_LIMIT}. Stopping."
             EM.stop
           end
         rescue => e
@@ -97,15 +100,27 @@ class FedibuzzStreamer
     processed_count
   end
 
-  def lambda_handler(event: {}, context: {})
-    puts 'Starting Lambda execution...'
-    stream_from_fedi_buzz(STATUS_LIMIT)
+  def generate_admin_access_token
+    @admin_user = User.find_by(email: MASTODON_ADMIN_EMAIL)
+    access_token = get_or_create_admin_access_token
+    access_token&.token || Rails.logger.error("[AdminAccountManager] Failed to generate or retrieve an access token.")
   end
-end
 
-namespace :stream do
-  desc 'Fetch and feed the public streaming API from fedi.buzz to Channel instance'
-  task public_posts: :environment do
-    FedibuzzStreamer.new.lambda_handler(event: {}, context: {})
+  def get_or_create_admin_access_token
+    Doorkeeper::AccessToken.find_or_create_by(
+      resource_owner_id: @admin_user.id,
+      application_id: doorkeeper_application.id,
+      revoked_at: nil
+    ) do |token|
+      token.scopes = ACCESS_TOKEN_SCOPES
+    end
+  end
+
+  def doorkeeper_application
+    Doorkeeper::Application.find_or_create_by(superapp: true) do |app|
+      app.name = 'Web'
+      app.redirect_uri = Doorkeeper.configuration.native_redirect_uri
+      app.scopes = 'read write follow push'
+    end
   end
 end
