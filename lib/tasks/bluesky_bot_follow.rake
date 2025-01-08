@@ -11,15 +11,14 @@ namespace :admin do
 
     domain = domain.split('.').values_at(1, 2).join('.')
 
-    # admins = JSON.parse(ENV.fetch('ADMINS', '{}'))
     channel_account = '@bsky.brid.gy@bsky.brid.gy'
     owner_role = UserRole.find_by(name: 'Owner')
     owner_user = User.find_by(role: owner_role)
-    AdminAccountManager.new(owner_user.email, domain).follow_blueksy_bot_account(channel_account) if channel_account.present?
+    BlueskyAccountManager.new(owner_user.email, domain).follow_blueksy_bot_account(channel_account) if channel_account.present?
   end
 end
 
-class AdminAccountManager
+class BlueskyAccountManager
   ACCESS_TOKEN_SCOPES = 'read write follow'
 
   def initialize(account_email, domain)
@@ -28,6 +27,7 @@ class AdminAccountManager
     @admin_user = find_admin_user
     @token = generate_admin_access_token if @admin_user
     return Rails.logger.error("Invalid token for #{@account_email}.") unless @token
+
     is_local = Rails.env.local?
     domain = ENV.fetch('LOCAL_DOMAIN', nil)
     if domain.nil?
@@ -82,7 +82,8 @@ class AdminAccountManager
 
     saved_accounts = []
     while saved_accounts.empty?
-      saved_accounts = Account.where(username: accounts.map { |account| account['username'] }, domain: @domain)
+
+      saved_accounts = Account.where(username: accounts.map { |account| account['username'] })
       sleep(2) if saved_accounts.empty?
     end
 
