@@ -5,7 +5,7 @@ require 'nokogiri'
 
 namespace :admin do
   desc 'Sub-channel admins check and follow the bluesky bot account.'
-  task follow_bluesky_bot: :environment do
+  task relationship_bluesky_bot: :environment do
     sleep(2)
     domain = ENV['WEB_DOMAIN'] || Rails.configuration.x.local_domain
     domain = domain.gsub(/:\d+$/, '')
