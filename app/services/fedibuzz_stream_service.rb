@@ -10,7 +10,7 @@ class FedibuzzStreamService < BaseService
   MASTODON_ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN'.freeze
   ACCESS_TOKEN_SCOPES = 'read write follow push'.freeze
   MASTODON_ADMIN_EMAIL = "admin@channel.org".freeze
-  STATUS_LIMIT = 400
+  STATUS_LIMIT = 100
 
   def process_status(status_json, processed_count)
     begin
