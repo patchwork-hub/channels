@@ -9,7 +9,7 @@ class FedibuzzStreamService < BaseService
   FEDIBUZZ_API_URL = 'https://fedi.buzz/api/v1/streaming/public'.freeze
   MASTODON_ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN'.freeze
   ACCESS_TOKEN_SCOPES = 'read write follow push'.freeze
-  MASTODON_ADMIN_EMAIL = "admin@channel.org".freeze
+  MASTODON_ADMIN_EMAIL = 'admin@channel.org'.freeze
   STATUS_LIMIT = 100
 
   def process_status(status_json, processed_count)
@@ -18,10 +18,10 @@ class FedibuzzStreamService < BaseService
       search_mastodon_posts(status['uri'])
       processed_count + 1
     rescue JSON::ParserError => e
-      puts "JSON parsing error: #{e.message} - data: #{status_json}"
+      Rails.logger.debug { "JSON parsing error: #{e.message} - data: #{status_json}" }
       processed_count
     rescue => e
-      puts "Error processing status: #{e.message}"
+      Rails.logger.debug { "Error processing status: #{e.message}" }
       processed_count
     end
   end
@@ -39,14 +39,14 @@ class FedibuzzStreamService < BaseService
     response = http.request(request)
     if response.code.to_i == 200
       results = JSON.parse(response.body)
-      puts "Search results: #{results}"
+      Rails.logger.debug { "Search results: #{results}" }
     else
-      puts "Failed to search posts: #{response.code} - #{response.body}"
+      Rails.logger.debug { "Failed to search posts: #{response.code} - #{response.body}" }
     end
   end
 
   def stream_from_fedi_buzz
-    puts 'Connecting to fedi.buzz API via SSE...'
+    Rails.logger.debug 'Connecting to fedi.buzz API via SSE...'
     processed_count = 0
     EM.run do
       http = EventMachine::HttpRequest.new(FEDIBUZZ_API_URL).get(
@@ -61,23 +61,23 @@ class FedibuzzStreamService < BaseService
           while buffer.include?("\n\n")
             event, buffer = buffer.split("\n\n", 2)
             processed_count = process_sse_event(event, processed_count, STATUS_LIMIT)
-            next unless processed_count >= STATUS_LIMIT
+            # next unless processed_count >= STATUS_LIMIT
 
-            puts "Reached status limit of #{STATUS_LIMIT}. Stopping."
-            EM.stop
+            # Rails.logger.debug { "Reached status limit of #{STATUS_LIMIT}. Stopping." }
+            # EM.stop
           end
         rescue => e
-          puts "Error in stream: #{e.message}"
+          Rails.logger.debug { "Error in stream: #{e.message}" }
         end
       end
 
       http.errback do
-        puts 'Error connecting to SSE endpoint'
+        Rails.logger.debug 'Error connecting to SSE endpoint'
         EM.stop
       end
 
       http.callback do
-        puts 'Connection to SSE endpoint closed'
+        Rails.logger.debug 'Connection to SSE endpoint closed'
         EM.stop
       end
 
@@ -87,7 +87,7 @@ class FedibuzzStreamService < BaseService
     end
   end
 
-  def process_sse_event(event_string, processed_count, status_limit)
+  def process_sse_event(event_string, processed_count, _status_limit)
     data_line = event_string.lines.find { |line| line.start_with?('data:') }
     return processed_count unless data_line
 
@@ -95,7 +95,7 @@ class FedibuzzStreamService < BaseService
     begin
       processed_count = process_status(data, processed_count)
     rescue JSON::ParserError => e
-      puts "JSON parsing error (inner data): #{e.message} - data: #{data}"
+      Rails.logger.debug { "JSON parsing error (inner data): #{e.message} - data: #{data}" }
     end
     processed_count
   end
@@ -103,7 +103,7 @@ class FedibuzzStreamService < BaseService
   def generate_admin_access_token
     @admin_user = User.find_by(email: MASTODON_ADMIN_EMAIL)
     access_token = get_or_create_admin_access_token
-    access_token&.token || Rails.logger.error("[AdminAccountManager] Failed to generate or retrieve an access token.")
+    access_token&.token || Rails.logger.error('[AdminAccountManager] Failed to generate or retrieve an access token.')
   end
 
   def get_or_create_admin_access_token

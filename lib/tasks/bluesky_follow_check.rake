@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require 'httparty'
+require 'nokogiri'
 
 namespace :admin do
-  desc 'Sub-channel admins search and follow the bluesky bot account.'
-  task follow_bluesky_bot: :environment do
+  desc 'Sub-channel admins check and follow the bluesky bot account.'
+  task relationship_bluesky_bot: :environment do
     sleep(2)
     domain = ENV['WEB_DOMAIN'] || Rails.configuration.x.local_domain
     domain = domain.gsub(/:\d+$/, '')
@@ -14,11 +15,11 @@ namespace :admin do
     channel_account = '@bsky.brid.gy@bsky.brid.gy'
     owner_role = UserRole.find_by(name: 'Owner')
     owner_user = User.find_by(role: owner_role)
-    BlueskyAccountManager.new(owner_user.email, domain).follow_blueksy_bot_account(channel_account) if channel_account.present?
+    BlueskyAccountFollowing.new(owner_user.email, domain).follow_blueksy_bot_account(channel_account) if channel_account.present?
   end
 end
 
-class BlueskyAccountManager
+class BlueskyAccountFollowing
   ACCESS_TOKEN_SCOPES = 'read write follow'
 
   def initialize(account_email, domain)
@@ -26,13 +27,12 @@ class BlueskyAccountManager
     @domain = domain
     @admin_user = find_admin_user
     @token = generate_admin_access_token if @admin_user
-    return Rails.logger.error("Invalid token for #{@account_email}.") unless @token
+    Rails.logger.error("Invalid token for #{@account_email}.") unless @token
+    return unless @token
 
     is_local = Rails.env.local?
     domain = ENV.fetch('LOCAL_DOMAIN', nil)
-    if domain.nil?
-      raise 'LOCAL_DOMAIN is not defined.'
-    end
+    raise 'LOCAL_DOMAIN is not defined.' if domain.nil?
 
     @api_base_url = "#{is_local ? 'http://' : 'https://'}#{domain.chomp('/')}"
   end
@@ -50,16 +50,15 @@ class BlueskyAccountManager
 
   def find_admin_user
     admin_user = User.find_by(email: @account_email)
-    if admin_user.nil?
-      Rails.logger.error("Admin user with email #{@account_email} not found.")
-    end
+    Rails.logger.error("Admin user with email #{@account_email} not found.") if admin_user.nil?
+
     admin_user
   end
 
   def follow_account(channel_account)
     account_data = search_and_find_account(channel_account)
     if account_data
-      follow_contributor!(account_data)
+      fetch_did if follow_bluesky_bot?(account_data)
     else
       puts "Account #{channel_account} not found."
     end
@@ -90,29 +89,48 @@ class BlueskyAccountManager
     saved_accounts
   end
 
-  def follow_contributor!(target_account, reblogs: true)
-    response = follow_account_on_api(target_account, reblogs)
+  def follow_bluesky_bot?(target_account)
+    response = follow_account_on_api(target_account)
 
     if response.code == 200
-      Rails.logger.info("**********Successfully followed********** #{target_account.inspect}.")
+      results = JSON.parse(response.body)
+      Rails.logger.info("Fetched relationships: #{results}")
+      true if results.last['requested'] == false && results.last['following'] == true
     else
-      Rails.logger.error("Failed to follow account #{target_account.username}: #{response.body}")
+      Rails.logger.error("Failed to fetch relationships #{target_account.username}: #{response.body}")
     end
   end
 
-  def follow_account_on_api(target_account, reblogs)
-    payload = { reblogs: reblogs }
-    headers = { 'Authorization' => "Bearer #{@token}", 'Content-Type' => 'application/json' }
+  def follow_account_on_api(target_account)
+    HTTParty.get("#{@api_base_url}/api/v1/accounts/relationships",
+                 query: { with_suspended: true, id: [target_account.id] },
+                 headers: { 'Authorization' => "Bearer #{@token}" })
+  end
 
-    HTTParty.post("#{api_base_url}/api/v1/accounts/#{target_account.id}/follow",
-                  body: payload.to_json, headers: headers)
+  def fetch_did
+    account = @admin_user&.account
+    url = "https://fed.brid.gy/ap/@#{account.username}@#{@domain}"
+    response = HTTParty.get(url)
+    if response.code == 200
+      document = Nokogiri::HTML(response.body)
+      did_value = document.at_css("button[onclick*='writeText']")&.attr('onclick')
+      if did_value.nil?
+        Rails.logger.error('DID value not found in response.')
+      else
+        did_value = did_value.match(/'([^']+)'/)[1]
+        Rails.logger.info("DID Value:: #{did_value}")
+        did_value
+      end
+    else
+      Rails.logger.error("Error fetching DID: #{response.code} - #{response.message}")
+    end
   end
 
   attr_reader :api_base_url
 
   def generate_admin_access_token
     access_token = get_or_create_admin_access_token
-    access_token&.token || Rails.logger.error("[BlueskyAccountManager] Failed to generate or retrieve an access token.")
+    access_token&.token || Rails.logger.error('[BlueskyAccountFollowing] Failed to generate or retrieve an access token.')
   end
 
   def get_or_create_admin_access_token
