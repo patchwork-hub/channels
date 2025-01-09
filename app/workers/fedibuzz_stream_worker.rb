@@ -1,7 +1,11 @@
+# frozen_string_literal: true
+
 class FedibuzzStreamWorker
   include Sidekiq::Worker
 
-  ALLOWED_DOMAIN = 'channel.org'.freeze
+  sidekiq_options lock: :until_executed, on_conflict: :log
+
+  ALLOWED_DOMAIN = 'channel.org'
 
   def perform
     Rails.logger.info('Starting FedibuzzStreamWorker...')
