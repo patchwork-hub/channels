@@ -61,10 +61,10 @@ class FedibuzzStreamService < BaseService
           while buffer.include?("\n\n")
             event, buffer = buffer.split("\n\n", 2)
             processed_count = process_sse_event(event, processed_count, STATUS_LIMIT)
-            next unless processed_count >= STATUS_LIMIT
+            # next unless processed_count >= STATUS_LIMIT
 
-            Rails.logger.debug { "Reached status limit of #{STATUS_LIMIT}. Stopping." }
-            EM.stop
+            # Rails.logger.debug { "Reached status limit of #{STATUS_LIMIT}. Stopping." }
+            # EM.stop
           end
         rescue => e
           Rails.logger.debug { "Error in stream: #{e.message}" }
