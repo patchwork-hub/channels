@@ -177,6 +177,7 @@ GEM
     color_diff (0.1)
     concurrent-ruby (1.3.4)
     connection_pool (2.4.1)
+    cookiejar (0.3.4)
     cose (1.3.1)
       cbor (~> 0.5.9)
       openssl-signature_algorithm (~> 1.0)
@@ -230,6 +231,15 @@ GEM
       base64
       faraday (>= 1, < 3)
       multi_json
+    em-http-request (1.1.7)
+      addressable (>= 2.3.4)
+      cookiejar (!= 0.3.1)
+      em-socksify (>= 0.3)
+      eventmachine (>= 1.0.3)
+      http_parser.rb (>= 0.6.0)
+    em-socksify (0.3.3)
+      base64
+      eventmachine (>= 1.0.0.beta.4)
     email_spec (2.3.0)
       htmlentities (~> 4.3.3)
       launchy (>= 2.1, < 4.0)
@@ -237,6 +247,7 @@ GEM
     erubi (1.13.0)
     et-orbi (1.2.11)
       tzinfo
+    eventmachine (1.2.7)
     excon (0.112.0)
     fabrication (2.31.0)
     faker (3.5.1)
@@ -372,6 +383,7 @@ GEM
       domain_name (~> 0.5)
     http-form_data (2.3.0)
     http_accept_language (2.1.1)
+    http_parser.rb (0.8.0)
     httparty (0.22.0)
       csv
       mini_mime (>= 1.0.0)
@@ -1023,7 +1035,9 @@ DEPENDENCIES
   doorkeeper (~> 5.6)
   dotenv
   ed25519 (~> 1.3)
+  em-http-request (~> 1.1, >= 1.1.7)
   email_spec
+  eventmachine (~> 1.2, >= 1.2.7)
   fabrication (~> 2.30)
   faker (~> 3.2)
   fast_blank (~> 1.0)

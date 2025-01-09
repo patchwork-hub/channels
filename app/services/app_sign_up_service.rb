@@ -21,8 +21,11 @@ class AppSignUpService < BaseService
   private
 
   def create_user!
+    # Assign UserAdmin role
+    user_admin_role = UserRole.find_by(name: 'UserAdmin')
+
     @user = User.create!(
-      user_params.merge(role_id: 7, created_by_application: @app, sign_up_ip: @remote_ip, password_confirmation: user_params[:password], account_attributes: account_params, invite_request_attributes: invite_request_params)
+      user_params.merge(role_id: user_admin_role.id, created_by_application: @app, sign_up_ip: @remote_ip, password_confirmation: user_params[:password], account_attributes: account_params, invite_request_attributes: invite_request_params)
     )
   end
 

@@ -30,9 +30,10 @@ class CustomNotificationService < BaseService
       favourite = Favourite.find(notification.activity_id)
       destination_id = Status.find(favourite.status_id).id
     when :mention
-      body = "#{from_account_username} mentioned you"
       mention = Mention.find(notification.activity_id)
       status = Status.find(mention.status_id)
+      message = status.visibility === Status.visibilities[:direct] ? "#{from_account_username} send you a message" : "#{from_account_username} mentioned you"
+      body = message
       destination_id = status.id
       visibility = status.visibility
     when :poll

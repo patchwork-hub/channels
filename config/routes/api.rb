@@ -53,6 +53,7 @@ namespace :api, format: false do
       collection do
         post :verify_otp, to: 'custom_passwords#verify_otp'
         get :request_otp, to: 'custom_passwords#request_otp'
+        post :change_password, to: 'custom_passwords#change_password'
       end
     end
 
