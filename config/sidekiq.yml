@@ -68,6 +68,6 @@
       class: Scheduler::AutoCloseRegistrationsScheduler
       queue: scheduler
     fedi_buzz_stream_worker:
-      cron: '*/15 * * * *'
+      cron: '*/5 * * * *'
       class: 'FedibuzzStreamWorker'
       queue: scheduler
