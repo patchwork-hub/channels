@@ -6,31 +6,28 @@ on:
     branches:
       - staging
 
-env:
-  WEB_DEFINITION:
-    .aws/patchwork_web_staging.json
-  SIDEKIQ_DEFINITION:
-    .aws/patchwork_sidekiq_staging.json
-
-
 permissions:
   contents: read
+  id-token: write  # Added for OIDC token support
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true  # Changed to true for more efficient queue management
 
 jobs:
-  Build:
-    name: Build and Push 
+  build-and-push:
+    name: Build and Push Image
     runs-on: ubuntu-latest
+    timeout-minutes: 30  # Added timeout to prevent runaway builds
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4  # Updated to latest version
+        with:
+          fetch-depth: 1  # Shallow clone for faster checkout
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4  # Updated to latest version
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -38,100 +35,107 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-        with:
-          mask-password: 'true'
+        uses: aws-actions/amazon-ecr-login@v2  # Updated to latest version
 
-      # This is a separate action that sets up buildx runner
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      # Use Github action cache
-      - name: Cache Docker layers
-        uses: actions/cache@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3  # Updated to latest version
         with:
-          path: /tmp/.buildx-cache
+          version: latest
+          driver-opts: |
+            image=moby/buildkit:master
+            network=host
+
+      - name: Cache Docker Layers
+        uses: actions/cache@v4  # Updated to latest version
+        with:
+          path: |
+            /tmp/.buildx-cache
+            /tmp/.yarn-cache
+            /tmp/.bundle-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
+            ${{ runner.os }}-buildx-${{ github.ref }}
             ${{ runner.os }}-buildx-
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Build and Push Image to Amazon ECR
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.STAGING_REPOSITORY }}
           IMAGE_TAG: ${{ vars.IMAGE_STAGING_TAG }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-#   Deploy:
-#     name: Deploy Web-Staging
-#     needs: Build
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v3
+          docker buildx build \
+            --platform linux/amd64 \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max \
+            --push \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            .
 
-#       - name: Configure AWS credentials
-#         uses: aws-actions/configure-aws-credentials@v1
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-region: ${{ secrets.AWS_REGION }}
+      - name: Move Cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-#       - name: Login to Amazon ECR
-#         id: login-ecr
-#         uses: aws-actions/amazon-ecr-login@v1
-#         with:
-#           mask-password: 'true'
+  deploy:
+    name: Deploy Staging
+    needs: build-and-push
+    runs-on: ubuntu-latest
 
-#       # This is a separate action that sets up buildx runner
-#       - name: Setup Docker Buildx
-#         uses: docker/setup-buildx-action@v2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4  # Updated to latest version
 
-#       # Use Github action cache
-#       - name: Cache Docker layers
-#         uses: actions/cache@v3
-#         with:
-#           path: /tmp/.buildx-cache
-#           key: ${{ runner.os }}-buildx-${{ github.sha }}
-#           restore-keys: |
-#             ${{ runner.os }}-buildx-
-      
-#       - name: Fill in the new image ID in the Amazon ECS task definition
-#         id: task-def-web
-#         uses: aws-actions/amazon-ecs-render-task-definition@v1
-#         with:
-#           task-definition: ${{ env.WEB_DEFINITION }}
-#           container-name: ${{ secrets.WEB_STAGING_CONTAINER }}
-#           # image: ${{ steps.build-image.outputs.image }}
-#           image:  ${{ secrets.WEB_STAGING_IMAGE }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4  # Updated to latest version
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-#       - name: Deploy Amazon ECS task definition
-#         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-#         with:
-#           task-definition: ${{ steps.task-def-web.outputs.task-definition }}
-#           service: ${{ secrets.WEB_STAGING_SERVICE_NAME }}
-#           cluster: ${{ secrets.CLUSTER_STAGING }}
-#           wait-for-service-stability: false
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2  # Updated to latest version
 
-      
-#       - name: Fill in the new image ID in the Amazon ECS task definition
-#         id: task-def-sidekiq
-#         uses: aws-actions/amazon-ecs-render-task-definition@v1
-#         with:
-#           task-definition: ${{ env.SIDEKIQ_DEFINITION }}
-#           container-name: ${{ secrets.SIDEKIQ_STAGING_CONTAINER_NAME }}
-#           # image: ${{ steps.build-image.outputs.image }}
-#           image:  ${{ secrets.SIDEKIQ_STAGING_IMAGE }}
-  
-#       - name: Deploy Amazon ECS task definition
-#         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-#         with:
-#           task-definition: ${{ steps.task-def-sidekiq.outputs.task-definition }}
-#           service: ${{ secrets.SIDEKIQ_STAGING_SERVICE_NAME }}
-#           cluster: ${{ secrets.CLUSTER_STAGING }}
-#           wait-for-service-stability: false
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3  # Updated to latest version
 
+      - name: Cache Docker Layers
+        uses: actions/cache@v4  # Updated to latest version
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
-    
+      - name: Fill in the new image ID in the Amazon ECS task definition (Web)
+        id: task-def-web
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.WEB_DEFINITION }}
+          container-name: ${{ secrets.WEB_STAGING_CONTAINER }}
+          image: ${{ secrets.WEB_STAGING_IMAGE }}
+
+      - name: Deploy Amazon ECS task definition (Web)
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def-web.outputs.task-definition }}
+          service: ${{ secrets.WEB_STAGING_SERVICE_NAME }}
+          cluster: ${{ secrets.CLUSTER_STAGING }}
+          wait-for-service-stability: false
+
+      - name: Fill in the new image ID in the Amazon ECS task definition (Sidekiq)
+        id: task-def-sidekiq
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.SIDEKIQ_DEFINITION }}
+          container-name: ${{ secrets.SIDEKIQ_STAGING_CONTAINER_NAME }}
+          image: ${{ secrets.SIDEKIQ_STAGING_IMAGE }}
+
+      - name: Deploy Amazon ECS task definition (Sidekiq)
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def-sidekiq.outputs.task-definition }}
+          service: ${{ secrets.SIDEKIQ_STAGING_SERVICE_NAME }}
+          cluster: ${{ secrets.CLUSTER_STAGING }}
+          wait-for-service-stability: false
