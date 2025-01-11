@@ -5,6 +5,12 @@ on:
   push:
     branches:
       - staging
+env:
+  WEB_DEFINITION:
+    .aws/patchwork_web_staging.json
+  SIDEKIQ_DEFINITION:
+    .aws/patchwork_sidekiq_staging.json
+
 
 permissions:
   contents: read
