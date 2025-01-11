@@ -4,7 +4,7 @@ module ThemeHelper
   def theme_style_tags(theme)
     if theme == 'system'
       ''.html_safe.tap do |tags|
-        tags << stylesheet_pack_tag('mastodon-light', media: 'not all and (prefers-color-scheme: dark)', crossorigin: 'anonymous')
+        tags << stylesheet_pack_tag('default', media: 'not all and (prefers-color-scheme: dark)', crossorigin: 'anonymous')
         tags << stylesheet_pack_tag('default', media: '(prefers-color-scheme: dark)', crossorigin: 'anonymous')
       end
     else
@@ -26,6 +26,7 @@ module ThemeHelper
   private
 
   def theme_color_for(theme)
-    theme == 'mastodon-light' ? Themes::THEME_COLORS[:light] : Themes::THEME_COLORS[:dark]
+    # theme == 'mastodon-light' ? Themes::THEME_COLORS[:light] : Themes::THEME_COLORS[:dark]
+    Themes::THEME_COLORS[:dark]
   end
 end

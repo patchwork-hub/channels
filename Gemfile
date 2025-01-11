@@ -212,6 +212,8 @@ group :development, :test do
 
   # RSpec runner for rails
   gem 'rspec-rails', '~> 6.0'
+
+  gem 'byebug'
 end
 
 group :production do
@@ -228,4 +230,13 @@ gem 'rubyzip', '~> 2.3'
 
 gem 'hcaptcha', '~> 7.1'
 
+gem 'httparty'
 gem 'mail', '~> 2.8'
+
+gem 'googleauth'
+
+gem 'content_filters', git: 'https://github.com/patchwork-hub/content_filters', branch: 'fitler_refactor'
+gem 'posts', git: 'https://github.com/patchwork-hub/posts'
+
+gem 'em-http-request', '~> 1.1', '>= 1.1.7'
+gem 'eventmachine', '~> 1.2', '>= 1.2.7'

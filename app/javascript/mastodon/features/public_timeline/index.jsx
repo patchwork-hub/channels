@@ -9,7 +9,10 @@ import { connect } from 'react-redux';
 
 import PublicIcon from '@/material-icons/400-24px/public.svg?react';
 import { DismissableBanner } from 'mastodon/components/dismissable_banner';
-import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
+import {
+  identityContextPropShape,
+  withIdentity,
+} from 'mastodon/identity_context';
 import { domain } from 'mastodon/initial_state';
 
 import { addColumn, removeColumn, moveColumn } from '../../actions/columns';
@@ -28,10 +31,19 @@ const messages = defineMessages({
 const mapStateToProps = (state, { columnId }) => {
   const uuid = columnId;
   const columns = state.getIn(['settings', 'columns']);
-  const index = columns.findIndex(c => c.get('uuid') === uuid);
-  const onlyMedia = (columnId && index >= 0) ? columns.get(index).getIn(['params', 'other', 'onlyMedia']) : state.getIn(['settings', 'public', 'other', 'onlyMedia']);
-  const onlyRemote = (columnId && index >= 0) ? columns.get(index).getIn(['params', 'other', 'onlyRemote']) : state.getIn(['settings', 'public', 'other', 'onlyRemote']);
-  const timelineState = state.getIn(['timelines', `public${onlyRemote ? ':remote' : ''}${onlyMedia ? ':media' : ''}`]);
+  const index = columns.findIndex((c) => c.get('uuid') === uuid);
+  const onlyMedia =
+    columnId && index >= 0
+      ? columns.get(index).getIn(['params', 'other', 'onlyMedia'])
+      : state.getIn(['settings', 'public', 'other', 'onlyMedia']);
+  const onlyRemote =
+    columnId && index >= 0
+      ? columns.get(index).getIn(['params', 'other', 'onlyRemote'])
+      : state.getIn(['settings', 'public', 'other', 'onlyRemote']);
+  const timelineState = state.getIn([
+    'timelines',
+    `public${onlyRemote ? ':remote' : ''}${onlyMedia ? ':media' : ''}`,
+  ]);
 
   return {
     hasUnread: !!timelineState && timelineState.get('unread') > 0,
@@ -62,7 +74,11 @@ class PublicTimeline extends PureComponent {
     if (columnId) {
       dispatch(removeColumn(columnId));
     } else {
-      dispatch(addColumn(onlyRemote ? 'REMOTE' : 'PUBLIC', { other: { onlyMedia, onlyRemote } }));
+      dispatch(
+        addColumn(onlyRemote ? 'REMOTE' : 'PUBLIC', {
+          other: { onlyMedia, onlyRemote },
+        }),
+      );
     }
   };
 
@@ -75,21 +91,26 @@ class PublicTimeline extends PureComponent {
     this.column.scrollTop();
   };
 
-  componentDidMount () {
+  componentDidMount() {
     const { dispatch, onlyMedia, onlyRemote } = this.props;
     const { signedIn } = this.props.identity;
 
     dispatch(expandPublicTimeline({ onlyMedia, onlyRemote }));
 
     if (signedIn) {
-      this.disconnect = dispatch(connectPublicStream({ onlyMedia, onlyRemote }));
+      this.disconnect = dispatch(
+        connectPublicStream({ onlyMedia, onlyRemote }),
+      );
     }
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const { signedIn } = this.props.identity;
 
-    if (prevProps.onlyMedia !== this.props.onlyMedia || prevProps.onlyRemote !== this.props.onlyRemote) {
+    if (
+      prevProps.onlyMedia !== this.props.onlyMedia ||
+      prevProps.onlyRemote !== this.props.onlyRemote
+    ) {
       const { dispatch, onlyMedia, onlyRemote } = this.props;
 
       if (this.disconnect) {
@@ -99,34 +120,41 @@ class PublicTimeline extends PureComponent {
       dispatch(expandPublicTimeline({ onlyMedia, onlyRemote }));
 
       if (signedIn) {
-        this.disconnect = dispatch(connectPublicStream({ onlyMedia, onlyRemote }));
+        this.disconnect = dispatch(
+          connectPublicStream({ onlyMedia, onlyRemote }),
+        );
       }
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.disconnect) {
       this.disconnect();
       this.disconnect = null;
     }
   }
 
-  setRef = c => {
+  setRef = (c) => {
     this.column = c;
   };
 
-  handleLoadMore = maxId => {
+  handleLoadMore = (maxId) => {
     const { dispatch, onlyMedia, onlyRemote } = this.props;
 
     dispatch(expandPublicTimeline({ maxId, onlyMedia, onlyRemote }));
   };
 
-  render () {
-    const { intl, columnId, hasUnread, multiColumn, onlyMedia, onlyRemote } = this.props;
+  render() {
+    const { intl, columnId, hasUnread, multiColumn, onlyMedia, onlyRemote } =
+      this.props;
     const pinned = !!columnId;
 
     return (
-      <Column bindToDocument={!multiColumn} ref={this.setRef} label={intl.formatMessage(messages.title)}>
+      <Column
+        bindToDocument={!multiColumn}
+        ref={this.setRef}
+        label={intl.formatMessage(messages.title)}
+      >
         <ColumnHeader
           icon='globe'
           iconComponent={PublicIcon}
@@ -142,12 +170,25 @@ class PublicTimeline extends PureComponent {
         </ColumnHeader>
 
         <StatusListContainer
-          prepend={<DismissableBanner id='public_timeline'><FormattedMessage id='dismissable_banner.public_timeline' defaultMessage='These are the most recent public posts from people on the social web that people on {domain} follow.' values={{ domain }} /></DismissableBanner>}
+          prepend={
+            <DismissableBanner id='public_timeline'>
+              <FormattedMessage
+                id='dismissable_banner.public_timeline'
+                defaultMessage='These are the most recent public posts from people on the social web that people on {domain} follow.'
+                values={{ domain }}
+              />
+            </DismissableBanner>
+          }
           timelineId={`public${onlyRemote ? ':remote' : ''}${onlyMedia ? ':media' : ''}`}
           onLoadMore={this.handleLoadMore}
           trackScroll={!pinned}
           scrollKey={`public_timeline-${columnId}`}
-          emptyMessage={<FormattedMessage id='empty_column.public' defaultMessage='There is nothing here! Write something publicly, or manually follow users from other servers to fill it up' />}
+          emptyMessage={
+            <FormattedMessage
+              id='empty_column.public'
+              defaultMessage='There is nothing here! Write something publicly, or manually follow users from other servers to fill it up'
+            />
+          }
           bindToDocument={!multiColumn}
         />
 
@@ -158,7 +199,8 @@ class PublicTimeline extends PureComponent {
       </Column>
     );
   }
-
 }
 
-export default connect(mapStateToProps)(withIdentity(injectIntl(PublicTimeline)));
+export default connect(mapStateToProps)(
+  withIdentity(injectIntl(PublicTimeline)),
+);

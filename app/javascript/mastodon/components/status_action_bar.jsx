@@ -11,12 +11,15 @@ import { connect } from 'react-redux';
 
 import BookmarkIcon from '@/material-icons/400-24px/bookmark-fill.svg';
 import BookmarkBorderIcon from '@/material-icons/400-24px/bookmark.svg?react';
+import StarBorderIcon from '@/material-icons/400-24px/channel_org_like.svg?react';
+import RepeatIcon from '@/material-icons/400-24px/channel_org_reblog.svg?react';
+import ReplyIcon from '@/material-icons/400-24px/channel_org_reply.svg?react';
 import MoreHorizIcon from '@/material-icons/400-24px/more_horiz.svg?react';
-import RepeatIcon from '@/material-icons/400-24px/repeat.svg?react';
-import ReplyIcon from '@/material-icons/400-24px/reply.svg?react';
+//import RepeatIcon from '@/material-icons/400-24px/repeat.svg?react';
+// import ReplyIcon from '@/material-icons/400-24px/reply.svg?react';
 import ReplyAllIcon from '@/material-icons/400-24px/reply_all.svg?react';
 import StarIcon from '@/material-icons/400-24px/star-fill.svg?react';
-import StarBorderIcon from '@/material-icons/400-24px/star.svg?react';
+//import StarBorderIcon from '@/material-icons/400-24px/star.svg?react';
 import VisibilityIcon from '@/material-icons/400-24px/visibility.svg?react';
 import RepeatActiveIcon from '@/svg-icons/repeat_active.svg?react';
 import RepeatDisabledIcon from '@/svg-icons/repeat_disabled.svg?react';
@@ -30,6 +33,7 @@ import DropdownMenuContainer from '../containers/dropdown_menu_container';
 import { me } from '../initial_state';
 
 import { IconButton } from './icon_button';
+import { openModal } from 'mastodon/actions/modal';
 
 const messages = defineMessages({
   delete: { id: 'status.delete', defaultMessage: 'Delete' },
@@ -114,13 +118,22 @@ class StatusActionBar extends ImmutablePureComponent {
     'withDismiss',
   ];
 
+  handleLogin = ()=>{
+    const { dispatch } = this.props;
+    dispatch(openModal({
+      modalType:'SIGNIN',
+      modalProps:{}
+    }));
+  };
+
   handleReplyClick = () => {
     const { signedIn } = this.props.identity;
 
     if (signedIn) {
       this.props.onReply(this.props.status);
     } else {
-      this.props.onInteractionModal('reply', this.props.status);
+      this.handleLogin();
+      // this.props.onInteractionModal('reply', this.props.status);
     }
   };
 
@@ -138,7 +151,8 @@ class StatusActionBar extends ImmutablePureComponent {
     if (signedIn) {
       this.props.onFavourite(this.props.status);
     } else {
-      this.props.onInteractionModal('favourite', this.props.status);
+      this.handleLogin();
+      // this.props.onInteractionModal('favourite', this.props.status);
     }
   };
 
@@ -148,12 +162,18 @@ class StatusActionBar extends ImmutablePureComponent {
     if (signedIn) {
       this.props.onReblog(this.props.status, e);
     } else {
-      this.props.onInteractionModal('reblog', this.props.status);
+      this.handleLogin();
+      // this.props.onInteractionModal('reblog', this.props.status);
     }
   };
 
   handleBookmarkClick = () => {
-    this.props.onBookmark(this.props.status);
+    const { signedIn } = this.props.identity;
+    if(signedIn){
+      this.props.onBookmark(this.props.status);
+    }else{
+      this.handleLogin();
+    }
   };
 
   handleDeleteClick = () => {

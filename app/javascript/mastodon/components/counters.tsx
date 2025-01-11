@@ -43,3 +43,17 @@ export const FollowersCounter = (
     }}
   />
 );
+
+export const ParticipantsCounter = (
+  displayNumber: React.ReactNode,
+  pluralReady: number,
+) => (
+  <FormattedMessage
+    id='participants'
+    defaultMessage='{count, plural, one {{counter} Participant} other {{counter} Participants}}'
+    values={{
+      count: pluralReady,
+      counter: displayNumber,
+    }}
+  />
+);

@@ -42,12 +42,16 @@ Rails.application.routes.draw do
     /blocks
     /domain_blocks
     /mutes
+    /explore-channels
     /followed_tags
     /statuses/(*any)
     /deck/(*any)
   ).freeze
 
   root 'home#index'
+
+  get 'custom_passwords', to: 'custom_passwords#edit', as: :custom_passwords_edit
+  patch 'custom_passwords', to: 'custom_passwords#update'
 
   mount LetterOpenerWeb::Engine, at: 'letter_opener' if Rails.env.development?
 
@@ -228,6 +232,9 @@ Rails.application.routes.draw do
 
   get '/privacy-policy', to: 'privacy#show', as: :privacy_policy
   get '/terms',          to: redirect('/privacy-policy')
+
+  # iframes
+  get '/new', to: 'iframes#new', as: :new_iframe
 
   match '/', via: [:post, :put, :patch, :delete], to: 'application#raise_not_found', format: false
   match '*unmatched_route', via: :all, to: 'application#raise_not_found', format: false

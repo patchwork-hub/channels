@@ -50,6 +50,10 @@ class Api::V1::Statuses::ReblogsController < Api::V1::Statuses::BaseController
   end
 
   def reblog_params
-    params.permit(:visibility)
+    params.permit(
+      :visibility,
+      :status,
+      media_ids: []
+    )
   end
 end

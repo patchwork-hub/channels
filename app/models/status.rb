@@ -110,6 +110,7 @@ class Status < ApplicationRecord
   scope :with_accounts, ->(ids) { where(id: ids).includes(:account) }
   scope :without_replies, -> { not_reply.or(reply_to_account) }
   scope :not_reply, -> { where(reply: false) }
+  scope :without_original_statuses, -> { where.not(reply: false) }
   scope :reply_to_account, -> { where(arel_table[:in_reply_to_account_id].eq arel_table[:account_id]) }
   scope :without_reblogs, -> { where(statuses: { reblog_of_id: nil }) }
   scope :tagged_with, ->(tag_ids) { joins(:statuses_tags).where(statuses_tags: { tag_id: tag_ids }) }
@@ -386,6 +387,10 @@ class Status < ApplicationRecord
     inbox_owners.each do |inbox_owner|
       AccountConversation.remove_status(inbox_owner, self)
     end
+  end
+
+  def mentioned_account?(account)
+    mentions.any? { |mention| mention.account_id == account.id }
   end
 
   private

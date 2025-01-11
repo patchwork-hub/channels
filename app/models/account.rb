@@ -64,7 +64,7 @@ class Account < ApplicationRecord
   )
 
   BACKGROUND_REFRESH_INTERVAL = 1.week.freeze
-  DEFAULT_FIELDS_SIZE = 4
+  DEFAULT_FIELDS_SIZE = 9
   INSTANCE_ACTOR_ID = -99
 
   USERNAME_RE   = /[a-z0-9_]+([a-z0-9_.-]+[a-z0-9_]+)?/i
@@ -144,6 +144,7 @@ class Account < ApplicationRecord
   scope :dormant, -> { joins(:account_stat).merge(AccountStat.without_recent_activity) }
   scope :with_username, ->(value) { where arel_table[:username].lower.eq(value.to_s.downcase) }
   scope :with_domain, ->(value) { where arel_table[:domain].lower.eq(value&.to_s&.downcase) }
+  scope :channel_admins, ->(value) { where(id: value) }
 
   after_update_commit :trigger_update_webhooks
 
@@ -499,6 +500,10 @@ class Account < ApplicationRecord
 
     generate_keys
     save!
+  end
+
+  def follow_account?(target_account_id)
+    Follow.exists?(account_id: self&.id, target_account_id: target_account_id)
   end
 
   private

@@ -10,7 +10,7 @@ class ContentSecurityPolicy
   end
 
   def media_hosts
-    [assets_host, cdn_host_value, paperclip_root_url].compact
+    [assets_host, cdn_host_value, paperclip_root_url, 'https://staging-dashboard.patchwork.online/', 'https://dashboard.channel.org/'].compact
   end
 
   private

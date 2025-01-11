@@ -24,7 +24,8 @@ class AccountStatusesFilter
     scope.merge!(only_media_scope) if only_media?
     scope.merge!(no_replies_scope) if exclude_replies?
     scope.merge!(no_reblogs_scope) if exclude_reblogs?
-    scope.merge!(hashtag_scope)    if tagged?
+    scope.merge!(no_original_statuses_scope) if exclude_original_statuses?
+    scope.merge!(hashtag_scope) if tagged?
 
     scope
   end
@@ -81,6 +82,10 @@ class AccountStatusesFilter
     Status.without_reblogs
   end
 
+  def no_original_statuses_scope
+    Status.without_original_statuses
+  end
+
   def pinned_scope
     account.pinned_statuses.group(Status.arel_table[:id], StatusPin.arel_table[:created_at])
   end
@@ -125,6 +130,10 @@ class AccountStatusesFilter
 
   def exclude_replies?
     truthy_param?(:exclude_replies)
+  end
+
+  def exclude_original_statuses?
+    truthy_param?(:exclude_original_statuses)
   end
 
   def exclude_reblogs?

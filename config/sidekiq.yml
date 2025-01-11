@@ -1,5 +1,5 @@
 ---
-:concurrency: <%= ENV.fetch('SIDEKIQ_CONCURRENCY', 5) %>
+:concurrency: <%= ENV.fetch('SIDEKIQ_CONCURRENCY', 12) %>
 :queues:
   - [default, 8]
   - [push, 6]
@@ -66,4 +66,8 @@
     auto_close_registrations_scheduler:
       interval: 1 hour
       class: Scheduler::AutoCloseRegistrationsScheduler
+      queue: scheduler
+    fedi_buzz_stream_worker:
+      cron: '*/5 * * * *'
+      class: 'FedibuzzStreamWorker'
       queue: scheduler

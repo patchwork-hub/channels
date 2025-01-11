@@ -15,37 +15,58 @@ import Account from 'mastodon/containers/account_container';
 import { domain } from 'mastodon/initial_state';
 
 const messages = defineMessages({
-  aboutActiveUsers: { id: 'server_banner.about_active_users', defaultMessage: 'People using this server during the last 30 days (Monthly Active Users)' },
+  aboutActiveUsers: {
+    id: 'server_banner.about_active_users',
+    defaultMessage:
+      'People using this server during the last 30 days (Monthly Active Users)',
+  },
 });
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   server: state.getIn(['server', 'server']),
 });
 
 class ServerBanner extends PureComponent {
-
   static propTypes = {
     server: PropTypes.object,
     dispatch: PropTypes.func,
     intl: PropTypes.object,
   };
 
-  componentDidMount () {
+  componentDidMount() {
     const { dispatch } = this.props;
     dispatch(fetchServer());
   }
 
-  render () {
+  render() {
     const { server, intl } = this.props;
     const isLoading = server.get('isLoading');
 
     return (
       <div className='server-banner'>
         <div className='server-banner__introduction'>
-          <FormattedMessage id='server_banner.is_one_of_many' defaultMessage='{domain} is one of the many independent Mastodon servers you can use to participate in the fediverse.' values={{ domain: <strong>{domain}</strong>, mastodon: <a href='https://joinmastodon.org' target='_blank'>Mastodon</a> }} />
+          <FormattedMessage
+            id='server_banner.is_one_of_many'
+            defaultMessage='{domain} is one of the many independent Mastodon servers you can use to participate in the fediverse.'
+            values={{
+              domain: <strong>{domain}</strong>,
+              mastodon: (
+                <a href='https://joinmastodon.org' target='_blank'>
+                  Mastodon
+                </a>
+              ),
+            }}
+          />
         </div>
 
-        <Link to='/about'>
+        <div>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur
+          repellendus esse quas minima dolorum quaerat facilis, corrupti
+          reprehenderit possimus debitis harum, porro fugit, culpa eos
+          reiciendis dicta molestiae doloribus cum!
+        </div>
+
+        {/* <Link to='/about'>
           <ServerHeroImage blurhash={server.getIn(['thumbnail', 'blurhash'])} src={server.getIn(['thumbnail', 'url'])} className='server-banner__hero' />
         </Link>
 
@@ -85,11 +106,10 @@ class ServerBanner extends PureComponent {
               </>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }
-
 }
 
 export default connect(mapStateToProps)(injectIntl(ServerBanner));

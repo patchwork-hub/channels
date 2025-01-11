@@ -29,10 +29,9 @@ import StarActiveIcon from '@/material-icons/400-24px/star-fill.svg?react';
 import StarIcon from '@/material-icons/400-24px/star.svg?react';
 import { fetchFollowRequests } from 'mastodon/actions/accounts';
 import { IconWithBadge } from 'mastodon/components/icon_with_badge';
-import { WordmarkLogo } from 'mastodon/components/logo';
 import { NavigationPortal } from 'mastodon/components/navigation_portal';
 import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
-import { timelinePreview, trendsEnabled } from 'mastodon/initial_state';
+import { channel_display_name, logo_image, timelinePreview, trendsEnabled } from 'mastodon/initial_state';
 import { transientSingleColumn } from 'mastodon/is_mobile';
 import { selectUnreadNotificationGroupsCount } from 'mastodon/selectors/notifications';
 
@@ -118,6 +117,8 @@ class NavigationPanel extends Component {
 
     let banner = undefined;
 
+    const subdomain = window.location.hostname.split('.')[0];
+
     if(transientSingleColumn)
       banner = (<div className='switch-to-advanced'>
         {intl.formatMessage(messages.openedInClassicInterface)}
@@ -129,8 +130,10 @@ class NavigationPanel extends Component {
 
     return (
       <div className='navigation-panel'>
-        <div className='navigation-panel__logo'>
-          <Link to='/' className='column-link column-link--logo'><WordmarkLogo /></Link>
+        <div className='navigation-panel__logo' style={{ paddingInline:16 }}>
+          <Link to='/' className='column-link column-link--logo'>
+            {(subdomain==='news') ? <img width='175px' src='./temp-images/newsmast.png' alt='news logo' />:subdomain==='informationtechnology'?<img width='150px' alt='information technology logo' src='./temp-images/binarylab.png' />:logo_image?<img src={logo_image} width={140} style={{ aspectRatio:'36 / 10'}} alt='channel logo' />:channel_display_name}
+          </Link>
         </div>
 
         {banner &&
