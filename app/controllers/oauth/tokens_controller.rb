@@ -30,7 +30,8 @@ class Oauth::TokensController < Doorkeeper::TokensController
 
   def login_from_channel?
     user = User.find_by(email: params[:username])
-    # return false unless user&.valid_password?(params[:password])
+
+    return true if (user.role.name == 'UserAdmin' || user.role&.id&.nil?) && is_create_channel_feed?
 
     # If the user role is a UserAdmin || nil, there will have custom logic to sign in
     if user.role.name == 'UserAdmin' || user.role&.id&.nil?
@@ -43,5 +44,9 @@ class Oauth::TokensController < Doorkeeper::TokensController
       true
     end
     true
+  end
+
+  def is_create_channel_feed?
+    params[:create_channel_feed].nil? ? false : params[:create_channel_feed]
   end
 end
