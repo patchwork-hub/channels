@@ -11,11 +11,11 @@ class Oauth::TokensController < Doorkeeper::TokensController
   #   end
   # end
 
-  # def revoke
-  #   unsubscribe_for_token if token.present? && authorized? && token.accessible?
+  def revoke
+    unsubscribe_for_token if token.present? && authorized? && token.accessible?
 
-  #   super
-  # end
+    super
+  end
 
   private
 
