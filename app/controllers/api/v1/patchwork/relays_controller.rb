@@ -23,7 +23,7 @@ class Api::V1::Patchwork::RelaysController < Api::BaseController
   private
 
   def check_owner!
-    render json: { error: 'Forbidden' }, status: 403 unless current_user.owner?
+    render json: { error: 'Forbidden' }, status: 403 unless current_user.role.name == 'Owner'
   end
 
   def set_relay
