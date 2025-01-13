@@ -123,7 +123,7 @@ jobs:
           image: ${{ secrets.WEB_STAGING_IMAGE }}
 
       - name: Deploy Amazon ECS task definition (Web)
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.task-def-web.outputs.task-definition }}
           service: ${{ secrets.WEB_STAGING_SERVICE_NAME }}
@@ -139,7 +139,7 @@ jobs:
           image: ${{ secrets.SIDEKIQ_STAGING_IMAGE }}
 
       - name: Deploy Amazon ECS task definition (Sidekiq)
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.task-def-sidekiq.outputs.task-definition }}
           service: ${{ secrets.SIDEKIQ_STAGING_SERVICE_NAME }}
