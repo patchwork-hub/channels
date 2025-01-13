@@ -31,6 +31,6 @@ class Api::V1::Patchwork::RelaysController < Api::BaseController
   end
 
   def relay_params
-    params.require(:relay).permit(:inbox_url)
+    params.permit(:inbox_url)
   end
 end
