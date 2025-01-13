@@ -1,4 +1,4 @@
-run-name: Deploy to Staging Channel.org by @${{ github.actor }}
+run-name: Deploy to Staging Channel.org Environment by @${{ github.actor }}
 
 on:
   workflow_dispatch:
