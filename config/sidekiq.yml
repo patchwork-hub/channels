@@ -67,7 +67,3 @@
       interval: 1 hour
       class: Scheduler::AutoCloseRegistrationsScheduler
       queue: scheduler
-    fedi_buzz_stream_worker:
-      cron: '*/15 * * * *'
-      class: 'FedibuzzStreamWorker'
-      queue: scheduler
