@@ -37,7 +37,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
   def handle_user_admin_login(user)
     return true if create_channel_feed?
 
-    community_admin = CommunityAdmin.find_by(account_id: user.account_id, role: 'User Admin', is_boost_bot: true)
+    community_admin = CommunityAdmin.find_by(account_id: user.account_id, role: 'UserAdmin', is_boost_bot: true)
     return false unless community_admin
 
     community = Community.find_by(id: community_admin.patchwork_community_id)
