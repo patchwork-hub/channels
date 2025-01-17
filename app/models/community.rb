@@ -7,7 +7,7 @@ class Community < ApplicationRecord
            foreign_key: 'patchwork_community_id',
            dependent: :destroy
 
-  has_many :community_post_types,
+  has_one :community_post_type,
             foreign_key: 'patchwork_community_id',
             dependent: :destroy
 

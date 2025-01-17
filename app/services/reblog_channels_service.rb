@@ -92,7 +92,7 @@ class ReblogChannelsService < BaseService
   end
 
   def fetch_community_post_type(community)
-    community&.community_post_types&.last
+    community&.community_post_type
   end
 
   def all_post_types_excluded?(community_post_type)

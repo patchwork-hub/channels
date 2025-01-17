@@ -69,6 +69,8 @@ namespace :api, format: false do
           get 'check_conversation', to: 'conversations#check_conversation'
         end
       end
+
+      resources :relays, only: [:create, :destroy]
     end
 
     resources :suggestions, only: [:index, :destroy]

@@ -18,6 +18,7 @@ class REST::CredentialAccountSerializer < REST::AccountSerializer
       hide_collections: object.hide_collections,
       discoverable: object.discoverable,
       indexable: object.indexable,
+      email: user&.email,
     }
   end
 
