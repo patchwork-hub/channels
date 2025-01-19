@@ -49,7 +49,7 @@ class Api::V1::CustomPasswordsController < Api::BaseController
       # This stage is known as the user was just registered
       # If confirmation_sent_at is present, that account was unconfirmed yet
       if @user.confirmation_sent_at.present?
-        @user.account.update!(discoverable: true)
+        @user.account.update!(discoverable: false)
         @user.update!(otp_secret: nil, confirmed_at: Time.now.utc, confirmation_sent_at: nil)
       else
         # Reset password
