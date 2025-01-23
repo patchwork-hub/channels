@@ -22,5 +22,4 @@ class ReblogRequestService < BaseService
       raise "Reblog creation failed: #{response.body}"
     end
   end
-
 end
