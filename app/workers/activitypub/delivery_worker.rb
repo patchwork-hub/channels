@@ -47,8 +47,6 @@ class ActivityPub::DeliveryWorker
   private
 
   def build_request(http_client)
-    Rails.logger.info("*** [ActivityPub::DeliveryWorker] inbox_url: #{@inbox_url}")
-    Rails.logger.info("*** [ActivityPub::DeliveryWorker] body: #{@json}")
     Request.new(:post, @inbox_url, body: @json, http_client: http_client).tap do |request|
       request.on_behalf_of(@source_account, sign_with: @options[:sign_with])
       request.add_headers(HEADERS)
