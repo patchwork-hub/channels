@@ -44,6 +44,7 @@ class ReblogChannelsService < BaseService
       end
 
       # Group Channel
+      sleep(2)
       community_admins = Account.where(id: community_admin_account_ids)
 
       group_channel_admins = community_admins.select do |admin_account|
