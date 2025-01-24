@@ -37,7 +37,7 @@ class ReblogChannelsService < BaseService
                       status_follower_admin_account_ids.include?(admin_account.id)
         end
 
-        if valid_post_type?(community, admin_account) && status_has_keyword?(@status.id, community.id, 'filter_in') && !status_has_keyword?(@status.id, community.id, 'filter_out')
+        if valid_post_type?(community, admin_account) || status_has_keyword?(@status.id, community.id, 'filter_in') && !status_has_keyword?(@status.id, community.id, 'filter_out')
           Rails.logger.info "*****STATUS_HAS_BEEN_SHARED_BY #{admin_account.username}*****" if admin_account&.username == "tech"
           ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
         end
