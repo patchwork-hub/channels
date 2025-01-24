@@ -54,24 +54,26 @@ class ReblogChannelsService < BaseService
         community&.content_type&.group_channel?
       end
 
-      sleep 1.minutes
       group_channel_admins.each do |admin_account|
-        Rails.logger.info "*****Checking Group Channel for Admin Account: #{admin_account.inspect}*****"
-        Rails.logger.info "*****Checking Group Channel for status: #{@status.inspect}*****"
+        if admin_account&.username == 'sony'
+          Rails.logger.info "*****Checking Group Channel for Admin Account: #{admin_account.inspect}*****"
+          Rails.logger.info "*****Checking Group Channel for status: #{@status.inspect}*****"
+        end
         retries = 0
         while retries < 5
-          Rails.logger.info "*****Checking Group Channel (#{retries}/5) mentions: #{@status.mentions.inspect}*****"
-          Rails.logger.info "*****Checking Group Channel (#{retries}/5) mention?: #{@status.mentioned_account?(admin_account)}*****"
-          Rails.logger.info "*****Checking Group Channel (#{retries}/5) followings: #{@status.account.following.inspect}*****"
-          Rails.logger.info "*****Checking Group Channel (#{retries}/5) follow?: #{@status.account.follow_account?(admin_account.id)}*****"
-
+          if admin_account&.username == 'sony'
+            Rails.logger.info "*****Checking Group Channel (#{retries}/5) mentions: #{@status.mentions.inspect}*****"
+            Rails.logger.info "*****Checking Group Channel (#{retries}/5) mention?: #{@status.mentioned_account?(admin_account)}*****"
+            Rails.logger.info "*****Checking Group Channel (#{retries}/5) followings: #{@status.account.following.inspect}*****"
+            Rails.logger.info "*****Checking Group Channel (#{retries}/5) follow?: #{@status.account.follow_account?(admin_account.id)}*****"
+          end
           if @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
-            Rails.logger.info '*****Checking Group Channel all conditions true *****'
+            Rails.logger.info '*****Checking Group Channel all conditions true *****' if admin_account&.username == 'sony'
             ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
             break
           else
             retries += 1
-            Rails.logger.info "*****Group Channel Retrying (#{retries}/5) for Admin Account: #{admin_account.username}*****"
+            Rails.logger.info "*****Group Channel Retrying (#{retries}/5) for Admin Account: #{admin_account.username}*****" if admin_account&.username == 'sony'
           end
         end
       end
