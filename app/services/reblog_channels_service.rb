@@ -57,6 +57,7 @@ class ReblogChannelsService < BaseService
       sleep 1.minutes
       group_channel_admins.each do |admin_account|
         Rails.logger.info "*****Checking Group Channel for Admin Account: #{admin_account.inspect}*****"
+        Rails.logger.info "*****Checking Group Channel for status: #{@status.inspect}*****"
         retries = 0
         while retries < 5
           Rails.logger.info "*****Checking Group Channel (#{retries}/5) mentions: #{@status.mentions.inspect}*****"
