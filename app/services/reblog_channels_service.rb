@@ -58,7 +58,9 @@ class ReblogChannelsService < BaseService
       group_channel_admins.each do |admin_account|
         Rails.logger.info "*****Checking Group Channel for Admin Account: #{admin_account.username}*****"
 
+        Rails.logger.info "*****Checking Group Channel mentions: #{@status.mentions.pluck(:account_id)}*****"
         Rails.logger.info "*****Checking Group Channel mention?: #{@status.mentioned_account?(admin_account)}*****"
+        Rails.logger.info "*****Checking Group Channel followings: #{@status.account.following.pluck(:id, :username)}*****"
         Rails.logger.info "*****Checking Group Channel follow?: #{@status.account.follow_account?(admin_account.id)}*****"
 
         if @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
