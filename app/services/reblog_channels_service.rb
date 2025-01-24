@@ -43,7 +43,7 @@ class ReblogChannelsService < BaseService
         end
       end
 
-      #Group Channel
+      # Group Channel
       community_admins = Account.where(id: community_admin_account_ids)
 
       group_channel_admins = community_admins.select do |admin_account|
@@ -57,7 +57,11 @@ class ReblogChannelsService < BaseService
       group_channel_admins.each do |admin_account|
         Rails.logger.info "*****Checking Group Channel for Admin Account: #{admin_account.username}*****"
 
+        Rails.logger.info "*****Checking Group Channel mention?: #{@status.mentioned_account?(admin_account)}*****"
+        Rails.logger.info "*****Checking Group Channel follow?: #{@status.account.follow_account?(admin_account.id)}*****"
+
         if @status.mentioned_account?(admin_account) && @status.account.follow_account?(admin_account.id)
+          Rails.logger.info '*****Checking Group Channel all conditions true *****'
           ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
         end
       end
