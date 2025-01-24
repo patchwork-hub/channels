@@ -44,7 +44,6 @@ class ReblogChannelsService < BaseService
       end
 
       # Group Channel
-      sleep(2)
       community_admins = Account.where(id: community_admin_account_ids)
 
       group_channel_admins = community_admins.select do |admin_account|
@@ -55,8 +54,9 @@ class ReblogChannelsService < BaseService
         community&.content_type&.group_channel?
       end
 
+      sleep 1.minutes
       group_channel_admins.each do |admin_account|
-        Rails.logger.info "*****Checking Group Channel for Admin Account: #{admin_account.username}*****"
+        Rails.logger.info "*****Checking Group Channel for Admin Account: #{admin_account.inspect}*****"
         retries = 0
         while retries < 5
           Rails.logger.info "*****Checking Group Channel (#{retries}/5) mentions: #{@status.mentions.inspect}*****"
