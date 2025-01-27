@@ -7,7 +7,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
       # Proceed with token generation
       super
     else
-      render json: { error: 'Record not found' }, status: 404
+      render json: { error: 'Missing credentials' }, status: 401
     end
   end
 
