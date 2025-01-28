@@ -24,14 +24,14 @@ class Oauth::TokensController < Doorkeeper::TokensController
   end
 
   def login_from_channel?
-    return true unless grant_password?
-
     user = User.find_by(email: params[:username])
     return false unless user
 
     return handle_user_admin_login(user) if user.role&.name == 'UserAdmin' || user.role.id == -99 || user.role.id.nil?
 
-    true
+    # return true unless grant_password?
+
+    false
   end
 
   def handle_user_admin_login(user)
