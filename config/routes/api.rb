@@ -66,7 +66,7 @@ namespace :api, format: false do
     end
 
     namespace :patchwork do
-      resources :conversations, only: [''] do
+      resources :conversations do
         collection do
           get 'check_conversation', to: 'conversations#check_conversation'
         end
