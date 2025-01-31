@@ -170,9 +170,6 @@ export function ReportModal() {
   );
 }
 
-export function MediaGallery () {
-  return import(/* webpackChunkName: "status/media_gallery" */'../../../components/media_gallery');
-}
 
 export function IgnoreNotificationsModal () {
   return import(/* webpackChunkName: "modals/domain_block_modal" */'../components/ignore_notifications_modal');
