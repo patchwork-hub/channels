@@ -81,7 +81,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
   end
 
   def fetch_access_token_grant
-    access_token_grant = Doorkeeper::AccessToken.find_by(token: params[:code])
+    access_token_grant = Doorkeeper::AccessGrant.find_by(token: params[:code])
     User.find_by(id: access_token_grant&.resource_owner_id)
   end
 end
