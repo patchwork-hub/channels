@@ -45,7 +45,7 @@ import initialState, {
 } from '../../initial_state';
 
 import BundleColumnError from './components/bundle_column_error';
-import Header from './components/header';
+// import Header from './components/header';
 import UploadArea from './components/upload_area';
 import ColumnsAreaContainer from './containers/columns_area_container';
 import LoadingBarContainer from './containers/loading_bar_container';
@@ -86,11 +86,9 @@ import {
   OnboardingProfile,
   OnboardingFollows,
   Explore,
-  ExploreChannels,
   Search,
   About,
   PrivacyPolicy,
-  TermsOfService,
 } from './util/async-components';
 import { ColumnsContextProvider } from './util/columns_context';
 import { WrappedSwitch, WrappedRoute } from './util/react_router_helpers';
@@ -256,7 +254,7 @@ class SwitchingColumnsArea extends PureComponent {
             />
             <WrappedRoute path='/about' component={About} content={children} />
             <WrappedRoute path='/privacy-policy' component={PrivacyPolicy} content={children} />
-            <WrappedRoute path='/terms-of-service' component={TermsOfService} content={children} />
+            {/* <WrappedRoute path='/terms-of-service' component={TermsOfService} content={children} /> */}
 
             <WrappedRoute
               path={['/home', '/timelines/home']}
