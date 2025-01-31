@@ -22,5 +22,5 @@ class Community < ApplicationRecord
 
   validates :name, presence: true, uniqueness: true
 
-  enum visibility: { public_access: 0, guest_access: 1, private_local: 2 }
+  enum :visibility, public_access: 0, guest_access: 1, private_local: 2
 end
