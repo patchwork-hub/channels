@@ -41,7 +41,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
   end
 
   def handle_app_login
-    user = fetch_user_credentials
+    user = grant_password? ? fetch_user_credentials : fetch_access_token_grant
     return 'You don\'t have access to login.' if user.nil?
 
     community_admin = fetch_channel_credentials(user)
@@ -74,5 +74,14 @@ class Oauth::TokensController < Doorkeeper::TokensController
 
   def render_error(error)
     render json: { error: error }, status: 401
+  end
+
+  def grant_password?
+    params[:grant_type] == 'password'
+  end
+
+  def fetch_access_token_grant
+    access_token_grant = Doorkeeper::AccessToken.find_by(token: params[:code])
+    User.find_by(id: access_token_grant&.resource_owner_id)
   end
 end
