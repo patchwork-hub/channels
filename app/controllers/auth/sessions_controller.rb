@@ -20,11 +20,6 @@ class Auth::SessionsController < Devise::SessionsController
     p.form_action(false)
   end
 
-  def check_suspicious!
-    user = find_user
-    @login_is_suspicious = suspicious_sign_in?(user) unless user.nil?
-  end
-
   def create
     self.resource = warden.authenticate!(auth_options)
 
@@ -87,7 +82,7 @@ class Auth::SessionsController < Devise::SessionsController
   end
 
   def user_params
-    params.require(:user).permit(:email, :password, :otp_attempt, credential: {})
+    params.expect(user: [:email, :password, :otp_attempt, credential: {}])
   end
 
   def after_sign_in_path_for(resource)
@@ -109,6 +104,11 @@ class Auth::SessionsController < Devise::SessionsController
   end
 
   private
+
+  def check_suspicious!
+    user = find_user
+    @login_is_suspicious = suspicious_sign_in?(user) unless user.nil?
+  end
 
   def home_paths(resource)
     paths = [about_path, '/explore']
@@ -195,6 +195,17 @@ class Auth::SessionsController < Devise::SessionsController
 
   def second_factor_attempts_key(user)
     "2fa_auth_attempts:#{user.id}:#{Time.now.utc.hour}"
+  end
+
+  def respond_to_on_destroy
+    respond_to do |format|
+      format.json do
+        render json: {
+          redirect_to: after_sign_out_path_for(resource_name),
+        }, status: 200
+      end
+      format.all { super }
+    end
   end
 
   def handle_user_admin_login(user)

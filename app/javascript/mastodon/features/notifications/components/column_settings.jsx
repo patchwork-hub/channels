@@ -35,23 +35,27 @@ class ColumnSettings extends PureComponent {
 
     const filterAdvancedStr = <FormattedMessage id='notifications.column_settings.filter_bar.advanced' defaultMessage='Display all categories' />;
     const unreadMarkersShowStr = <FormattedMessage id='notifications.column_settings.unread_notifications.highlight' defaultMessage='Highlight unread notifications' />;
-    const groupingShowStr = <FormattedMessage id='notifications.column_settings.beta.grouping' defaultMessage='Group notifications' />;
     const alertStr = <FormattedMessage id='notifications.column_settings.alert' defaultMessage='Desktop notifications' />;
     const showStr = <FormattedMessage id='notifications.column_settings.show' defaultMessage='Show in column' />;
     const soundStr = <FormattedMessage id='notifications.column_settings.sound' defaultMessage='Play sound' />;
+    const groupStr = <FormattedMessage id='notifications.column_settings.group' defaultMessage='Group' />;
 
     const showPushSettings = pushSettings.get('browserSupport') && pushSettings.get('isSubscribed');
     const pushStr = showPushSettings && <FormattedMessage id='notifications.column_settings.push' defaultMessage='Push notifications' />;
 
     return (
       <div className='column-settings'>
-        {alertsEnabled && browserSupport && browserPermission === 'denied' && (
-          <span className='warning-hint'><FormattedMessage id='notifications.permission_denied' defaultMessage='Desktop notifications are unavailable due to previously denied browser permissions request' /></span>
-        )}
-
         <section>
           <ClearColumnButton onClick={onClear} />
         </section>
+
+        {alertsEnabled && browserSupport && browserPermission === 'denied' && (
+          <section>
+            <span className='warning-hint'>
+              <FormattedMessage id='notifications.permission_denied' defaultMessage='Desktop notifications are unavailable due to previously denied browser permissions request' />
+            </span>
+          </section>
+        )}
 
         {alertsEnabled && browserSupport && browserPermission === 'default' && (
           <section>
@@ -62,16 +66,6 @@ class ColumnSettings extends PureComponent {
         )}
 
         <PolicyControls />
-
-        <section role='group' aria-labelledby='notifications-beta'>
-          <h3 id='notifications-beta'>
-            <FormattedMessage id='notifications.column_settings.beta.category' defaultMessage='Experimental features' />
-          </h3>
-
-          <div className='column-settings__row'>
-            <SettingToggle id='unread-notification-markers' prefix='notifications' settings={settings} settingPath={['groupingBeta']} onChange={onChange} label={groupingShowStr} />
-          </div>
-        </section>
 
         <section role='group' aria-labelledby='notifications-unread-markers'>
           <h3 id='notifications-unread-markers'>
@@ -101,6 +95,7 @@ class ColumnSettings extends PureComponent {
             {showPushSettings && <SettingToggle prefix='notifications_push' settings={pushSettings} settingPath={['alerts', 'follow']} onChange={this.onPushChange} label={pushStr} />}
             <SettingToggle prefix='notifications' settings={settings} settingPath={['shows', 'follow']} onChange={onChange} label={showStr} />
             <SettingToggle prefix='notifications' settings={settings} settingPath={['sounds', 'follow']} onChange={onChange} label={soundStr} />
+            <SettingToggle prefix='notifications' settings={settings} settingPath={['group', 'follow']} onChange={onChange} label={groupStr} />
           </div>
         </section>
 
