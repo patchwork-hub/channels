@@ -8,9 +8,6 @@ import { Icon } from 'mastodon/components/icon';
 const ColumnLink = ({ icon, activeIcon, iconComponent, activeIconComponent, text, to, href, method, badge, transparent, optional, ...other }) => {
   const match = useRouteMatch(to);
   const className = classNames('column-link', { 'column-link--transparent': transparent, 'column-link--optional': optional });
-  const badgeElement = typeof badge !== 'undefined' ? <span className='column-link__badge'>{badge}</span> : null;
-  const iconElement = (typeof icon === 'string' || iconComponent) ? <Icon id={icon} icon={iconComponent} className='column-link__icon' /> : icon;
-  const activeIconElement = activeIcon ?? (activeIconComponent ? <Icon id={icon} icon={activeIconComponent} className='column-link__icon' /> : iconElement);
   const active = match?.isExact;
   const badgeElement =
     typeof badge !== 'undefined' ? (
