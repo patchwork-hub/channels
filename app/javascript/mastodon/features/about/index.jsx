@@ -18,7 +18,7 @@ import { Icon } from 'mastodon/components/icon';
 import ColumnHeader from '../../components/column_header';
 import { ServerHeroImage } from 'mastodon/components/server_hero_image';
 import { Skeleton } from 'mastodon/components/skeleton';
-import Account from 'mastodon/containers/account_container';
+// import Account from 'mastodon/containers/account_container';
 import LinkFooter from 'mastodon/features/ui/components/link_footer';
 import ChannelTopBanner from 'mastodon/components/channel_top_banner';
 
