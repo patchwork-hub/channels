@@ -8,22 +8,8 @@ export function Compose() {
   return import(/* webpackChunkName: "features/compose" */ '../../compose');
 }
 
-export function Notifications() {
-  return import(
-    /* webpackChunkName: "features/notifications_v1" */ '../../notifications'
-  );
-}
-
-export function Notifications_v2() {
-  return import(
-    /* webpackChunkName: "features/notifications_v2" */ '../../notifications_v2'
-  );
-}
-
-export function NotificationsWrapper() {
-  return import(
-    /* webpackChunkName: "features/notifications" */ '../../notifications_wrapper'
-  );
+export function Notifications () {
+  return import(/* webpackChunkName: "features/notifications" */'../../notifications_v2');
 }
 
 export function HomeTimeline() {
@@ -184,6 +170,11 @@ export function ReportModal() {
   );
 }
 
+
+export function IgnoreNotificationsModal () {
+  return import(/* webpackChunkName: "modals/domain_block_modal" */'../components/ignore_notifications_modal');
+}
+
 export function MediaGallery() {
   return import(
     /* webpackChunkName: "status/media_gallery" */ '../../../components/media_gallery'
@@ -197,12 +188,6 @@ export function Video() {
 export function EmbedModal() {
   return import(
     /* webpackChunkName: "modals/embed_modal" */ '../components/embed_modal'
-  );
-}
-
-export function ListEditor() {
-  return import(
-    /* webpackChunkName: "features/list_editor" */ '../../list_editor'
   );
 }
 
@@ -224,9 +209,13 @@ export function Directory() {
   return import(/* webpackChunkName: "features/directory" */ '../../directory');
 }
 
-export function Onboarding() {
+export function OnboardingProfile () {
+  return import(/* webpackChunkName: "features/onboarding" */'../../onboarding/profile');
+}
+
+export function OnboardingFollows() {
   return import(
-    /* webpackChunkName: "features/onboarding" */ '../../onboarding'
+    /* webpackChunkName: "features/onboarding" */ '../../onboarding/follows'
   );
 }
 
@@ -245,6 +234,11 @@ export function ExploreChannels() {
     /* webpackChunkName: "features/explore-channles" */ '../../explore_channels'
   );
 }
+
+export function Search () {
+  return import(/* webpackChunkName: "features/explore" */'../../search');
+}
+
 
 export function FilterModal() {
   return import(
@@ -280,10 +274,8 @@ export function PrivacyPolicy() {
   );
 }
 
-export function NotificationRequests() {
-  return import(
-    /*webpackChunkName: "features/notifications/requests" */ '../../notifications/requests'
-  );
+export function NotificationRequests () {
+  return import(/*webpackChunkName: "features/notifications/requests" */'../../notifications/requests');
 }
 
 export function NotificationRequest() {
@@ -292,10 +284,8 @@ export function NotificationRequest() {
   );
 }
 
-export function LinkTimeline() {
-  return import(
-    /*webpackChunkName: "features/link_timeline" */ '../../link_timeline'
-  );
+export function LinkTimeline () {
+  return import(/*webpackChunkName: "features/link_timeline" */'../../link_timeline');
 }
 
 export function SignInModal() {
@@ -304,4 +294,16 @@ export function SignInModal() {
 
 export function SignInWithMastodonModal() {
   return import(/*webpackChunkName: "modals/signin_modal" */'../components/signin_with_mastodon_modal');
+}
+
+export function AnnualReportModal () {
+  return import(/*webpackChunkName: "modals/annual_report_modal" */'../components/annual_report_modal');
+}
+
+export function ListEdit () {
+  return import(/*webpackChunkName: "features/lists" */'../../lists/new');
+}
+
+export function ListMembers () {
+  return import(/* webpackChunkName: "features/lists" */'../../lists/members');
 }

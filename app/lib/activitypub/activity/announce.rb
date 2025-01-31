@@ -7,6 +7,7 @@ class ActivityPub::Activity::Announce < ActivityPub::Activity
     #dereference_object!
 
     return reject_payload! if delete_arrived_first?(@json['id']) || !related_to_local_activity?
+    return reject_payload! if @object.nil?
 
     #Rails.logger.info("**** Announce   @object: #{@object.inspect} ****")
 

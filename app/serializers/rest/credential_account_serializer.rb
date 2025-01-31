@@ -19,6 +19,7 @@ class REST::CredentialAccountSerializer < REST::AccountSerializer
       discoverable: object.discoverable,
       indexable: object.indexable,
       email: user&.email,
+      attribution_domains: object.attribution_domains,
     }
   end
 

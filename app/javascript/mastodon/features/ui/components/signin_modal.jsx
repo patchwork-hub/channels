@@ -1,5 +1,6 @@
 import { closeModal, openModal } from "mastodon/actions/modal";
 import { useDispatch } from "react-redux";
+import patchworkLogo from "../../../../images/patchwork.png";
 
 const SignInModal = () => {
     const dispatch = useDispatch();
@@ -59,16 +60,14 @@ const SignInModal = () => {
                 fontWeight: 400,
                 fontFamily: 'source-sans-pro',
                 lineHeight: '148%'
-            }}><span style={{
-                fontFamily: 'ibm-plex-sans',
-                fontSize: 27,
-                fontWeight: 700,
-                fontFeatureSettings: "'liga' off, 'clig' off",
-                background: 'linear-gradient(180deg, #F8F8FF 50.5%, #F8F8FF 100%)',
-                ["background-clip"]: 'text',
-                ["-webkit-background-clip"]: 'text',
-                ["-webkit-text-fill-color"]: 'transparent',
-            }}>C</span>Login with Channel.org</button>
+            }}>
+                <img 
+                    src={patchworkLogo} 
+                    alt="Channel.org logo" 
+                    width={27}
+                    height={27} />
+                Login with Channel.org
+            </button>
             <button onClick={signinWithMastodon} style={{
                 alignSelf: 'stretch',
                 borderRadius: 8,

@@ -47,8 +47,6 @@ class ActivityPub::DeliveryWorker
   private
 
   def build_request(http_client)
-    Rails.logger.info("*** [ActivityPub::DeliveryWorker] inbox_url: #{@inbox_url}")
-    Rails.logger.info("*** [ActivityPub::DeliveryWorker] body: #{@json}")
     Request.new(:post, @inbox_url, body: @json, http_client: http_client).tap do |request|
       request.on_behalf_of(@source_account, sign_with: @options[:sign_with])
       request.add_headers(HEADERS)
@@ -64,12 +62,16 @@ class ActivityPub::DeliveryWorker
     stoplight_wrapper.run do
       request_pool.with(@host) do |http_client|
         build_request(http_client).perform do |response|
-          raise Mastodon::UnexpectedResponseError, response unless response_successful?(response) || response_error_unsalvageable?(response)
+          raise Mastodon::UnexpectedResponseError, response unless response_successful?(response) || response_error_unsalvageable?(response) || unsalvageable_authorization_failure?(response)
 
           @performed = true
         end
       end
     end
+  end
+
+  def unsalvageable_authorization_failure?(response)
+    @source_account.permanently_unavailable? && response.code == 401
   end
 
   def stoplight_wrapper
