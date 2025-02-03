@@ -2,12 +2,12 @@
 
 class Oauth::TokensController < Doorkeeper::TokensController
   def create
-    # You can add your own authentication logic here
-    if login_from_channel?
-      # Proceed with token generation
+    error_message = create_channel_feed? ? handle_web_login : handle_app_login
+
+    if error_message.nil?
       super
     else
-      render json: { error: 'Missing credentials' }, status: 401
+      render_error(error_message)
     end
   end
 
@@ -23,32 +23,65 @@ class Oauth::TokensController < Doorkeeper::TokensController
     Web::PushSubscription.where(access_token_id: token.id).delete_all
   end
 
-  def login_from_channel?
-    user = User.find_by(email: params[:username])
-    return false unless user
-
-    return handle_user_admin_login(user) if user.role&.name == 'UserAdmin' || user.role.id == -99 || user.role.id.nil?
-
-    # return true unless grant_password?
-
-    false
+  def fetch_user_credentials
+    User.find_by(email: params[:username])
   end
 
-  def handle_user_admin_login(user)
-    return true if create_channel_feed?
-
-    community_admin = CommunityAdmin.find_by(account_id: user.account_id, role: 'UserAdmin', is_boost_bot: true)
-    return false unless community_admin
-
-    community = Community.find_by(id: community_admin.patchwork_community_id)
-    community.present?
+  def fetch_channel_credentials(user)
+    CommunityAdmin.find_by(account_id: user.account_id, is_boost_bot: true)
   end
 
+  def handle_web_login
+    user = fetch_user_credentials
+    return 'You don\'t have access to login.' if user.nil?
+
+    return 'Organisation admin isn\'t allowed to access login.' unless user.role&.name.eql?('UserAdmin')
+
+    nil
+  end
+
+  def handle_app_login
+    user = grant_password? ? fetch_user_credentials : fetch_access_token_grant
+    return 'You don\'t have access to login.' if user.nil?
+
+    community_admin = fetch_channel_credentials(user)
+    return 'Invalid credentials. Please make sure you\'ve created a channel.' if community_admin.nil?
+
+    return 'Invalid credentials or insufficient permissions to access login.' unless valid_permissions?(community_admin, user)
+
+    nil
+  end
+
+  # This is a solution to allow the creation of a channel feed
   def create_channel_feed?
     params[:create_channel_feed].nil? ? false : params[:create_channel_feed]
   end
 
+  def valid_permissions?(community_admin, user)
+    belong_any_channel?(community_admin) &&
+      (
+        (community_admin&.role.eql?('OrganisationAdmin') && user.role&.name.eql?('OrganisationAdmin')) ||
+        (community_admin&.role.eql?('UserAdmin') && user.role&.name.eql?('UserAdmin'))
+      )
+  end
+
+  def belong_any_channel?(community_admin)
+    community = Community.where(id: community_admin.patchwork_community_id)
+                         .where.not(visibility: nil)
+                         .first
+    community.present?
+  end
+
+  def render_error(error)
+    render json: { error: error }, status: 401
+  end
+
   def grant_password?
     params[:grant_type] == 'password'
+  end
+
+  def fetch_access_token_grant
+    access_token_grant = Doorkeeper::AccessGrant.find_by(token: params[:code])
+    User.find_by(id: access_token_grant&.resource_owner_id)
   end
 end
