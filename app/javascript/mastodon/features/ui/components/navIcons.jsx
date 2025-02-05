@@ -6,6 +6,17 @@ import RssFeedIcon from '@/material-icons/400-24px/rss_feed.svg?react';
 import ButterflyIcon from '@/material-icons/400-24px/butterfly.svg?react';
 import ThreadIcon from '@/material-icons/400-24px/thread.svg?react';
 import Mastodon from '@/material-icons/400-24px/mastodon.svg?react';
+import Video from '@/material-icons/400-24px/video.svg?react';
+import Whatsapp from '@/material-icons/400-24px/whatsapp.svg?react';
+import X from '@/material-icons/400-24px/x.svg?react';
+import Linktree from '@/material-icons/400-24px/linktree.svg?react';
+import Facebook from '@/material-icons/400-24px/facebook.svg?react';
+import Instagram from '@/material-icons/400-24px/instagram.svg?react';
+import Tiktok from '@/material-icons/400-24px/tiktok.svg?react';
+import Reddit from '@/material-icons/400-24px/reddit.svg?react';
+import Pintrest from '@/material-icons/400-24px/pintrest.svg?react';
+import Pixelfed from '@/material-icons/400-24px/pixelfed.svg?react';
+import Snapchat from '@/material-icons/400-24px/snapchat.svg?react';
 
 export const icons = {
     "pen":PenIcon,
@@ -16,4 +27,15 @@ export const icons = {
     "bluesky":ButterflyIcon,
     "thread":ThreadIcon,
     "mastodon":Mastodon,
+    "video":Video,
+    "whatsapp":Whatsapp,
+    "x":X,
+    "linktree":Linktree,
+    "facebook":Facebook,
+    "instagram":Instagram,
+    "tiktok":Tiktok,
+    "reddit":Reddit,
+    "pintrest":Pintrest,
+    "pixelfed":Pixelfed,
+    "snapchat":Snapchat,
 }
