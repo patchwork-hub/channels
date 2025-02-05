@@ -7,15 +7,15 @@ class ContentType < ApplicationRecord
              class_name: 'Community',
              foreign_key: 'patchwork_community_id'
 
-  enum channel_type: {
+  enum :channel_type, {
     broadcast_channel: 'Broadcast Channel',
     group_channel: 'Group Channel',
-    custom_channel: 'Custom Channel',
+    custom_channel: 'Custom Channel'
   }
 
-  enum custom_condition: {
+  enum :custom_condition, {
     or_condition: 'OR',
-    and_condition: 'AND',
+    and_condition: 'AND'
   }
 
   validates :channel_type, presence: true, inclusion: { in: channel_types.keys }
