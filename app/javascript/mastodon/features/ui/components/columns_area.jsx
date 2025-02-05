@@ -4,13 +4,11 @@ import { Children, cloneElement, useCallback } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 
-import { supportsPassiveEvents } from 'detect-passive-events';
-
 import { scrollRight } from '../../../scroll';
 import BundleContainer from '../containers/bundle_container';
 import {
   Compose,
-  NotificationsWrapper,
+  Notifications,
   HomeTimeline,
   CommunityTimeline,
   PublicTimeline,
@@ -38,18 +36,18 @@ import { channel_display_name, custom_links, logo_image } from 'mastodon/initial
 import { icons } from './navIcons';
 
 const componentMap = {
-  COMPOSE: Compose,
-  HOME: HomeTimeline,
-  NOTIFICATIONS: NotificationsWrapper,
-  PUBLIC: PublicTimeline,
-  REMOTE: PublicTimeline,
-  COMMUNITY: CommunityTimeline,
-  HASHTAG: HashtagTimeline,
-  DIRECT: DirectTimeline,
-  FAVOURITES: FavouritedStatuses,
-  BOOKMARKS: BookmarkedStatuses,
-  LIST: ListTimeline,
-  DIRECTORY: Directory,
+  'COMPOSE': Compose,
+  'HOME': HomeTimeline,
+  'NOTIFICATIONS': Notifications,
+  'PUBLIC': PublicTimeline,
+  'REMOTE': PublicTimeline,
+  'COMMUNITY': CommunityTimeline,
+  'HASHTAG': HashtagTimeline,
+  'DIRECT': DirectTimeline,
+  'FAVOURITES': FavouritedStatuses,
+  'BOOKMARKS': BookmarkedStatuses,
+  'LIST': ListTimeline,
+  'DIRECTORY': Directory,
 };
 
 const TabsBarPortal = () => {
@@ -73,9 +71,8 @@ export default class ColumnsArea extends ImmutablePureComponent {
     children: PropTypes.node,
   };
 
-  // Corresponds to (max-width: $no-gap-breakpoint + 285px - 1px) in SCSS
-  mediaQuery =
-    'matchMedia' in window && window.matchMedia('(max-width: 1174px)');
+  // Corresponds to (max-width: $no-gap-breakpoint - 1px) in SCSS
+  mediaQuery = 'matchMedia' in window && window.matchMedia('(max-width: 1174px)');
 
   state = {
     renderComposePanel: !(this.mediaQuery && this.mediaQuery.matches),
@@ -84,14 +81,6 @@ export default class ColumnsArea extends ImmutablePureComponent {
   };
 
   componentDidMount() {
-    if (!this.props.singleColumn) {
-      this.node.addEventListener(
-        'wheel',
-        this.handleWheel,
-        supportsPassiveEvents ? { passive: true } : false,
-      );
-    }
-
     if (this.mediaQuery) {
       if (this.mediaQuery.addEventListener) {
         this.mediaQuery.addEventListener('change', this.handleLayoutChange);
@@ -106,33 +95,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
       .classList.contains('rtl');
   }
 
-  UNSAFE_componentWillUpdate(nextProps) {
-    if (
-      this.props.singleColumn !== nextProps.singleColumn &&
-      nextProps.singleColumn
-    ) {
-      this.node.removeEventListener('wheel', this.handleWheel);
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (
-      this.props.singleColumn !== prevProps.singleColumn &&
-      !this.props.singleColumn
-    ) {
-      this.node.addEventListener(
-        'wheel',
-        this.handleWheel,
-        supportsPassiveEvents ? { passive: true } : false,
-      );
-    }
-  }
-
-  componentWillUnmount() {
-    if (!this.props.singleColumn) {
-      this.node.removeEventListener('wheel', this.handleWheel);
-    }
-
+  componentWillUnmount () {
     if (this.mediaQuery) {
       if (this.mediaQuery.removeEventListener) {
         this.mediaQuery.removeEventListener('change', this.handleLayoutChange);
@@ -145,29 +108,12 @@ export default class ColumnsArea extends ImmutablePureComponent {
   handleChildrenContentChange() {
     if (!this.props.singleColumn) {
       const modifier = this.isRtlLayout ? -1 : 1;
-      this._interruptScrollAnimation = scrollRight(
-        this.node,
-        (this.node.scrollWidth - window.innerWidth) * modifier,
-      );
+      scrollRight(this.node, (this.node.scrollWidth - window.innerWidth) * modifier);
     }
   }
 
   handleLayoutChange = (e) => {
     this.setState({ renderComposePanel: !e.matches });
-  };
-
-  handleWheel = () => {
-    if (typeof this._interruptScrollAnimation !== 'function') {
-      return;
-    }
-
-    this._interruptScrollAnimation();
-  };
-
-  handleOpenMenu = () => {
-    this.setState((prevState) => ({
-      isMenuOpen: !prevState.isMenuOpen,
-    }));
   };
 
   setRef = (node) => {

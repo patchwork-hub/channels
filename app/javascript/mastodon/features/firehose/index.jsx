@@ -155,24 +155,23 @@ const Firehose = ({ feedType, multiColumn }) => {
     return () => disconnect?.();
   }, [dispatch, signedIn, feedType, onlyMedia]);
 
-  const prependBanner =
-    feedType === 'community' ? (
-      <DismissableBanner id='community_timeline'>
-        <FormattedMessage
-          id='dismissable_banner.community_timeline'
-          defaultMessage='These are the most recent public posts from people whose accounts are hosted by {domain}.'
-          values={{ domain }}
-        />
-      </DismissableBanner>
-    ) : (
-      <DismissableBanner id='public_timeline'>
-        <FormattedMessage
-          id='dismissable_banner.public_timeline'
-          defaultMessage='These are the most recent public posts from people on the social web that people on {domain} follow.'
-          values={{ domain }}
-        />
-      </DismissableBanner>
-    );
+  const prependBanner = feedType === 'community' ? (
+    <DismissableBanner id='community_timeline'>
+      <FormattedMessage
+        id='dismissable_banner.community_timeline'
+        defaultMessage='These are the most recent public posts from people whose accounts are hosted by {domain}.'
+        values={{ domain }}
+      />
+    </DismissableBanner>
+  ) : (
+    <DismissableBanner id='public_timeline'>
+      <FormattedMessage
+        id='dismissable_banner.public_timeline'
+        defaultMessage='This feed shows recent public posts from the people you, and others on {domain} follow.'
+        values={{ domain }}
+      />
+    </DismissableBanner>
+  );
 
   const emptyMessage =
     feedType === 'community' ? (
