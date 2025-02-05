@@ -234,8 +234,8 @@ gem 'mail', '~> 2.8'
 
 gem 'googleauth'
 
-# gem 'content_filters', git: 'https://github.com/patchwork-hub/content_filters', branch: 'fitler_refactor'
-# gem 'posts', git: 'https://github.com/patchwork-hub/posts', branch: 'main'
+gem 'content_filters', git: 'https://github.com/patchwork-hub/content_filters', branch: 'fitler_refactor'
+gem 'posts', git: 'https://github.com/patchwork-hub/posts', branch: 'main'
 
 gem 'em-http-request', '~> 1.1', '>= 1.1.7'
 gem 'eventmachine', '~> 1.2', '>= 1.2.7'
