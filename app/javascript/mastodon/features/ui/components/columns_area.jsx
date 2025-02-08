@@ -116,6 +116,12 @@ export default class ColumnsArea extends ImmutablePureComponent {
     this.setState({ renderComposePanel: !e.matches });
   };
 
+  handleOpenMenu = () => {
+    this.setState((prevState) => ({
+      isMenuOpen: !prevState.isMenuOpen,
+    }));
+  };
+
   setRef = (node) => {
     this.node = node;
   };
