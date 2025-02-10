@@ -9,7 +9,7 @@ export function fetchChannels() {
     dispatch(fetchChannelsRequest());
 
     axios
-      .get('https://staging-dashboard.patchwork.online/api/v1/channels/recommend_channels')
+      .get('https://dashboard.channel.org/api/v1/channels/recommend_channels')
       .then((response) => {
         dispatch(fetchChannelsSuccess(response.data.data));
       })
