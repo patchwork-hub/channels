@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Api::V1::CustomPasswordsController < Api::BaseController
+  ACCESS_TOKEN_SCOPES = 'read write follow push profile'
   skip_before_action :require_authenticated_user!, except: [:change_password]
   before_action :require_authenticated_user!, only: [:change_password]
   before_action :set_user, only: [:update, :verify_otp, :request_otp]
@@ -56,7 +57,8 @@ class Api::V1::CustomPasswordsController < Api::BaseController
         @user.update!(otp_secret: nil)
       end
     end
-    render json: { message: 'OTP verified successfully' }, status: 200
+    
+    render json: { message: generate_access_token }, status: 200
   rescue ActiveRecord::RecordInvalid => e
     render_password_error(message: e.message)
   end
@@ -106,5 +108,21 @@ class Api::V1::CustomPasswordsController < Api::BaseController
 
   def reset_password?
     params[:is_reset_password].nil? ? true : params[:is_reset_password]
+  end
+
+  def generate_access_token
+    access_token = Doorkeeper::AccessToken.find_or_create_by(
+      resource_owner_id: @user.id,
+      application_id:  Doorkeeper::Application.first.id,
+      revoked_at: nil
+    ) do |token|
+      token.scopes = ACCESS_TOKEN_SCOPES
+    end
+
+    { access_token: access_token.token,
+      token_type: 'Bearer',
+      scope: ACCESS_TOKEN_SCOPES,
+      created_at: access_token.created_at.to_i 
+    }
   end
 end
