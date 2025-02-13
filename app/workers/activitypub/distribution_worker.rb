@@ -16,12 +16,12 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
 
   def inboxes
     @inboxes ||= StatusReachFinder.new(@status).inboxes
-    if @status.reblog?
-      community_account_ids = User.joins(:role).where(user_roles: { name: 'community-admin' }).pluck(:account_id)
-      domain = @status.reblog.account&.domain
-      @inboxes.delete("https://#{domain}/inbox") if domain && !@inboxes.empty? && community_account_ids.include?(@status.account_id)
-    end
-    @inboxes
+    # if @status.reblog?
+    #   community_account_ids = User.joins(:role).where(user_roles: { name: 'community-admin' }).pluck(:account_id)
+    #   domain = @status.reblog.account&.domain
+    #   @inboxes.delete("https://#{domain}/inbox") if domain && !@inboxes.empty? && community_account_ids.include?(@status.account_id)
+    # end
+    # @inboxes
   end
 
   def payload
