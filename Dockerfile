@@ -310,7 +310,9 @@ RUN bundle exec bootsnap precompile --gemfile app/ lib/;
 RUN \
   mkdir -p /opt/mastodon/public/system; \
   chown mastodon:mastodon /opt/mastodon/public/system; \
-  chown -R mastodon:mastodon /opt/mastodon/tmp;
+  chown -R mastodon:mastodon /opt/mastodon/tmp;\
+  chown -R mastodon:mastodon /opt/mastodon/config;
+
 
 # Set Mastodon user and expose ports
 USER mastodon
