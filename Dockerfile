@@ -281,6 +281,10 @@ RUN \
   libx264-164 \
   libx265-199;
 
+#install aws cli 
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip
+RUN ./aws/install && aws --version
+
 # Copy application files and precompiled assets
 COPY . /opt/mastodon/
 COPY --from=precompiler /opt/mastodon/public/packs /opt/mastodon/public/packs
