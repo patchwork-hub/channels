@@ -16,12 +16,6 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
 
   def inboxes
     @inboxes ||= StatusReachFinder.new(@status).inboxes
-    if @status.reblog?
-      community_admin_account_ids = CommunityAdmin.where(is_boost_bot: true).pluck(:account_id)
-      domain = @status.reblog.account&.domain
-      @inboxes.delete("https://#{domain}/inbox") if domain && !@inboxes.empty? && community_admin_account_ids.include?(@status.account_id)
-    end
-    @inboxes
   end
 
   def payload
