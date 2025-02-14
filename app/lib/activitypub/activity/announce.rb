@@ -4,12 +4,12 @@ class ActivityPub::Activity::Announce < ActivityPub::Activity
   include FormattingHelper
 
   def perform
-    #dereference_object!
+    # dereference_object!
 
     return reject_payload! if delete_arrived_first?(@json['id']) || !related_to_local_activity?
     return reject_payload! if @object.nil?
 
-    #Rails.logger.info("**** Announce   @object: #{@object.inspect} ****")
+    # Rails.logger.info("**** Announce   @object: #{@object.inspect} ****")
 
     with_redis_lock("announce:#{value_or_id(@object)}") do
       original_status = status_from_object
@@ -21,18 +21,18 @@ class ActivityPub::Activity::Announce < ActivityPub::Activity
 
       return @status unless @status.nil?
 
-      #@status_parser = ActivityPub::Parser::StatusParser.new(@json, followers_collection: @account.followers_url, object: @object)
+      # @status_parser = ActivityPub::Parser::StatusParser.new(@json, followers_collection: @account.followers_url, object: @object)
 
-      #attachment_ids = process_attachments.take(Status::MEDIA_ATTACHMENTS_LIMIT).map(&:id)
+      # attachment_ids = process_attachments.take(Status::MEDIA_ATTACHMENTS_LIMIT).map(&:id)
 
-      #Rails.logger.info("**** Announce   @status_parser text: #{converted_object_type? ? converted_text : (@status_parser.text || '')} ****")
-      #Rails.logger.info("**** Announce   media_attachment_ids: #{attachment_ids} ****")
+      # Rails.logger.info("**** Announce   @status_parser text: #{converted_object_type? ? converted_text : (@status_parser.text || '')} ****")
+      # Rails.logger.info("**** Announce   media_attachment_ids: #{attachment_ids} ****")
 
-      #@tags                 = []
-      #@mentions             = []
-      #@silenced_account_ids = []
+      # @tags                 = []
+      # @mentions             = []
+      # @silenced_account_ids = []
 
-      #process_tags
+      # process_tags
 
       @status = Status.create!(
         account: @account,
