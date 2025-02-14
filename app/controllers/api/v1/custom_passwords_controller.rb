@@ -57,7 +57,6 @@ class Api::V1::CustomPasswordsController < Api::BaseController
         @user.update!(otp_secret: nil)
       end
     end
-    
     render json: { message: generate_access_token }, status: 200
   rescue ActiveRecord::RecordInvalid => e
     render_password_error(message: e.message)
@@ -113,7 +112,7 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   def generate_access_token
     access_token = Doorkeeper::AccessToken.find_or_create_by(
       resource_owner_id: @user.id,
-      application_id:  Doorkeeper::Application.first.id,
+      application_id: Doorkeeper::Application.first.id,
       revoked_at: nil
     ) do |token|
       token.scopes = ACCESS_TOKEN_SCOPES
@@ -122,7 +121,6 @@ class Api::V1::CustomPasswordsController < Api::BaseController
     { access_token: access_token.token,
       token_type: 'Bearer',
       scope: ACCESS_TOKEN_SCOPES,
-      created_at: access_token.created_at.to_i 
-    }
+      created_at: access_token.created_at.to_i }
   end
 end
