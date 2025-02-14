@@ -38,7 +38,8 @@ const ExploreChannels = () => {
               <div className='info'>
                 <p className='info__detail'>
                   <span className='title'>{channel.attributes.name}</span>
-                  <span className='subtitle'>{channel.attributes.community_type?.data?.attributes?.name}</span>
+                  {/* <span className='subtitle'>{channel.attributes.community_type?.data?.attributes?.name}</span> */}
+                  <span className='subtitle'>92 Channels</span>
                 </p>
                 <Icon icon={ArrowRightUpAltIcon} id={''} className='icon' />
               </div>
