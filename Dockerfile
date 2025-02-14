@@ -78,11 +78,16 @@ RUN \
   libjemalloc2 \
   patchelf \
   procps \
+  unzip \
   tini \
   tzdata \
   wget && \
   patchelf --add-needed libjemalloc.so.2 /usr/local/bin/ruby && \
   apt-get purge -y patchelf;
+
+#install aws cli 
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip
+RUN ./aws/install && aws --version
 
 # Build stage for dependencies
 FROM ruby AS build
@@ -280,10 +285,6 @@ RUN \
   libvpx7 \
   libx264-164 \
   libx265-199;
-
-#install aws cli 
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip
-RUN ./aws/install && aws --version
 
 # Copy application files and precompiled assets
 COPY . /opt/mastodon/
