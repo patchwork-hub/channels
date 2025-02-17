@@ -16,6 +16,14 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
 
   def inboxes
     @inboxes ||= StatusReachFinder.new(@status).inboxes
+
+    # Remove the original post owner's inbox if this is a reblog
+    if @status.reblog?
+      original_owner_inbox = @status.reblog.account.inbox_url
+      @inboxes.reject! { |inbox| inbox == original_owner_inbox }
+    end
+
+    @inboxes
   end
 
   def payload
