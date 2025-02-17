@@ -25,7 +25,8 @@ class StatusReachFinder
     # directly, we assume all interactions are with the original one
 
     if @status.reblog?
-      [reblog_of_account_id]
+      # [reblog_of_account_id]
+      []
     else
       [
         replied_to_account_id,
@@ -47,12 +48,7 @@ class StatusReachFinder
   end
 
   def reblog_of_account_id
-    return unless @status.reblog?
-
-    reblog_account_id = @status.reblog.account_id
-    return nil if CommunityAdmin.exists?(account_id: reblog_account_id, is_boost_bot: true)
-
-    reblog_account_id
+    @status.reblog.account_id if @status.reblog?
   end
 
   def mentioned_account_ids
