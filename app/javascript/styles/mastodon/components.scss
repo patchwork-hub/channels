@@ -11215,8 +11215,8 @@ noscript {
     overflow: hidden;
     position: relative;
     width: 100%;
-    width: 264.5px;
-    height: 264.5px;
+    max-width: 294.5px;
+    height: 294.5px;
     cursor: pointer;
     transition: transform 0.3s;
   }
@@ -11264,9 +11264,8 @@ noscript {
     }
     .icon {
       padding-right: 10px;
-      width: 20px;
-      height: 20px;
-      font-weight: 400;
+      width: 13px;
+      height: 13px;
       color: #ff3c26;
     }
   }
