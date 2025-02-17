@@ -21,6 +21,10 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
       # Remove the original post owner's inbox if this is a reblog
       if @status.reblog?
         original_owner_inbox = @status.reblog.account.inbox_url
+        Rails.logger.info "+++++++ Account owner: #{@status.reblog.account.username} +++++++"
+        Rails.logger.info "+++++++ Reblog status ID: #{@status.reblog.id} +++++++"
+        Rails.logger.info "+++++++ Original owner inbox url: #{original_owner_inbox} +++++++"
+        Rails.logger.info "+++++++ Inboxes: #{inboxes.inspect} +++++++"
         inboxes.reject! { |inbox| inbox == original_owner_inbox }
       end
 
