@@ -4,11 +4,9 @@ import { fetchChannels } from '../actions/channel_banner';
 import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
 
-const ChannelBanner = (props) => {
+const ChannelBanner = () => {
 
-  const { signedIn } = props.identity;
   const channels = useSelector(state => state.recommended_channels.get("items"));
 
   const dispatch = useDispatch();
@@ -26,88 +24,34 @@ const ChannelBanner = (props) => {
             See all
           </NavLink>
         </div>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 10
-        }}>
-          {channels?.slice(0, 3).map((channel, index) => (
-            <a key={index} style={{ textDecoration: 'none' }} target='_blank' href={'https://' + channel.attributes.domain_name + '/public'}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'end',
-                height: '147px',
-                borderRadius: '10px',
-                background: "linear-gradient(180deg, rgba(43, 43, 43, 0.00) 0%, rgba(37, 37, 37, 0.60) 56.93%), url(" + channel.attributes.avatar_image_url + ") lightgray 50% / cover no-repeat",
-                padding: '10px',
-              }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'end',
-                  justifyContent: 'space-between',
-                  width: '100%'
-                }}>
-                  <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                  }}>
-                    <p style={{
-                      fontSize: '15px',
-                      fontWeight: 600,
-                      color: '#fff',
-                      letterSpacing: '0.15px',
-                      fontFamily: 'source-sans-pro',
-                    }}>{channel.attributes.name}</p>
-                    <p style={{
-                      fontSize: '13px',
-                      fontWeight: 300,
-                      letterSpacing: '0.13px',
-                      color: '#fff',
-                      fontFamily: 'source-sans-pro',
-                    }}>92 Channels</p>
-                  </div>
+        <div className='channel-grid'>
+          {channels?.slice(0, 4).map((channel, index) => (
+            <a key={index} target='_blank' href={'https://' + channel.attributes.domain_name +'/public'}>
+              <div className='channel-card'>
+                <img
+                  src={channel.attributes.avatar_image_url}
+                  alt={channel.attributes.name}
+                  className='channel-image'
+                />
+                <div className='channel-overlay' />
+                <div className='channel__info'>
+                  <p className='channel__info-detail'>
+                    <span className='channel-title'>{channel.attributes.name}</span>
+                    <span className='channel-subtitle'>{channel.attributes.community_type?.data?.attributes?.name}</span>
+                  </p>
                   <Icon
                     icon={ArrowRightUpAltIcon}
                     id={''}
-                    style={{
-                      color: '#ff3c26',
-                      paddingInlineEnd: '10px',
-                      width: '13px',
-                      height: '13px'
-                    }}
+                    className='channel__info-icon'
                   />
                 </div>
               </div>
             </a>
           ))}
         </div>
-        {!signedIn && <a
-          href='https://home.channel.org/create-channel'
-          style={{
-            marginBlockStart: '20px',
-            borderRadius: '8px',
-            background: '#FF3C26',
-            border: 'none',
-            color: 'white',
-            padding: '9px 15px',
-            fontSize: '17px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textDecoration: 'none',
-            gap: '10px'
-          }}>
-          <span style={{
-            fontSize: '25px',
-          }}>+</span> Create channel
-        </a>}
       </div>
     </div>
   );
 };
 
-ChannelBanner.propTypes = {
-  identity: identityContextPropShape
-}
-
-export default withIdentity(ChannelBanner);
+export default ChannelBanner;
