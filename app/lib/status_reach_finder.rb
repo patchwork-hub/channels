@@ -25,8 +25,7 @@ class StatusReachFinder
     # directly, we assume all interactions are with the original one
 
     if @status.reblog?
-      # [reblog_of_account_id]
-      []
+      [reblog_of_account_id]
     else
       [
         replied_to_account_id,
