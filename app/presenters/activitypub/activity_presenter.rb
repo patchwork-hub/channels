@@ -10,8 +10,20 @@ class ActivityPub::ActivityPresenter < ActiveModelSerializers::Model
         presenter.type      = status.reblog? ? 'Announce' : 'Create'
         presenter.actor     = ActivityPub::TagManager.instance.uri_for(status.account)
         presenter.published = status.created_at
-        presenter.to        = ActivityPub::TagManager.instance.to(status)
-        presenter.cc        = ActivityPub::TagManager.instance.cc(status)
+
+        # Get the original to/cc lists
+        to_list = ActivityPub::TagManager.instance.to(status)
+        cc_list = ActivityPub::TagManager.instance.cc(status)
+
+        # If this is a reblog, remove the original owner from the lists
+        if status.reblog?
+          original_owner_uri = ActivityPub::TagManager.instance.uri_for(status.reblog.account)
+          to_list = to_list.reject { |uri| uri == original_owner_uri }
+          cc_list = cc_list.reject { |uri| uri == original_owner_uri }
+        end
+
+        presenter.to = to_list
+        presenter.cc = cc_list
 
         presenter.virtual_object = begin
           if status.reblog?

@@ -47,8 +47,7 @@ class StatusReachFinder
   end
 
   def reblog_of_account_id
-    # @status.reblog.account_id if @status.reblog?
-    nil
+    @status.reblog.account_id if @status.reblog?
   end
 
   def mentioned_account_ids

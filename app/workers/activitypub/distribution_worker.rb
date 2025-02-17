@@ -15,25 +15,13 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
   protected
 
   def inboxes
-    @inboxes ||= begin
-      inboxes = StatusReachFinder.new(@status).inboxes
-
-      # Remove the original post owner's inbox if this is a reblog
-      if @status.reblog?
-        original_owner_inbox = @status.reblog.account.inbox_url
-        Rails.logger.info "+++++++ Account owner: #{@status.reblog.account.username} +++++++"
-        Rails.logger.info "+++++++ Reblog status ID: #{@status.reblog.id} +++++++"
-        Rails.logger.info "+++++++ Original owner inbox url: #{original_owner_inbox} +++++++"
-        Rails.logger.info "+++++++ Inboxes: #{inboxes.inspect} +++++++"
-        inboxes.reject! { |inbox| inbox == original_owner_inbox }
-      end
-
-      inboxes
-    end
+    @inboxes ||= StatusReachFinder.new(@status).inboxes
   end
 
   def payload
     @payload ||= Oj.dump(serialize_payload(activity, ActivityPub::ActivitySerializer, signer: @account))
+    Rails.logger.info "++++++++ Payload: #{@payload} ++++++++"
+    @payload
   end
 
   def activity
