@@ -3419,8 +3419,6 @@ $ui-header-logo-wordmark-width: 99px;
 }
 
 .compose-panel {
-  // width: 285px;
-  width: 345px;
   margin-top: 15px;
   display: flex;
   flex-direction: column;
@@ -3455,6 +3453,47 @@ $ui-header-logo-wordmark-width: 99px;
 
   &__logo {
     margin-bottom: 12px;
+  }
+
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: auto;
+
+    p {
+      margin-bottom: 15px;
+
+      span {
+        color: #626982;
+      }
+    }
+
+    &__bottom {
+      padding: 16px;
+      padding-top: 56px;
+
+      & .link {
+        text-decoration: none;
+        color: #626982;
+        font-weight: 400;
+        font-size: 11px;
+        margin: 0 3px;
+
+        &.ml-0 {
+          margin-left: 0;
+        }
+
+        &.label {
+          font-weight: 700;
+        }
+
+        &.underline {
+          text-decoration: underline;
+          text-underline-offset: 3px;
+        }
+      }
+    }
   }
 
   @media screen and (height <= 710px) {
