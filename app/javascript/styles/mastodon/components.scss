@@ -2775,6 +2775,7 @@ a.account__display-name {
         width: 285px;
         pointer-events: auto;
         height: 100%;
+        overflow: hidden;
       }
     }
 
@@ -3456,6 +3457,47 @@ $ui-header-logo-wordmark-width: 99px;
 
   &__logo {
     margin-bottom: 12px;
+  }
+
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: scroll;
+
+    p {
+      margin-bottom: 15px;
+
+      span {
+        color: #626982;
+      }
+    }
+
+    &__bottom {
+      padding: 16px;
+      padding-top: 56px;
+
+      & .link {
+        text-decoration: none;
+        color: #626982;
+        font-weight: 400;
+        font-size: 11px;
+        margin: 0 3px;
+
+        &.ml-0 {
+          margin-left: 0;
+        }
+
+        &.label {
+          font-weight: 700;
+        }
+
+        &.underline {
+          text-decoration: underline;
+          text-underline-offset: 3px;
+        }
+      }
+    }
   }
 
   @media screen and (height <= 710px) {
@@ -11290,3 +11332,103 @@ noscript {
 //   top: 11px;
 //   left: 30px;
 // }
+
+// channel search
+.channelSearchContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.searchInputContainer {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  background-color: white;
+  border-radius: 9999px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.searchIcon {
+  padding: 0.3rem 0.5rem 0 0.5rem;
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 888px;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  &::placeholder {
+    margin-left: 0.5rem;
+    font-weight: 400;
+    font-size: 18px;
+    color: #9ca3af;
+  }
+}
+
+.searchButton {
+  margin: 0.25rem;
+  min-width: fit-content;
+  border-radius: 9999px;
+  font-size: 18px;
+  background-color: #ff3c26;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: background-color 0.2s;
+  padding: 0.5rem 1.5rem;
+  &:hover {
+    background-color: #f25d4c;
+  }
+
+  &:disabled {
+    background-color: #ff3c26;
+    cursor: not-allowed;
+  }
+}
+
+.mobileSearchButton {
+  margin-top: 1rem;
+  width: 100%;
+  min-width: 201px;
+  border-radius: 9999px;
+  font-size: 18px;
+  background-color: #ff3c26;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 0.75rem 1.5rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f25d4c;
+  }
+
+  &:disabled {
+    background-color: #ff3c26;
+    cursor: not-allowed;
+  }
+}
+
+.hiddenOnMobile {
+  display: none;
+
+  @media (min-width: 768px) {
+    display: block;
+  }
+}
+
+.visibleOnMobile {
+  display: block;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+}

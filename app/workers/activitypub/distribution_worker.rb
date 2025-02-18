@@ -15,13 +15,17 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
   protected
 
   def inboxes
-    @inboxes ||= StatusReachFinder.new(@status).inboxes
-    # if @status.reblog?
-    #   community_account_ids = User.joins(:role).where(user_roles: { name: 'community-admin' }).pluck(:account_id)
-    #   domain = @status.reblog.account&.domain
-    #   @inboxes.delete("https://#{domain}/inbox") if domain && !@inboxes.empty? && community_account_ids.include?(@status.account_id)
-    # end
-    # @inboxes
+    @inboxes ||= begin
+      inboxes = StatusReachFinder.new(@status).inboxes
+
+      # Remove the original post owner's inbox if this is a reblog
+      if @status.reblog?
+        original_owner_inbox = @status.reblog.account.inbox_url
+        inboxes.reject! { |inbox| inbox == original_owner_inbox }
+      end
+
+      inboxes
+    end
   end
 
   def payload

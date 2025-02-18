@@ -47,7 +47,12 @@ class StatusReachFinder
   end
 
   def reblog_of_account_id
-    @status.reblog.account_id if @status.reblog?
+    return unless @status.reblog?
+
+    reblog_account_id = @status.reblog.account_id
+    return nil if CommunityAdmin.exists?(account_id: reblog_account_id, is_boost_bot: true)
+
+    reblog_account_id
   end
 
   def mentioned_account_ids

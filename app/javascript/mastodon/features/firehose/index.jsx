@@ -159,7 +159,7 @@ const Firehose = ({ feedType, multiColumn }) => {
     <DismissableBanner id='community_timeline'>
       <FormattedMessage
         id='dismissable_banner.community_timeline'
-        defaultMessage='These are the most recent public posts from people whose accounts are hosted by {domain}.'
+        defaultMessage='These are the most recent community posts relevant to this channel.'
         values={{ domain }}
       />
     </DismissableBanner>
@@ -167,7 +167,7 @@ const Firehose = ({ feedType, multiColumn }) => {
     <DismissableBanner id='public_timeline'>
       <FormattedMessage
         id='dismissable_banner.public_timeline'
-        defaultMessage='This feed shows recent public posts from the people you, and others on {domain} follow.'
+        defaultMessage='These are the most recent public posts relevant to this channel.'
         values={{ domain }}
       />
     </DismissableBanner>
