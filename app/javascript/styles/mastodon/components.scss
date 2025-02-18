@@ -2775,7 +2775,6 @@ a.account__display-name {
         width: 285px;
         pointer-events: auto;
         height: 100%;
-        overflow: hidden;
       }
     }
 
@@ -3461,7 +3460,7 @@ $ui-header-logo-wordmark-width: 99px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    overflow-y: scroll;
+    overflow: auto;
 
     p {
       margin-bottom: 15px;
