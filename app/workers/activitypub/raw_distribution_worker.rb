@@ -26,9 +26,6 @@ class ActivityPub::RawDistributionWorker
     return if inboxes.empty?
 
     ActivityPub::DeliveryWorker.push_bulk(inboxes, limit: 1_000) do |inbox_url|
-      # Log mastodon.social inboxes
-      Rails.logger.info "++++++++ Mastodon.social inbox: #{inbox_url} ++++++++" if inbox_url.start_with?('https://mastodon.social')
-
       [payload, source_account_id, inbox_url, options]
     end
   end
