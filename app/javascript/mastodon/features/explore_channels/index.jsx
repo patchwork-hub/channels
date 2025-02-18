@@ -1,9 +1,10 @@
-import ArrowRightUpAltIcon from '@/material-icons/400-24px/arrow_right_up_red?.svg?react';
+
 import { fetchChannels, fetchSearchedChannels } from 'mastodon/actions/channel_banner';
-import { Icon } from 'mastodon/components/icon';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ChannelSearch from '../channel_search';
+import ChannelCard from 'mastodon/components/channel_card';
+import CollectionCard from 'mastodon/components/collection_card';
 
 const ExploreChannels = () => {
 
@@ -15,6 +16,7 @@ const ExploreChannels = () => {
   const searchChannelsLoading = useSelector(state => state.search_channels.get('isLoading'));
 
   const channels = searchTerm ? searchChannels : recommendedChannels;
+
 
   const handleSearch = (term) => {
     setSearchTerm(term);
@@ -38,7 +40,13 @@ const ExploreChannels = () => {
         <ChannelSearch  onSearch={handleSearch} isLoading={searchChannelsLoading}/>
       </div>
       <div className='channels__list'>
-        {channels.map((channel, index) => (
+        {/* {channels.map((channel, index) => {
+          const isChannel = channel.type === 'channel';
+          const count = isChannel ? channel.attributes?.follower : channel.attributes?.community_count;
+          const label = isChannel
+            ? pluralize(count, 'follower', 'followers')
+            : pluralize(count, 'Channel', 'Channels');
+        return(
           <a key={index} target='_blank' href={'https://' + channel.attributes.domain_name +'/public'}>
             <div className='card'>
               <img
@@ -49,13 +57,19 @@ const ExploreChannels = () => {
               <div className='info'>
                 <p className='info__detail'>
                   <span className='title'>{channel.attributes.name}</span>
-                  {/* <span className='subtitle'>{channel.attributes.community_type?.data?.attributes?.name}</span> */}
-                  <span className='subtitle'>92 Channels</span>
+                  <span className='subtitle'>
+                      {formatNumber(count)} {label}
+                    </span>                
                 </p>
                 <Icon icon={ArrowRightUpAltIcon} id={''} className='icon' />
               </div>
             </div>
           </a>
+        )})} */}
+        {channels.map((channel, index) => (
+          channel.type === 'channel' ?
+            <ChannelCard key={index} channel={channel} /> :
+            <CollectionCard key={index} channel={channel} />
         ))}
       </div>
     </div>

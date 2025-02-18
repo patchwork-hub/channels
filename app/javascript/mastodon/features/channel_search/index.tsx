@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useTransition } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SearchIcon from '@/material-icons/400-24px/channel_org_search.svg?react';
 
 interface ChannelSearchProps {

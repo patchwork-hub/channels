@@ -13,7 +13,7 @@ export function fetchChannels() {
     dispatch(fetchChannelsRequest());
 
     axios
-      .get('https://dashboard.channel.org/api/v1/channels/recommend_channels')
+      .get('https://dashboard.channel.org/api/v1/collections')
       .then((response) => {
         dispatch(fetchChannelsSuccess(response.data.data));
       })
