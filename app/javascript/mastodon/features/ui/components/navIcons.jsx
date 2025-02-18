@@ -19,7 +19,7 @@ import Pixelfed from '@/material-icons/400-24px/pixelfed.svg?react';
 import Snapchat from '@/material-icons/400-24px/snapchat.svg?react';
 
 export const icons = {
-    "pen":PenIcon,
+    "blog":PenIcon,
     "podcast":PodcastIcon,
     "chat":ChatIcon,
     "website":WebsiteIcon,
