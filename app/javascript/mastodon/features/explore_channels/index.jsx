@@ -1,30 +1,41 @@
 import ArrowRightUpAltIcon from '@/material-icons/400-24px/arrow_right_up_red?.svg?react';
-import { fetchChannels } from 'mastodon/actions/channel_banner';
+import { fetchChannels, fetchSearchedChannels } from 'mastodon/actions/channel_banner';
 import { Icon } from 'mastodon/components/icon';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ChannelSearch from '../channel_search';
 
 const ExploreChannels = () => {
 
   const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const channels = useSelector(state => state.recommended_channels.get('items'));
+  const recommendedChannels = useSelector(state => state.recommended_channels.get('items'));
+  const searchChannels = useSelector(state => state.search_channels.get('items'));
+  const searchChannelsLoading = useSelector(state => state.search_channels.get('isLoading'));
 
-  useEffect(()=>{
-    if(channels.size === 0){
+  const channels = searchTerm ? searchChannels : recommendedChannels;
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+    if (term.trim()) {
+      dispatch(fetchSearchedChannels(term));
+    } else {
       dispatch(fetchChannels());
     }
-  },[]);
+  };
+
+  useEffect(() => {
+    if (!searchTerm && recommendedChannels.size === 0) {
+      dispatch(fetchChannels());
+    }
+  }, [searchTerm, recommendedChannels.size, dispatch]);
 
   return (
     <div className='channels'>
       <div className='channels__header'>
         <h2 className='title'>Explore channels</h2>
-        <div className=''>
-          {/* Explore the power of Channel.org through our demo channels */}
-          <ChannelSearch />
-        </div>
+        <ChannelSearch  onSearch={handleSearch} isLoading={searchChannelsLoading}/>
       </div>
       <div className='channels__list'>
         {channels.map((channel, index) => (
