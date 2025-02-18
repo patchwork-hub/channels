@@ -994,6 +994,7 @@ DEPENDENCIES
   brakeman (~> 7.0)
   browser
   bundler-audit (~> 0.9)
+  byebug
   capybara (~> 3.39)
   charlock_holmes (~> 0.7.7)
   chewy (~> 7.3)

@@ -33,7 +33,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
 
   def handle_web_login
     return nil if client_credentials?
-    
+
     user = fetch_user_credentials
     return 'You don\'t have access to login.' if user.nil?
 
