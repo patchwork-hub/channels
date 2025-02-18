@@ -17,13 +17,14 @@ import Reddit from '@/material-icons/400-24px/reddit.svg?react';
 import Pintrest from '@/material-icons/400-24px/pintrest.svg?react';
 import Pixelfed from '@/material-icons/400-24px/pixelfed.svg?react';
 import Snapchat from '@/material-icons/400-24px/snapchat.svg?react';
+import Message from '@/material-icons/400-24px/message.svg?react';
 
 export const icons = {
     "blog":PenIcon,
     "podcast":PodcastIcon,
     "chat":ChatIcon,
     "website":WebsiteIcon,
-    "rss-feed":RssFeedIcon,
+    "rssfeed":RssFeedIcon,
     "bluesky":ButterflyIcon,
     "thread":ThreadIcon,
     "mastodon":Mastodon,
@@ -35,7 +36,8 @@ export const icons = {
     "instagram":Instagram,
     "tiktok":Tiktok,
     "reddit":Reddit,
-    "pintrest":Pintrest,
+    "pinterest":Pintrest,
     "pixelfed":Pixelfed,
     "snapchat":Snapchat,
+    "message": Message,
 }
