@@ -1,6 +1,7 @@
 import ArrowRightUpAltIcon from '@/material-icons/400-24px/arrow_right_up_red?.svg?react';
 import { Icon } from 'mastodon/components/icon';
 import { fetchChannels } from '../actions/channel_banner';
+import { fetchMyChannel } from '../actions/my_channel';
 import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
@@ -11,10 +12,13 @@ const ChannelBanner = (props) => {
   const { signedIn } = props.identity;
   const channels = useSelector(state => state.recommended_channels.get("items"));
 
+  const channelFeed = useSelector(state => state.my_channel.get('item').get("channel_feed"));
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchChannels());
+    dispatch(fetchMyChannel());
   }, []);
 
   return (
@@ -81,7 +85,7 @@ const ChannelBanner = (props) => {
             </a>
           ))}
         </div>
-        {!signedIn && <a
+        {signedIn && channelFeed && channelFeed.id && <a
           href='https://home.channel.org/create-channel'
           style={{
             marginBlockStart: '20px',
