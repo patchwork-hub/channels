@@ -6,7 +6,7 @@ import ChannelSearch from '../channel_search';
 import ChannelCard from 'mastodon/components/channel_card';
 import CollectionCard from 'mastodon/components/collection_card';
 
-const ExploreChannels = () => {
+const Collections = () => {
 
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState('');
@@ -76,4 +76,4 @@ const ExploreChannels = () => {
   );
 };
 
-export default ExploreChannels;
+export default Collections;

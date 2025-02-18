@@ -2,13 +2,21 @@
 import { formatNumber, pluralize } from "mastodon/utils/format_numbert";
 import { Icon } from 'mastodon/components/icon';
 import ArrowRightUpAltIcon from '@/material-icons/400-24px/arrow_right_up_red?.svg?react';
+import { browserHistory } from "./router";
+
 
 const CollectionCard = ({ channel }) => {
   const count = channel.attributes?.community_count;
   const label = pluralize(count, 'Channel', 'Channels');
 
+  const goToDetail = () =>{
+    const queryString = `?slug=${encodeURIComponent(channel.attributes.slug)}`;
+    browserHistory.push(`/collections/${channel.attributes.name.toLowerCase()}${queryString}`);
+  }
+
   return (
-      <div className='card'>
+   
+      <div className='card' onClick={goToDetail}>
         <img
           src={channel.attributes.avatar_image_url}
           alt={channel.attributes.name}
@@ -22,6 +30,7 @@ const CollectionCard = ({ channel }) => {
           <Icon icon={ArrowRightUpAltIcon} id={''} className='icon' />
         </div>
       </div>
+     
   );
 };
 
