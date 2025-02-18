@@ -212,6 +212,7 @@ group :development, :test do
   gem 'test-prof'
 
   # RSpec runner for rails
+  gem 'byebug'
   gem 'rspec-rails', '~> 7.0'
 end
 
