@@ -15,6 +15,9 @@ class ActivityPub::ActivityPresenter < ActiveModelSerializers::Model
         to_list = ActivityPub::TagManager.instance.to(status)
         cc_list = ActivityPub::TagManager.instance.cc(status)
 
+        Rails.logger.info "++++++++ To list of #{status.reblog.account.username}: #{to_list} ++++++++"
+        Rails.logger.info "++++++++ CC list of #{status.reblog.account.username}: #{cc_list} ++++++++"
+
         # If this is a reblog, remove the original owner from the lists
         if status.reblog?
           original_owner_uri = ActivityPub::TagManager.instance.uri_for(status.reblog.account)

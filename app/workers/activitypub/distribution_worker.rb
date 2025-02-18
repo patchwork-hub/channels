@@ -20,7 +20,7 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
 
   def payload
     @payload ||= Oj.dump(serialize_payload(activity, ActivityPub::ActivitySerializer, signer: @account))
-    Rails.logger.info "++++++++ Payload: #{@payload} ++++++++"
+    Rails.logger.info "++++++++ Payload of #{@status.reblog.account.username}: #{@payload} ++++++++"
     @payload
   end
 
