@@ -21,9 +21,13 @@ class ActivityPub::ActivityPresenter < ActiveModelSerializers::Model
         # If this is a reblog, remove the original owner from the lists
         if status.reblog?
           original_owner_uri = ActivityPub::TagManager.instance.uri_for(status.reblog.account)
+          Rails.logger.info "++++++++ Original owner uri of #{status.reblog.account.username}: #{original_owner_uri} ++++++++"
           to_list = to_list.reject { |uri| uri == original_owner_uri }
           cc_list = cc_list.reject { |uri| uri == original_owner_uri }
         end
+
+        Rails.logger.info "++++++++ To After list of #{status.reblog.account.username}: #{to_list} ++++++++"
+        Rails.logger.info "++++++++ CC After list of #{status.reblog.account.username}: #{cc_list} ++++++++"
 
         presenter.to = to_list
         presenter.cc = cc_list
