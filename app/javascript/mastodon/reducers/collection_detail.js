@@ -1,9 +1,9 @@
 import { Map as ImmutableMap, List as ImmutableList } from 'immutable';
 import {
-  CHANNELS_FETCH_REQUEST,
-  CHANNELS_FETCH_SUCCESS,
-  CHANNELS_FETCH_FAIL,
-} from '../actions/channel_banner';
+  COLLECTION_DETAIL_FETCH_REQUEST,
+  COLLECTION_DETAIL_FETCH_SUCCESS,
+  COLLECTION_DETAIL_FETCH_FAIL,
+} from '../actions/collection_detail';
 
 const initialState = ImmutableMap({
   items: ImmutableList(),
@@ -11,14 +11,13 @@ const initialState = ImmutableMap({
   error: null,
 });
 
-export default function channelsReducer(state = initialState, action) {
-  switch(action.type) {
-    case CHANNELS_FETCH_REQUEST:
+export default function collectionDetailReducer(state = initialState, action) {
+  switch (action.type) {
+    case COLLECTION_DETAIL_FETCH_REQUEST:
       return state.set('isLoading', true).set('error', null);
-    case CHANNELS_FETCH_SUCCESS:{
+    case COLLECTION_DETAIL_FETCH_SUCCESS:
       return state.set('isLoading', false).set('items', ImmutableList(action.channels));
-    }
-    case CHANNELS_FETCH_FAIL:
+    case COLLECTION_DETAIL_FETCH_FAIL:
       return state.set('isLoading', false).set('error', action.error);
     default:
       return state;
