@@ -10,7 +10,9 @@ class StatusReachFinder
   end
 
   def inboxes
-    (reached_account_inboxes + followers_inboxes + relay_inboxes).uniq
+    # Get base inboxes then filter by domain if it's a reblog
+    base_inboxes = (reached_account_inboxes + followers_inboxes + relay_inboxes).uniq
+    filter_by_domain(base_inboxes)
   end
 
   private
@@ -103,5 +105,21 @@ class StatusReachFinder
   def inboxes_without_suspended_for(scope)
     scope.merge!(Account.without_suspended) unless unsafe?
     scope.inboxes
+  end
+
+  def filter_by_domain(inboxes)
+    return inboxes unless @status.reblog?
+
+    original_domain = @status.reblog.account.domain
+    return inboxes if original_domain.nil?
+
+    inboxes.reject do |inbox_url|
+      begin
+        inbox_domain = URI.parse(inbox_url).host
+        inbox_domain == original_domain
+      rescue URI::InvalidURIError
+        false
+      end
+    end
   end
 end
