@@ -1,5 +1,5 @@
-import { closeModal, openModal } from "mastodon/actions/modal";
 import { useDispatch } from "react-redux";
+import { closeModal, openModal } from "mastodon/actions/modal";
 import patchworkLogo from "../../../../images/patchwork.png";
 
 const SignInModal = () => {
@@ -61,9 +61,9 @@ const SignInModal = () => {
                 fontFamily: 'source-sans-pro',
                 lineHeight: '148%'
             }}>
-                <img 
-                    src={patchworkLogo} 
-                    alt="Channel.org logo" 
+                <img
+                    src={patchworkLogo}
+                    alt="Channel.org logo"
                     width={27}
                     height={27} />
                 Login with Channel.org
