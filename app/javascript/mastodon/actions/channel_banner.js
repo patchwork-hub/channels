@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-import { getAccessToken } from 'mastodon/initial_state';
-
 export const CHANNELS_FETCH_REQUEST = 'CHANNELS_FETCH_REQUEST';
 export const CHANNELS_FETCH_SUCCESS = 'CHANNELS_FETCH_SUCCESS';
 export const CHANNELS_FETCH_FAIL = 'CHANNELS_FETCH_FAIL';
