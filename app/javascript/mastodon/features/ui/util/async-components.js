@@ -229,9 +229,15 @@ export function Explore() {
   return import(/* webpackChunkName: "features/explore" */ '../../explore');
 }
 
-export function ExploreChannels() {
+export function Collections() {
   return import(
-    /* webpackChunkName: "features/explore-channles" */ '../../explore_channels'
+    /* webpackChunkName: "features/explore-channles" */ '../../collections'
+  );
+}
+
+export function CollectionDetail() {
+  return import(
+    /* webpackChunkName: "features/collecton-detail" */ '../../collection_detail'
   );
 }
 

@@ -1,0 +1,92 @@
+
+import { fetchSearchedChannels } from 'mastodon/actions/channel_banner';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import ChannelCard from 'mastodon/components/channel_card';
+import ChannelSearch from '../channel_search';
+import { NavLink, useParams } from 'react-router-dom';
+import { fetchCollectionDetail } from 'mastodon/actions/collection_detail';
+import ArrowBackIcon from '@/material-icons/400-24px/arrow_back.svg?react';
+import { Icon } from 'mastodon/components/icon';
+
+const CollectionDetail = () => {
+
+  const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState('');
+  const { name } = useParams();
+//   const [slug, setSlug] = useState("")
+
+  const collectionsDetail = useSelector(state => state.collection_detail.get('items'));
+  const searchChannels = useSelector(state => state.search_channels.get('items'));
+  const searchChannelsLoading = useSelector(state => state.search_channels.get('isLoading'));
+
+      const queryParams = new URLSearchParams(location.search);
+    const newSlug = queryParams.get('slug');
+
+  const [title, slugPart] = name?.split('?');
+  const slug = slugPart?.replace('slug=', '');
+  const decodedSlug = decodeURIComponent(slug);
+
+  const channels = searchTerm ? searchChannels : collectionsDetail;
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+    if (term.trim()) {
+      dispatch(fetchSearchedChannels(term));
+    } else {
+      dispatch(fetchCollectionDetail(newSlug??decodedSlug));
+    }
+  };
+
+
+  useEffect(() => {
+    if (!searchTerm) {
+      dispatch(fetchCollectionDetail(newSlug??decodedSlug));
+    }
+  }, [searchTerm,dispatch, slug, newSlug]);
+
+  return (
+    <div className='channels'>
+      <div className='channels__header'>
+        <h2 className='title'>Explore channels</h2>
+        <ChannelSearch  onSearch={handleSearch} isLoading={searchChannelsLoading}/>
+      </div>
+     <div>
+        <div style={{
+            display:'flex',
+            alignItems:'end',
+            gap: '1rem',
+            borderTop: "1px solid #e6e7eb33",
+            padding: "30px 20px 0 20px",
+            marginTop:"1rem"
+        }}>
+        <NavLink to='/collections' 
+            style={{
+                    color: "white",
+                    border: "1px solid",
+                    borderRadius: "100%",
+                    padding: "0.2rem",
+                    display: "flex"
+            }}>
+            <Icon
+                id='chevron-left'
+                icon={ArrowBackIcon}
+                className='column-back-button__icon'
+            />
+        </NavLink>
+        <h4 style={{
+            fontWeight: '400',
+            fontSize:'30px',
+            lineHeight:"30px"
+        }}>{title.charAt(0).toUpperCase() + title.slice(1)}</h4>
+        </div>
+      <div className='channels__list'>
+        {channels.map((channel, index) => (
+          <ChannelCard key={index} channel={channel} />
+        ))}
+      </div>
+     </div>
+    </div>
+  );
+};
+
+export default CollectionDetail;
