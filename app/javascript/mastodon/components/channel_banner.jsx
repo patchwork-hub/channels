@@ -53,7 +53,7 @@ const ChannelBanner = (props) => {
               <div style={{
                 display: 'flex',
                 alignItems: 'end',
-                height: '147px',
+                aspectRatio:'305 / 147',
                 borderRadius: '10px',
                 background: "linear-gradient(180deg, rgba(43, 43, 43, 0.00) 0%, rgba(37, 37, 37, 0.60) 56.93%), url(" + channel.attributes.avatar_image_url + ") lightgray 50% / cover no-repeat",
                 padding: '10px',
