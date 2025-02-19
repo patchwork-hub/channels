@@ -48,13 +48,9 @@ class ComposePanel extends PureComponent {
       <div className='compose-panel' onFocus={this.onFocus}>
         <Search openInRoute />
 
-        {!signedIn && (
-          <>
-            {/* <ServerBanner /> */}
-            <ChannelBanner />
-            <div className='flex-spacer' />
-          </>
-        )}
+        {/* <ServerBanner /> */}
+        <ChannelBanner />
+        <div className='flex-spacer' />
 
         {signedIn && <ComposeFormContainer singleColumn />}
 
