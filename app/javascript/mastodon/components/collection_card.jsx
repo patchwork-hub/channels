@@ -32,7 +32,8 @@ const CollectionCard = ({ channel }) => {
       ) : (
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2,1fr)'
+          gridTemplateColumns: 'repeat(2,1fr)',
+          height: '100%'
         }}>
           {imgs.map(it => <div style={{
             display: 'flex',
