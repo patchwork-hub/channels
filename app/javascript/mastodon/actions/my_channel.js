@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { getAccessToken } from 'mastodon/initial_state';
+
 export const MY_CHANNEL_FETCH_REQUEST = 'MY_CHANNEL_FETCH_REQUEST';
 export const MY_CHANNEL_FETCH_SUCCESS = 'MY_CHANNEL_FETCH_SUCCESS';
 export const MY_CHANNEL_FETCH_FAIL = 'MY_CHANNEL_FETCH_FAIL';
@@ -9,7 +11,11 @@ export function fetchMyChannel() {
     dispatch(fetchMyChannelRequest());
 
     axios
-      .get('https://dashboard.channel.org/api/v1/channels/my_channel')
+      .get('https://dashboard.channel.org/api/v1/channels/my_channel',{
+        headers:{
+          Authorization:'Bearer ' + getAccessToken()
+        }
+      })
       .then((response) => {
         dispatch(fetchMyChannelSuccess(response.data.data));
       })
