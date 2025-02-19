@@ -6,6 +6,7 @@ import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
+import { browserHistory } from "./router";
 
 const ChannelBanner = (props) => {
 
@@ -20,6 +21,11 @@ const ChannelBanner = (props) => {
     dispatch(fetchChannels());
     dispatch(fetchMyChannel());
   }, []);
+
+  const goToDetail = (channel) => {
+    const queryString = `?slug=${encodeURIComponent(channel.attributes.slug)}`;
+    browserHistory.push(`/collections/${channel.attributes.name.toLowerCase()}${queryString}`);
+  }
 
   return (
     <div>
@@ -36,7 +42,14 @@ const ChannelBanner = (props) => {
           gap: 10
         }}>
           {channels?.slice(0, 3).map((channel, index) => (
-            <a key={index} style={{ textDecoration: 'none' }} target='_blank' href={'https://' + channel.attributes.domain_name + '/public'}>
+            <button
+              style={{
+                padding: 0,
+                border:0,
+                background:'transparent'
+              }}
+              key={index}
+              onClick={() => goToDetail(channel)}>
               <div style={{
                 display: 'flex',
                 alignItems: 'end',
@@ -68,7 +81,7 @@ const ChannelBanner = (props) => {
                       letterSpacing: '0.13px',
                       color: '#fff',
                       fontFamily: 'source-sans-pro',
-                    }}>92 Channels</p>
+                    }}>{channel.attributes.community_count} Channels</p>
                   </div>
                   <Icon
                     icon={ArrowRightUpAltIcon}
@@ -82,7 +95,7 @@ const ChannelBanner = (props) => {
                   />
                 </div>
               </div>
-            </a>
+            </button>
           ))}
         </div>
         {signedIn && channelFeed && channelFeed.id && <a
