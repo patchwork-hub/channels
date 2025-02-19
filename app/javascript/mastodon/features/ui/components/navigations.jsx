@@ -75,6 +75,15 @@ const Navigations = () => {
           <ul>
             <li>
               <a
+                href='https://channel.org/terms/'
+                target='_blank'
+                className='footer-link' rel='noopener'
+              >
+                Terms & Conditions
+              </a>
+            </li>
+            <li>
+              <a
                 href='https://channel.org/privacy-policy/'
                 target='_blank'
                 className='footer-link' rel='noopener'
