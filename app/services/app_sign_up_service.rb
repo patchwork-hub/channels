@@ -47,8 +47,7 @@ class AppSignUpService < BaseService
     wait_list = WaitList.find_by(invitation_code: @params[:invitation_code], used: false)
     return unless wait_list
 
-    UseageWaitList.create!(account_id: @user.account.id, wait_list_id: wait_list.id)
-    wait_list.update!(used: true)
+    wait_list.update!(used: true, account_id: @user.account.id, confirmed_at: Time.zone.now)
   end
 
   def invite
