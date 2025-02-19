@@ -34,6 +34,7 @@ import FeedIcon from '@/material-icons/400-24px/feed_icon.svg?.react';
 import ColumnLink from './column_link';
 import { channel_display_name, custom_links, logo_image } from 'mastodon/initial_state';
 import { icons } from './navIcons';
+import { NavLink } from 'react-router-dom';
 
 const componentMap = {
   'COMPOSE': Compose,
@@ -95,7 +96,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
       .classList.contains('rtl');
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.mediaQuery) {
       if (this.mediaQuery.removeEventListener) {
         this.mediaQuery.removeEventListener('change', this.handleLayoutChange);
@@ -170,7 +171,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
                       />
                     </button>
                     <Link to='/'>
-                      {(subdomain==='news') ? <img width='120px' src='./temp-images/newsmast.png' alt='news logo' />:subdomain==='informationtechnology'?<img width='120px' alt='information technology logo' src='./temp-images/binarylab.png' />:logo_image?<img src={logo_image} width='auto' height={33} alt='channel logo' />:channel_display_name}
+                      {(subdomain === 'news') ? <img width='120px' src='./temp-images/newsmast.png' alt='news logo' /> : subdomain === 'informationtechnology' ? <img width='120px' alt='information technology logo' src='./temp-images/binarylab.png' /> : logo_image ? <img src={logo_image} width='auto' height={33} alt='channel logo' /> : channel_display_name}
                     </Link>
                   </div>
 
@@ -210,11 +211,11 @@ export default class ColumnsArea extends ImmutablePureComponent {
 
                 <footer className='footer'>
                   <ul>
-                    {/* <li>
-                            <NavLink to='/terms' className='footer-link'>
-                              Terms & Conditions
-                            </NavLink>
-                          </li> */}
+                    <li>
+                      <NavLink to='/terms' className='footer-link'>
+                        Terms & Conditions
+                      </NavLink>
+                    </li>
                     <li>
                       <a
                         href='https://channel.org/privacy-policy/'
