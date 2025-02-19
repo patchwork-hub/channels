@@ -40,32 +40,6 @@ const Collections = () => {
         <ChannelSearch  onSearch={handleSearch} isLoading={searchChannelsLoading}/>
       </div>
       <div className='channels__list'>
-        {/* {channels.map((channel, index) => {
-          const isChannel = channel.type === 'channel';
-          const count = isChannel ? channel.attributes?.follower : channel.attributes?.community_count;
-          const label = isChannel
-            ? pluralize(count, 'follower', 'followers')
-            : pluralize(count, 'Channel', 'Channels');
-        return(
-          <a key={index} target='_blank' href={'https://' + channel.attributes.domain_name +'/public'}>
-            <div className='card'>
-              <img
-                src={channel.attributes.avatar_image_url}
-                alt={channel.attributes.name}
-                className='image' />
-              <div className='overlay' />
-              <div className='info'>
-                <p className='info__detail'>
-                  <span className='title'>{channel.attributes.name}</span>
-                  <span className='subtitle'>
-                      {formatNumber(count)} {label}
-                    </span>                
-                </p>
-                <Icon icon={ArrowRightUpAltIcon} id={''} className='icon' />
-              </div>
-            </div>
-          </a>
-        )})} */}
         {channels.map((channel, index) => (
           channel.type === 'channel' ?
             <ChannelCard key={index} channel={channel} /> :
