@@ -8,11 +8,9 @@ import {
   mountCompose,
   unmountCompose,
 } from 'mastodon/actions/compose';
-import ServerBanner from 'mastodon/components/server_banner';
 import { Search } from 'mastodon/features/compose/components/search';
 import ChannelBanner from 'mastodon/components/channel_banner';
 import ComposeFormContainer from 'mastodon/features/compose/containers/compose_form_container';
-import { LinkFooter } from 'mastodon/features/ui/components/link_footer';
 import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
 
 class ComposePanel extends PureComponent {
@@ -48,17 +46,10 @@ class ComposePanel extends PureComponent {
       <div className='compose-panel' onFocus={this.onFocus}>
         <Search openInRoute />
 
-        {!signedIn && (
-          <>
-            {/* <ServerBanner /> */}
-            <ChannelBanner />
-            <div className='flex-spacer' />
-          </>
-        )}
+        <ChannelBanner />
+        <div className='flex-spacer' />
 
         {signedIn && <ComposeFormContainer singleColumn />}
-
-        {/* <LinkFooter /> */}
       </div>
     );
   }

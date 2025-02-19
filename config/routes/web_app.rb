@@ -31,5 +31,6 @@
   /search
   /start/(*any)
   /statuses/(*any)
-  /explore-channels
+  /collections
+  /collections/(*any)
 ).each { |path| get path, to: 'home#index' }

@@ -11245,7 +11245,6 @@ noscript {
   place-items: center;
   gap: 20px;
   padding: 30px 20px;
-  border-top: 1px solid #e6e7eb33;
   @media screen and (min-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -11255,8 +11254,7 @@ noscript {
     overflow: hidden;
     position: relative;
     width: 100%;
-    max-width: 294.5px;
-    height: 294.5px;
+    aspect-ratio: 1;
     cursor: pointer;
     transition: transform 0.3s;
   }
@@ -11292,20 +11290,21 @@ noscript {
       padding-left: 10px;
       .subtitle {
         font-weight: 300;
-        font-size: 18px;
-        line-height: 22px;
+        font-size: 14px;
+        line-height: 20px;
       }
       .title {
         font-family: 'ibm-plex-sans';
-        font-size: 24px;
-        line-height: 30px;
+        font-size: 20px;
+        line-height: 26px;
         font-weight: 600;
       }
     }
     .icon {
       padding-right: 10px;
-      width: 13px;
-      height: 13px;
+      width: 20px;
+      height: 20px;
+      font-weight: 400;
       color: #ff3c26;
     }
   }
@@ -11356,7 +11355,7 @@ noscript {
 }
 
 .searchInput {
-  width: 100%;
+  width: 85%;
   max-width: 888px;
   border: none;
   outline: none;
@@ -11401,7 +11400,7 @@ noscript {
   color: white;
   border: none;
   cursor: pointer;
-  padding: 0.75rem 1.5rem;
+  padding: 0.4rem 1.5rem;
   transition: background-color 0.2s;
 
   &:hover {
@@ -11428,4 +11427,18 @@ noscript {
   @media (min-width: 768px) {
     display: none;
   }
+}
+
+.bg-grid {
+  background-image: 
+    url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/001/original/cropped-image.jpg?1734719920"),
+    url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/002/original/cropped-image.jpg?1734720033"),
+    url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/003/original/cropped-image.jpg?1734720221"),
+    url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/004/original/cropped-image.jpg?1734766791");
+
+  background-size: 50% 50%;
+  background-position: 
+    top left, top right, 
+    bottom left, bottom right;
+  background-repeat: no-repeat;
 }
