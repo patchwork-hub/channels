@@ -11428,3 +11428,20 @@ noscript {
     display: none;
   }
 }
+
+.bg-grid {
+  width: 100%;
+  height: 100vh;
+
+  background-image: 
+    url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/001/original/cropped-image.jpg?1734719920"),
+    url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/002/original/cropped-image.jpg?1734720033"),
+    url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/003/original/cropped-image.jpg?1734720221"),
+    url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/004/original/cropped-image.jpg?1734766791");
+
+  background-size: 50% 50%;
+  background-position: 
+    top left, top right, 
+    bottom left, bottom right;
+  background-repeat: no-repeat;
+}
