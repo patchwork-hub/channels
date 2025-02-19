@@ -86,7 +86,8 @@ import {
   OnboardingProfile,
   OnboardingFollows,
   Explore,
-  ExploreChannels,
+  Collections,
+  CollectionDetail,
   Search,
   About,
   PrivacyPolicy,
@@ -292,9 +293,17 @@ class SwitchingColumnsArea extends PureComponent {
 
              {/* channel routes */}
             <WrappedRoute
-              path='/explore-channels'
-              component={ExploreChannels}
+              path='/collections'
+              component={Collections}
               content={children}
+              exact
+              />
+
+            <WrappedRoute
+              path='/collections/:name'
+              component={CollectionDetail}
+              content={children}
+              exact
               />
 
             <WrappedRoute path={['/start', '/start/profile']} exact component={OnboardingProfile} content={children} />

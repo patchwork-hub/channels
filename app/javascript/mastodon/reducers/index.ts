@@ -40,6 +40,8 @@ import timelines from './timelines';
 import trends from './trends';
 import user_lists from './user_lists';
 import channelsReducer from './channel_banner';
+import searchChannelsReducer from './search_channels';
+import collectionDetailReducer from './collection_detail';
 import myChannelReducer from './my_channel';
 
 const reducers = {
@@ -80,7 +82,9 @@ const reducers = {
   followed_tags,
   notificationPolicy: notificationPolicyReducer,
   notificationRequests: notificationRequestsReducer,
-  recommended_channels:channelsReducer,
+  recommended_channels: channelsReducer,
+  search_channels: searchChannelsReducer,
+  collection_detail: collectionDetailReducer,
   my_channel:myChannelReducer,
 };
 

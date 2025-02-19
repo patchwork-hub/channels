@@ -26,7 +26,7 @@ const ChannelBanner = (props) => {
       <div className='explore-channels'>
         <div className='header'>
           <h2 className='channel-header'>Explore channels</h2>
-          <NavLink to='/explore-channels' className='see-all'>
+          <NavLink to='/collections' className='see-all'>
             See all
           </NavLink>
         </div>
