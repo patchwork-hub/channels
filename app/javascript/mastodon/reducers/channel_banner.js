@@ -14,7 +14,9 @@ const initialState = ImmutableMap({
 export default function channelsReducer(state = initialState, action) {
   switch(action.type) {
     case CHANNELS_FETCH_REQUEST:
-      return state.set('isLoading', true).set('error', null);
+      return state.get('items').size > 0
+      ? state.set('isLoading', false).set('error', null)
+      : state.set('isLoading', true).set('items', ImmutableList()).set('error', null);
     case CHANNELS_FETCH_SUCCESS:{
       return state.set('isLoading', false).set('items', ImmutableList(action.channels));
     }

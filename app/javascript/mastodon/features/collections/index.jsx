@@ -18,6 +18,7 @@ const Collections = () => {
   const searchChannelsLoading = useSelector(state => state.search_channels.get('isLoading'));
 
   const channels = searchTerm ? searchChannels : collections;
+  const isLoading = searchTerm ? searchChannelsLoading : collectionsLoading;
 
 
   const handleSearch = (term) => {
@@ -28,20 +29,21 @@ const Collections = () => {
       dispatch(fetchChannels());
     }
   };
-
+  console.log(searchChannelsLoading, collectionsLoading)
   useEffect(() => {
-    if (!searchTerm && collections.size === 0) {
+    if (!searchTerm && collections.size === 0 && !collectionsLoading) {
       dispatch(fetchChannels());
     }
-  }, [searchTerm, collections.size, dispatch]);
+  }, [searchTerm, collections, collectionsLoading, dispatch]);
+  
 
   return (
     <div className='channels'>
       <div className='channels__header'>
-        <h2 className='title'>Explore channels</h2>
+        <h2 className='title'>Explore channels </h2>
         <ChannelSearch  onSearch={handleSearch} isLoading={searchChannelsLoading}/>
       </div>
-      {searchChannelsLoading || collectionsLoading ? (
+      {isLoading ? (
         <div className='channels__loading'>
           <LoadingIndicator />
         </div>
