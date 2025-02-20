@@ -21,27 +21,14 @@ const CollectionCard = ({ channel }) => {
     browserHistory.push(`/collections/${channel.attributes.name.toLowerCase()}${queryString}`);
   }
 
-  return (
+  const hasImage = (channel) => (channel.attributes.avatar_image_url ?? "").startsWith("https");
 
-    <div className='card' onClick={goToDetail}>
-      {(channel.attributes.avatar_image_url ?? "").startsWith("https") ? (
-        <img
-          src={channel.attributes.avatar_image_url}
-          alt={channel.attributes.name}
-          className='image' />
-      ) : (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2,1fr)'
-        }}>
-          {imgs.map(it => <div style={{
-            display: 'flex',
-            backgroundImage: `url(${it})`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat'
-          }}></div>)}
-        </div>
-      )}
+  return (
+    <div className={`card ${hasImage(channel) ? '' : 'bg-grid'}`} onClick={goToDetail}>
+      {hasImage(channel) ? <img
+        src={channel.attributes.avatar_image_url}
+        alt={channel.attributes.name}
+        className='image' /> : null}
       <div className='overlay' />
       <div className='info'>
         <p className='info__detail'>

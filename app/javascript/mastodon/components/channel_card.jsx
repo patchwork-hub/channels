@@ -7,7 +7,7 @@ const ChannelCard = ({ channel }) => {
   const label = pluralize(count, 'follower', 'followers');
 
   return (
-    <a target='_blank' href={`https://${channel.attributes.domain_name}/public`}>
+    <a style={{ width: '100%' }} target='_blank' href={`https://${channel.attributes.domain_name}/public`}>
       <div className='card'>
         <img
           src={channel.attributes.avatar_image_url}
