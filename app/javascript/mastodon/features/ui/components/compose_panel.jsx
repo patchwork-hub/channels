@@ -44,7 +44,6 @@ class ComposePanel extends PureComponent {
 
     return (
       <div className='compose-panel' onFocus={this.onFocus}>
-        <Search openInRoute />
 
         <ChannelBanner />
         <div className='flex-spacer' />
