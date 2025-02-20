@@ -9,6 +9,7 @@ import channelOrgImage from '../../../../images/wide_channel_logo.svg';
 
 import ColumnLink from './column_link';
 import { icons } from './navIcons';
+import { useSelector } from 'react-redux';
 
 const messages = defineMessages({
   home: { id: 'tabs_bar.home', defaultMessage: 'Home' },
@@ -28,6 +29,9 @@ const messages = defineMessages({
 });
 
 const Navigations = () => {
+
+  const server = useSelector(state => state.getIn(['server', 'server']));
+
   const intl = useIntl();
   const navItems = custom_links && typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
 
@@ -172,7 +176,7 @@ const Navigations = () => {
                   fontWeight: 700,
                   fontFeatureSettings: "'liga' off, 'clig' off",
                 }}>
-                  475 <span style={{
+                  {server.getIn(['usage', 'users', 'active_month'])} <span style={{
                     fontSize: '11.5px',
                     color: '#626982',
                     fontWeight: 400
