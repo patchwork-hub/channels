@@ -8,6 +8,7 @@ import { NavLink, useParams } from 'react-router-dom';
 import { fetchCollectionDetail } from 'mastodon/actions/collection_detail';
 import ArrowBackIcon from '@/material-icons/400-24px/arrow_back.svg?react';
 import { Icon } from 'mastodon/components/icon';
+import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 
 const CollectionDetail = () => {
 
@@ -17,6 +18,7 @@ const CollectionDetail = () => {
 //   const [slug, setSlug] = useState("")
 
   const collectionsDetail = useSelector(state => state.collection_detail.get('items'));
+  const collectionsDetailLoading = useSelector(state => state.collection_detail.get('isLoading'));
   const searchChannels = useSelector(state => state.search_channels.get('items'));
   const searchChannelsLoading = useSelector(state => state.search_channels.get('isLoading'));
 
@@ -79,11 +81,26 @@ const CollectionDetail = () => {
             lineHeight:"30px"
         }}>{title.charAt(0).toUpperCase() + title.slice(1)}</h4>
         </div>
-      <div className='channels__list'>
+      {/* <div className='channels__list'>
         {channels.map((channel, index) => (
           <ChannelCard key={index} channel={channel} />
         ))}
-      </div>
+      </div> */}
+      {searchChannelsLoading || collectionsDetailLoading ? (
+        <div className='channels__loading'>
+          <LoadingIndicator />
+        </div>
+      ) : channels.size === 0 ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+          <p style={{ fontSize:"20px"}}>No channels found.</p>
+        </div>
+      ) : (
+        <div className='channels__list'>
+          {channels.map((channel, index) => (
+            <ChannelCard key={index} channel={channel} />
+          ))}
+        </div>
+      )}
      </div>
     </div>
   );
