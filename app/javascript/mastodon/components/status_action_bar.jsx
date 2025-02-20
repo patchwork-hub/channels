@@ -34,6 +34,7 @@ import { me } from '../initial_state';
 
 import { IconButton } from './icon_button';
 import { openModal } from 'mastodon/actions/modal';
+import Cookies from 'js-cookie';
 
 const messages = defineMessages({
   delete: { id: 'status.delete', defaultMessage: 'Delete' },
@@ -128,8 +129,8 @@ class StatusActionBar extends ImmutablePureComponent {
 
   handleReplyClick = () => {
     const { signedIn } = this.props.identity;
-
-    if (signedIn) {
+    const accessToken = Cookies.get('access_token');
+    if (signedIn || accessToken) {
       this.props.onReply(this.props.status);
     } else {
       this.handleLogin();
@@ -147,8 +148,8 @@ class StatusActionBar extends ImmutablePureComponent {
 
   handleFavouriteClick = () => {
     const { signedIn } = this.props.identity;
-
-    if (signedIn) {
+    const accessToken = Cookies.get('access_token');
+    if (signedIn || accessToken) {
       this.props.onFavourite(this.props.status);
     } else {
       this.handleLogin();
@@ -158,8 +159,8 @@ class StatusActionBar extends ImmutablePureComponent {
 
   handleReblogClick = e => {
     const { signedIn } = this.props.identity;
-
-    if (signedIn) {
+    const accessToken = Cookies.get('access_token');
+    if (signedIn || accessToken) {
       this.props.onReblog(this.props.status, e);
     } else {
       this.handleLogin();
@@ -169,7 +170,8 @@ class StatusActionBar extends ImmutablePureComponent {
 
   handleBookmarkClick = () => {
     const { signedIn } = this.props.identity;
-    if(signedIn){
+    const accessToken = Cookies.get('access_token');
+    if(signedIn || accessToken){
       this.props.onBookmark(this.props.status);
     }else{
       this.handleLogin();
