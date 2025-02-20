@@ -2,8 +2,9 @@
 
 class WaitList < ApplicationRecord
   self.table_name = 'patchwork_wait_lists'
-  has_one :useage_wait_list, class_name: 'UseageWaitList', foreign_key: 'patchwork_wait_list_id'
-  has_one :account, through: :useage_wait_list, class_name: 'Account', dependent: :destroy
+  belongs_to :account, class_name: 'Account', optional: true, uniqueness: true
 
   validates :invitation_code, presence: true, uniqueness: true
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
+  validates :description, length: { maximum: 255 }, allow_blank: true
 end
