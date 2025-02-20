@@ -26,6 +26,7 @@ class ActivityPub::RawDistributionWorker
     return if inboxes.empty?
 
     ActivityPub::DeliveryWorker.push_bulk(inboxes, limit: 1_000) do |inbox_url|
+      Rails.loggerinfo "Delivering to #{inbox_url} and payload: #{@json} and source_account_id: #{source_account_id} and options: #{options}"
       [payload, source_account_id, inbox_url, options]
     end
   end
