@@ -40,7 +40,7 @@ class ReblogService < BaseService
     DistributionWorker.perform_async(reblog.id)
     ActivityPub::DistributionWorker.perform_async(reblog.id)
 
-    # create_notification(reblog)
+    create_notification(reblog)
     increment_statistics
 
     reblog
