@@ -138,7 +138,8 @@ const Navigations = () => {
                   color: '#626982',
                   textTransform: 'uppercase',
                   fontSize: '11px',
-                  fontWeight: 700
+                  fontWeight: 700,
+                  margin: 0,
                 }}>Contact</p>
                 <a style={{
                   color: '#fff',
@@ -157,7 +158,8 @@ const Navigations = () => {
                   color: '#626982',
                   textTransform: 'uppercase',
                   fontSize: '11px',
-                  fontWeight: 700
+                  fontWeight: 700,
+                  margin: 0,
                 }}>Users</p>
                 <p style={{
                   paddingInlineEnd: '16px',
