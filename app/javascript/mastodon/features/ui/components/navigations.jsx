@@ -9,7 +9,7 @@ import channelOrgImage from '../../../../images/wide_channel_logo.svg';
 
 import ColumnLink from './column_link';
 import { icons } from './navIcons';
-import { useSelector } from 'react-redux';
+import ServerBanner from 'mastodon/components/server_banner';
 
 const messages = defineMessages({
   home: { id: 'tabs_bar.home', defaultMessage: 'Home' },
@@ -29,8 +29,6 @@ const messages = defineMessages({
 });
 
 const Navigations = () => {
-
-  const server = useSelector(state => state.getIn(['server', 'server']));
 
   const intl = useIntl();
   const navItems = custom_links && typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
@@ -133,57 +131,7 @@ const Navigations = () => {
               Channel.org is a safe space where you can create and curate Channel Feeds, distributed across the Fediverse, Bluesky and the wider web through RSS.
             </p>
 
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between'
-            }}>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px'
-              }}>
-                <p style={{
-                  color: '#626982',
-                  textTransform: 'uppercase',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  margin: 0,
-                }}>Contact</p>
-                <a style={{
-                  color: '#fff',
-                  fontSize: '12px',
-                  fontFeatureSettings: "'liga' off, 'clig' off",
-                  fontWeight: 700,
-                  textDecoration: 'none'
-                }} href='mailto:support@channel.org'>support@channel.org</a>
-              </div>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px'
-              }}>
-                <p style={{
-                  color: '#626982',
-                  textTransform: 'uppercase',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  margin: 0,
-                }}>Users</p>
-                <p style={{
-                  paddingInlineEnd: '16px',
-                  fontSize: '12px',
-                  color: '#fff',
-                  fontWeight: 700,
-                  fontFeatureSettings: "'liga' off, 'clig' off",
-                }}>
-                  {server.getIn(['usage', 'users', 'active_month'])} <span style={{
-                    fontSize: '11.5px',
-                    color: '#626982',
-                    fontWeight: 400
-                  }}>active users</span>
-                </p>
-              </div>
-            </div>
+            <ServerBanner />
 
             <a href='/#' style={{
               display: 'flex',
