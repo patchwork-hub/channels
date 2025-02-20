@@ -78,6 +78,7 @@ const ChannelBanner = (props) => {
                       color: '#fff',
                       letterSpacing: '0.15px',
                       fontFamily: 'source-sans-pro',
+                      textAlign:'start'
                     }}>{channel.attributes.name}</p>
                     <p style={{
                       fontSize: '13px',
@@ -85,6 +86,7 @@ const ChannelBanner = (props) => {
                       letterSpacing: '0.13px',
                       color: '#fff',
                       fontFamily: 'source-sans-pro',
+                      textAlign:'start'
                     }}>{channel.attributes.community_count} Channels</p>
                   </div>
                   <Icon
