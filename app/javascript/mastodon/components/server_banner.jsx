@@ -44,12 +44,11 @@ class ServerBanner extends PureComponent {
 
     return (
       <div className='server-banner'>
-        {/* <div className='server-banner__introduction'>
+        <div className='server-banner__introduction'>
           <FormattedMessage id='server_banner.is_one_of_many' defaultMessage='{domain} is one of the many independent Mastodon servers you can use to participate in the fediverse.' values={{ domain: <strong>{domain}</strong>, mastodon: <a href='https://joinmastodon.org' target='_blank' rel='noopener'>Mastodon</a> }} />
         </div>
 
-        
-        <Link to='/about'>
+        {/* <Link to='/about'>
           <ServerHeroImage blurhash={server.getIn(['thumbnail', 'blurhash'])} src={server.getIn(['thumbnail', 'url'])} className='server-banner__hero' />
         </Link>
 
@@ -63,7 +62,7 @@ class ServerBanner extends PureComponent {
               <Skeleton width='70%' />
             </>
           ) : server.get('description')}
-        </div> */}
+        </div>
 
         <div className='server-banner__meta'>
           <div className='server-banner__meta__column'>
@@ -89,7 +88,7 @@ class ServerBanner extends PureComponent {
               </>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }
