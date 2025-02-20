@@ -27,6 +27,8 @@ const ChannelBanner = (props) => {
     browserHistory.push(`/collections/${channel.attributes.name.toLowerCase()}${queryString}`);
   }
 
+  const hasImage = (channel) => (channel.attributes.avatar_image_url ?? "").startsWith("https");
+
   return (
     <div>
       <div className='explore-channels'>
@@ -45,19 +47,21 @@ const ChannelBanner = (props) => {
             <button
               style={{
                 padding: 0,
-                border:0,
-                background:'transparent'
+                border: 0,
+                background: 'transparent'
               }}
               key={index}
               onClick={() => goToDetail(channel)}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'end',
-                height: '147px',
-                borderRadius: '10px',
-                background: "linear-gradient(180deg, rgba(43, 43, 43, 0.00) 0%, rgba(37, 37, 37, 0.60) 56.93%), url(" + channel.attributes.avatar_image_url + ") lightgray 50% / cover no-repeat",
-                padding: '10px',
-              }}>
+              <div
+                className={hasImage(channel) ? '' : 'bg-grid'}
+                style={{
+                  display: 'flex',
+                  alignItems: 'end',
+                  aspectRatio: '305 / 147',
+                  padding: '10px',
+                  borderRadius:'10px',
+                  ...(hasImage(channel) ? { background: "linear-gradient(180deg, rgba(43, 43, 43, 0.00) 0%, rgba(37, 37, 37, 0.60) 56.93%), url(" + channel.attributes.avatar_image_url + ") lightgray 50% / cover no-repeat" } : {})
+                }}>
                 <div style={{
                   display: 'flex',
                   alignItems: 'end',
