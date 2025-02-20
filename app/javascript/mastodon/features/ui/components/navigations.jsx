@@ -5,6 +5,7 @@ import FeedIcon from '@/material-icons/400-24px/feed_icon.svg?.react';
 import channelOrgImage from '../../../../images/wide_channel_logo.svg';
 import { channel_display_name, custom_links, logo_image } from 'mastodon/initial_state';
 import { icons } from './navIcons';
+import { useSelector } from 'react-redux';
 
 const messages = defineMessages({
   home: { id: 'tabs_bar.home', defaultMessage: 'Home' },
@@ -24,6 +25,9 @@ const messages = defineMessages({
 });
 
 const Navigations = () => {
+
+  const server = useSelector(state => state.getIn(['server', 'server']));
+
   const intl = useIntl();
   const navItems = custom_links && typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
 
@@ -168,7 +172,7 @@ const Navigations = () => {
                   fontWeight: 700,
                   fontFeatureSettings: "'liga' off, 'clig' off",
                 }}>
-                  475 <span style={{
+                  {server.getIn(['usage', 'users', 'active_month'])} <span style={{
                     fontSize: '11.5px',
                     color: '#626982',
                     fontWeight: 400
