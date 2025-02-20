@@ -11,8 +11,8 @@ class StatusReachFinder
 
   def inboxes
     # Get base inboxes then filter by domain if it's a reblog
-    base_inboxes = (reached_account_inboxes + followers_inboxes + relay_inboxes).uniq
-    filter_by_domain(base_inboxes)
+    (reached_account_inboxes + followers_inboxes + relay_inboxes).uniq
+    # filter_by_domain(base_inboxes)
   end
 
   private
