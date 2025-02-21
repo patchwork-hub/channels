@@ -10,7 +10,7 @@ class ContentSecurityPolicy
   end
 
   def media_hosts
-    [assets_host, cdn_host_value, paperclip_root_url, 'https://staging-dashboard.patchwork.online/', 'https://dashboard.channel.org/', 'http://example.example.com/', 'http://s3-eu-west-2.amazonaws.com/patchwork-staging-bucket/', 'https://staging-dashboard.patchwork.online/', 'https://dashboard.channel.org'].compact
+    [assets_host, cdn_host_value, paperclip_root_url, 'https://staging-dashboard.patchwork.online/', 'https://dashboard.channel.org/'].compact
   end
 
   def sso_host

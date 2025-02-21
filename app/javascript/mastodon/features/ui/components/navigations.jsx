@@ -154,8 +154,8 @@ const Navigations = () => {
       <div className='navigation-panel__sidebar__bottom'>
         <p>
           <a href="https://channel.org/public" className="link label ml-0">channel.org: </a>
-          <a href="https://newsmast.social/about" className="link underline">About</a><span>·</span>
-          <a href="https://newsmast.social/directory" className="link underline">Channel Directory</a><span>·</span>
+          <a href="#" className="link underline">About</a><span>·</span>
+          <a href="https://home.channel.org/search" className="link underline">Channel Directory</a><span>·</span>
           <a href="#" className="link underline">Get the App</a><span>·</span>
           <a href="#" className="link underline">Privacy Policy</a>
           <a href="https://github.com/patchwork-hub/channels/" className="link underline">View source code</a>

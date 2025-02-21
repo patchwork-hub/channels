@@ -1,7 +1,5 @@
 // @ts-check
 
-import Cookies from "js-cookie";
-
 
 /**
  * @typedef {[code: string, name: string, localName: string]} InitialStateLanguage
@@ -147,8 +145,7 @@ export const logo_image = initialState?.logo_image;
  * @returns {string | undefined}
  */
 export function getAccessToken() {
-  const getTokenFromCookies = Cookies.get('access_token');
-  return getMeta('access_token') || getTokenFromCookies;
+  return getMeta('access_token');
 }
 
 export default initialState;
