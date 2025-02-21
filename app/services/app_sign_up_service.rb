@@ -14,7 +14,6 @@ class AppSignUpService < BaseService
     ApplicationRecord.transaction do
       create_user!
       create_access_token!
-      create_useage_wait_list!
     end
 
     @access_token
@@ -39,15 +38,6 @@ class AppSignUpService < BaseService
       expires_in: Doorkeeper.configuration.access_token_expires_in,
       use_refresh_token: Doorkeeper.configuration.refresh_token_enabled?
     )
-  end
-
-  def create_useage_wait_list!
-    return unless enable_to_register?
-
-    wait_list = WaitList.find_by(invitation_code: @params[:invitation_code], used: false)
-    return unless wait_list
-
-    wait_list.update!(used: true, account_id: @user.account.id, confirmed_at: Time.zone.now)
   end
 
   def invite
