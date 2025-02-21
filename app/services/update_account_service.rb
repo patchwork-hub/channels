@@ -5,6 +5,8 @@ class UpdateAccountService < BaseService
     was_locked    = account.locked
     update_method = raise_error ? :update! : :update
 
+    validate_account!(account)
+
     account.send(update_method, params).tap do |ret|
       next unless ret
 
@@ -35,5 +37,10 @@ class UpdateAccountService < BaseService
 
   def process_hashtags(account)
     account.tags_as_strings = Extractor.extract_hashtags(account.note)
+  end
+
+  def validate_account!(account)
+    community_admin = CommunityAdmin.find_by(account_id: account.id, is_boost_bot: true)
+    raise Mastodon::NotPermittedError if community_admin && (community_admin.role != 'UserAdmin')
   end
 end
