@@ -46,12 +46,16 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   def verify_otp
     return render_password_error(message: 'Invalid otp!') unless @user && verify_otp?(params[:otp_secret], reset_password: reset_password?)
 
+    can_register = enable_to_register?
+    return render_password_error(message: 'You\'r not allowed to register!') unless can_register
+
     ActiveRecord::Base.transaction do
       # This stage is known as the user was just registered
       # If confirmation_sent_at is present, that account was unconfirmed yet
       if @user.confirmation_sent_at.present?
         @user.account.update!(discoverable: false)
         @user.update!(otp_secret: nil, confirmed_at: Time.now.utc, confirmation_sent_at: nil)
+        create_useage_wait_list if can_register
       else
         # Reset password
         @user.update!(otp_secret: nil)
@@ -65,8 +69,6 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   def change_password
     @user = current_user
     return render_password_error(message: 'Missing required fields') unless @user && password_params[:password].present? && password_params[:password_confirmation].present? && params[:current_password].present? && @user&.otp_secret.nil?
-
-    return render_password_error(message: 'Password unmatch.') unless password_params[:password].eql?(password_params[:password_confirmation])
 
     return render_password_error(message: 'Current password is incorrect.') unless @user.valid_password?(params[:current_password])
 
@@ -123,5 +125,25 @@ class Api::V1::CustomPasswordsController < Api::BaseController
       token_type: 'Bearer',
       scope: ACCESS_TOKEN_SCOPES,
       created_at: access_token.created_at.to_i }
+  end
+
+  def create_useage_wait_list
+    wait_list = WaitList.find_by(invitation_code: params[:invitation_code], used: false)
+    return unless wait_list
+
+    wait_list.update!(used: true, account_id: @user.account.id, confirmed_at: Time.zone.now)
+  end
+
+  def enable_to_register?
+    if reset_password? == false
+      skip_waitlist = params[:skip_waitlist].nil? ? 'false' : params[:skip_waitlist].to_s
+      if skip_waitlist == 'true'
+        true
+      else
+        WaitList.find_by(invitation_code: params[:invitation_code], used: false).present?
+      end
+    else
+      true
+    end
   end
 end
