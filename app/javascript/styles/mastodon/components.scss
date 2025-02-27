@@ -3,11 +3,6 @@ $grey-900: #16161d;
 
 $red-600: #e63946;
 
-.app-body {
-  -webkit-overflow-scrolling: touch;
-  -ms-overflow-style: -ms-autohiding-scrollbar;
-}
-
 .animated-number {
   display: inline-flex;
   flex-direction: column;
@@ -458,11 +453,6 @@ body > [data-popper-placement] {
     min-height: 100px;
     padding-bottom: 0;
     resize: none;
-    scrollbar-color: initial;
-
-    &::-webkit-scrollbar {
-      all: unset;
-    }
   }
 
   &__suggestions {
@@ -2464,20 +2454,6 @@ a.account__display-name {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
-
-  * {
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE 10+ */
-  }
-
-  &::-webkit-scrollbar,
-  *::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-    background: transparent; /* Chrome/Safari/Webkit */
-  }
 
   .image-loader__preview-canvas {
     max-width: $media-modal-media-max-width;
@@ -3419,17 +3395,12 @@ $ui-header-logo-wordmark-width: 99px;
 }
 
 .compose-panel {
-  margin-top: 15px;
+  box-sizing: border-box;
+  padding-top: 15px;
   display: flex;
   flex-direction: column;
-  height: calc(100% - 10px);
-  overflow-y: hidden;
-
-  .compose-form {
-    display: none;
-    flex: 1 1 auto;
-    min-height: 0;
-  }
+  height: 100vh;
+  overflow: auto;
 }
 
 .navigation-panel {
@@ -3839,14 +3810,6 @@ $ui-header-logo-wordmark-width: 99px;
 }
 
 .column-link__badge {
-  // display: inline-block;
-  // border-radius: 4px;
-  // font-size: 12px;
-  // line-height: 19px;
-  // font-weight: 500;
-  // background: $ui-base-color;
-  // padding: 4px 8px;
-  // margin: -6px 10px;
   position: absolute;
   display: inline-block;
   border-radius: 10px;
@@ -10077,7 +10040,6 @@ noscript {
       scroll-padding: 16px;
       scroll-behavior: smooth;
       overflow-x: scroll;
-      scrollbar-width: none;
 
       &__card {
         background: var(--background-color);
@@ -11130,7 +11092,6 @@ noscript {
 }
 
 .layout-single-column .columns-area__panels__main {
-  border: 1px solid #e6e7eb33;
   order: 2;
 }
 
@@ -11315,18 +11276,6 @@ noscript {
   color: #ffffffb3;
   margin-block-end: 12px;
 }
-// .column-link_feed_badge {
-//   position: absolute;
-//   display: inline-block;
-//   border-radius: 5px;
-//   font-size: 12px;
-//   line-height: 19px;
-//   font-weight: 500;
-//   background: #ff3c26;
-//   padding: 5px 5px;
-//   top: 11px;
-//   left: 30px;
-// }
 
 // channel search
 .channelSearchContainer {

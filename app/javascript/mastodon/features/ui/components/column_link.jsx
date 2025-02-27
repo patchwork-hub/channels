@@ -11,7 +11,7 @@ const ColumnLink = ({ icon, activeIcon, iconComponent, activeIconComponent, text
   const active = match?.isExact;
   const badgeElement =
     typeof badge !== 'undefined' ? (
-      <span className={active ? 'column-link__badge' : ''}>{badge}</span>
+      <div className={active ? 'column-link__badge' : ''}>{badge}</div>
     ) : null;
   const iconElement =
     typeof icon === 'string' || iconComponent ? (
