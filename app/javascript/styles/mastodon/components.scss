@@ -3775,6 +3775,7 @@ $ui-header-logo-wordmark-width: 99px;
   background: transparent;
   color: $secondary-text-color;
   cursor: pointer;
+  border-left: 4px solid transparent;
 
   &:hover,
   &:focus,
@@ -11389,4 +11390,10 @@ noscript {
     top left, top right, 
     bottom left, bottom right;
   background-repeat: no-repeat;
+}
+
+.hide-path {
+  & path{
+      display: none;
+  }
 }

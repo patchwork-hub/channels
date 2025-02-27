@@ -434,7 +434,6 @@ body.layout-multiple-columns {
 /* Logo */
 .layout-multiple-columns .ui__header__logo,
 .layout-multiple-columns .column-link.column-link--logo {
-  background-image: var(--logo);
   background-position: center;
   background-repeat: no-repeat;
   background-size: 32px auto;
@@ -920,7 +919,8 @@ body.layout-multiple-columns {
   }
 }
 
-.layout-multiple-columns .emoji-mart-anchor-bar {
+.layout-multiple-columns .emoji-mart-anchor-bar,
+.layout-multiple-columns .column-link.column-link--logo svg {
   display: none;
 }
 
@@ -2138,8 +2138,18 @@ body.embed .detailed-status__meta .detailed-status__link .icon-retweet,
   font-weight: var(--font-weight-semibold);
   gap: var(--gap-column-link);
   overflow: visible;
-  padding: 12px 16px;
   transition: all 100ms;
+
+  &__mastodon {
+    padding: 12px 16px;
+  }
+
+  &__bird-ui {
+    padding-bottom: calc(var(--gap-column-link) + 4px);
+    padding-left: var(--gap-column-link);
+    padding-right: calc(var(--gap-column-link) * 1.5);
+    padding-top: calc(var(--gap-column-link) + 4px);
+  }
 }
 
 [dir="rtl"] .layout-multiple-columns .column-link {
