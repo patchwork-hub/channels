@@ -11307,13 +11307,17 @@ noscript {
   width: 85%;
   max-width: 888px;
   border: none;
-  outline: none;
+  outline: 0;
   font-size: 18px;
   &::placeholder {
     margin-left: 0.5rem;
     font-weight: 400;
     font-size: 18px;
     color: #9ca3af;
+  }
+
+  &:focus-visible {
+    outline: 0;
   }
 }
 
