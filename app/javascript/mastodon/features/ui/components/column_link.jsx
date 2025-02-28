@@ -4,14 +4,21 @@ import classNames from 'classnames';
 import { useRouteMatch, NavLink } from 'react-router-dom';
 
 import { Icon } from 'mastodon/components/icon';
+import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
 
-const ColumnLink = ({ icon, activeIcon, iconComponent, activeIconComponent, text, to, href, method, badge, transparent, optional, ...other }) => {
+const ColumnLink = ({ icon, activeIcon, iconComponent, activeIconComponent, text, to, href, method, badge, transparent, optional, identity, ...other }) => {
   const match = useRouteMatch(to);
-  const className = classNames('column-link', { 'column-link--transparent': transparent, 'column-link--optional': optional });
+  const className = classNames('column-link', { 
+    'column-link--transparent': transparent, 
+    'column-link--optional': optional, 
+    'hide-path': identity.signedIn,
+    'column-link__mastodon': !identity.signedIn,
+    'column-link__bird-ui': identity.signedIn,  
+  });
   const active = match?.isExact;
   const badgeElement =
     typeof badge !== 'undefined' ? (
-      <span className={active ? 'column-link__badge' : ''}>{badge}</span>
+      <div className={active ? 'column-link__badge' : ''}>{badge}</div>
     ) : null;
   const iconElement =
     typeof icon === 'string' || iconComponent ? (
@@ -62,6 +69,7 @@ ColumnLink.propTypes = {
   badge: PropTypes.node,
   transparent: PropTypes.bool,
   optional: PropTypes.bool,
+  identity: identityContextPropShape,
 };
 
-export default ColumnLink;
+export default withIdentity(ColumnLink);

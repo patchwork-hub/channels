@@ -73,7 +73,8 @@ class ServerBanner extends PureComponent {
           </div>
 
           <div className='server-banner__meta__column'>
-            <h4><FormattedMessage id='server_banner.server_stats' defaultMessage='Server stats:' /></h4>
+            {/* <h4><FormattedMessage id='server_banner.server_stats' defaultMessage='Server stats:' /></h4> */}
+            <h4>USERS:</h4>
 
             {isLoading ? (
               <>
@@ -83,8 +84,7 @@ class ServerBanner extends PureComponent {
               </>
             ) : (
               <>
-                <strong className='server-banner__number'><ShortNumber value={server.getIn(['usage', 'users', 'active_month'])} /></strong>
-                <br />
+                <strong className='server-banner__number'><ShortNumber value={server.getIn(['usage', 'users', 'active_month'])} /></strong>{` `}
                 <span className='server-banner__number-label' title={intl.formatMessage(messages.aboutActiveUsers)}><FormattedMessage id='server_banner.active_users' defaultMessage='active users' /></span>
               </>
             )}
