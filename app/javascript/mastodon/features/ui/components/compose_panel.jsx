@@ -45,10 +45,17 @@ class ComposePanel extends PureComponent {
     return (
       <div className='compose-panel' onFocus={this.onFocus}>
 
-        <ChannelBanner />
-        <div className='flex-spacer' />
+        {signedIn && (
+          <>
+            <ComposeFormContainer singleColumn />
+            <div className='flex-spacer' />
+            <div style={{ marginBlock: 30 }}>
+              <ChannelBanner />
+            </div>
+          </>
+        )}
+        {!signedIn && <ChannelBanner />}
 
-        {signedIn && <ComposeFormContainer singleColumn />}
       </div>
     );
   }
