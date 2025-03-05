@@ -1265,14 +1265,14 @@ code {
   }
 
   .active .circle {
-    border-color: $highlight-text-color;
+    border-color: $orange-channel-theme;
 
     &::before {
       content: '';
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: $highlight-text-color;
+      background: $orange-channel-theme;
       position: absolute;
       left: 50%;
       top: 50%;
@@ -1281,8 +1281,8 @@ code {
   }
 
   .completed .circle {
-    border-color: $highlight-text-color;
-    background: $highlight-text-color;
+    border-color: $orange-channel-theme;
+    background: $orange-channel-theme;
   }
 }
 
