@@ -33,18 +33,9 @@ const Navigations = () => {
   return (
     <aside className='navigation-panel navigation-panel__sidebar sidebar'>
       <div>
-        <h1 style={{
-          color: '#626982',
-          fontFeatureSettings: "'liga' off, 'clig' off",
-          fontSize: '11px',
-          paddingInline: '16px',
-          marginBlockEnd: '16px'
-        }}>
-          <a style={{ color: 'inherit', textDecoration: 'none' }} target='_blank' href='https://home.channel.org/' rel='noopener'>Channel.org</a> is one of the many independent servers you can use to participate in theFediverse.
-        </h1>
         <div className='navigation-panel__logo' style={{ paddingInline: 16 }}>
           <Link to='/' className='nav-header'>
-            {(subdomain === 'news') ? <img width='175px' src='./temp-images/newsmast.png' alt='news logo' /> : subdomain === 'informationtechnology' ? <img width='150px' alt='information technology logo' src='./temp-images/binarylab.png' /> : logo_image ? <img src={logo_image} width={250} alt='channel logo' /> : channel_display_name}
+            {(subdomain === 'news') ? <img width='175px' src='./temp-images/newsmast.png' alt='news logo' /> : subdomain === 'informationtechnology' ? <img width='150px' alt='information technology logo' src='./temp-images/binarylab.png' /> : (logo_image && logo_image !== "/logo_images/original/missing.png") ? <img src={logo_image} width={250} alt='channel logo' /> : (channel_display_name ? channel_display_name : subdomain)}
           </Link>
         </div>
         <div className='nav-links'>
