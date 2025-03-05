@@ -178,16 +178,24 @@ code {
   }
 
   .title {
-    font-size: 28px;
-    line-height: 33px;
+    font-size: 30px;
     font-weight: 700;
+    font-family: "ibm-plex-sans";
+    font-feature-settings: "liga off, clig off";
+    line-height: 120%;
+    background: linear-gradient(180deg, #F8F8FF 50.5%, #BABAF8 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     margin-bottom: 15px;
   }
 
   .lead {
-    font-size: 17px;
-    line-height: 22px;
-    color: $secondary-text-color;
+    color: '#D2D2FF';
+    font-size: 16px;
+    font-weight: 400;
+    font-family: 'source-sans-pro';
+    line-height: 148%;
     margin-bottom: 30px;
 
     &.invited-by {
@@ -270,10 +278,11 @@ code {
       display: flex;
 
       & > label {
-        font-family: inherit;
-        font-size: 14px;
-        color: $primary-text-color;
-        font-weight: 500;
+        font-family:'source-sans-pro';
+        font-size:16px;
+        font-weight:400;
+        line-height:'148%';
+        color:'#D2D2FF';
         min-width: 150px;
         flex: 0 0 auto;
       }

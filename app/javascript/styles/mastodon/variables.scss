@@ -11,6 +11,7 @@ $blurple-400: #7477fd; // Medium slate blue
 $blurple-300: #858afa; // Faded Blue
 $grey-600: hsl(240deg, 8%, 33%); // Trout
 $grey-100: hsl(240deg, 51%, 90%); // Topaz
+$orange-channel-theme: #FF3C26;
 
 $success-green: #79bd9a !default; // Padua
 $error-red: $red-500 !default; // Cerise
@@ -43,7 +44,7 @@ $ui-primary-color: $classic-primary-color !default; // Lighter
 $ui-secondary-color: $classic-secondary-color !default; // Lightest
 $ui-highlight-color: $classic-highlight-color !default;
 $ui-button-color: $white !default;
-$ui-button-background-color: $blurple-500 !default;
+$ui-button-background-color: $orange-channel-theme !default;
 $ui-button-focus-background-color: $blurple-600 !default;
 $ui-button-focus-outline-color: $blurple-400 !default;
 $ui-button-focus-outline: solid 2px $ui-button-focus-outline-color !default;
