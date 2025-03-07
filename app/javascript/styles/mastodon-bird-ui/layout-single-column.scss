@@ -3154,10 +3154,10 @@ body.embed .button.logo-button:hover,
 /* Default buttons */
 .layout-single-column .compose-form__buttons button,
 .layout-single-column .button {
-  border-bottom-left-radius: 9999px;
-  border-bottom-right-radius: 9999px;
-  border-top-left-radius: 9999px;
-  border-top-right-radius: 9999px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
 /* Compose hover and focus fix */
@@ -3326,7 +3326,7 @@ body .compose-form .compose-form__uploads {
   /* stylelint-disable-next-line */
   border-color: var(--color-brand-mastodon-links) !important;
   /* stylelint-disable-next-line */
-  color: var(--color-bg) !important;
+  color: white !important;
 
   /* This is actually wrong in Mastodon default UI as well, hover should not have padding but yet it has */
   padding: 6px 17px;

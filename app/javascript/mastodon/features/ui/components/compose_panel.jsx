@@ -8,10 +8,10 @@ import {
   mountCompose,
   unmountCompose,
 } from 'mastodon/actions/compose';
-import { Search } from 'mastodon/features/compose/components/search';
 import ChannelBanner from 'mastodon/components/channel_banner';
 import ComposeFormContainer from 'mastodon/features/compose/containers/compose_form_container';
 import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
+import SignInBanner from './sign_in_banner';
 
 class ComposePanel extends PureComponent {
   static propTypes = {
@@ -54,7 +54,14 @@ class ComposePanel extends PureComponent {
             </div>
           </>
         )}
-        {!signedIn && <ChannelBanner />}
+        {!signedIn && (
+          <>
+            <ChannelBanner />
+            <SignInBanner />
+          </>
+        )}
+
+
 
       </div>
     );

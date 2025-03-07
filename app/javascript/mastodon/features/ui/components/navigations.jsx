@@ -1,15 +1,12 @@
 import { defineMessages, useIntl } from 'react-intl';
 
-import { Link } from 'react-router-dom';
-
 import FeedIcon from '@/material-icons/400-24px/feed_icon.svg?.react';
-import { channel_display_name, custom_links, logo_image } from 'mastodon/initial_state';
-
-import channelOrgImage from '../../../../images/wide_channel_logo.svg';
+import { custom_links } from 'mastodon/initial_state';
 
 import ColumnLink from './column_link';
 import { icons } from './navIcons';
-import ServerBanner from 'mastodon/components/server_banner';
+import { ServerInformation } from './server_information';
+import { Logo } from './Logo';
 
 const messages = defineMessages({
   home: { id: 'tabs_bar.home', defaultMessage: 'Home' },
@@ -33,15 +30,10 @@ const Navigations = () => {
   const intl = useIntl();
   const navItems = custom_links && typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
 
-  const subdomain = window.location.hostname.split('.')[0];
   return (
     <aside className='navigation-panel navigation-panel__sidebar sidebar'>
       <div>
-        <div className='navigation-panel__logo' style={{ paddingInline: 16 }}>
-          <Link to='/' className='nav-header'>
-            {(subdomain === 'news') ? <img width='175px' src='./temp-images/newsmast.png' alt='news logo' /> : subdomain === 'informationtechnology' ? <img width='150px' alt='information technology logo' src='./temp-images/binarylab.png' /> : (logo_image && logo_image !== "/logo_images/original/missing.png") ? <img src={logo_image} width={250} alt='channel logo' /> : (channel_display_name ? channel_display_name : subdomain)}
-          </Link>
-        </div>
+        <Logo />
         <div className='nav-links'>
           <ColumnLink
             transparent
@@ -99,47 +91,7 @@ const Navigations = () => {
             </li>
           </ul>
 
-          <p className='powered-by'>Powered by</p>
-          <a href='https://home.channel.org/' target='_blank' rel='noopener'>
-            <img src={channelOrgImage} alt='channel org' />
-          </a>
-          <p style={{
-            color: 'rgba(255, 255, 255, 0.70)',
-            fontSize: '14px',
-            marginBlock: '20px'
-          }}>© {new Date().getFullYear()} Channel.org</p>
-
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px'
-          }}>
-            <p style={{
-              fontSize: '11px',
-              color: '#fff',
-              fontFeatureSettings: "'liga' off, 'clig' off",
-            }}>
-              Channel.org is a safe space where you can create and curate Channel Feeds, distributed across the Fediverse, Bluesky and the wider web through RSS.
-            </p>
-
-            <ServerBanner />
-
-            <a href='/#' style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              fontSize: '11px',
-              color: '#fff',
-              fontWeight: 700,
-              fontFeatureSettings: "'liga' off, 'clig' off",
-              border: '1px solid #fff',
-              borderRadius: '3px',
-              paddingBlock: '10px',
-              textDecoration: 'none',
-            }}>
-              Learn more
-            </a>
-          </div>
+          <ServerInformation />
         </footer>
       </div>
       <div className='navigation-panel__sidebar__bottom'>
