@@ -6,7 +6,7 @@ import { custom_links } from 'mastodon/initial_state';
 import ColumnLink from './column_link';
 import { icons } from './navIcons';
 import { ServerInformation } from './server_information';
-import { Logo } from './Logo';
+import { Logo } from './logo';
 
 const messages = defineMessages({
   home: { id: 'tabs_bar.home', defaultMessage: 'Home' },

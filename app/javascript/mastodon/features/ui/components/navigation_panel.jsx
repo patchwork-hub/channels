@@ -39,7 +39,7 @@ import ColumnLink from './column_link';
 import DisabledAccountBanner from './disabled_account_banner';
 import { ListPanel } from './list_panel';
 import SignInBanner from './sign_in_banner';
-import { Logo } from './Logo';
+import { Logo } from './logo';
 import { ServerInformation } from './server_information';
 
 const messages = defineMessages({
