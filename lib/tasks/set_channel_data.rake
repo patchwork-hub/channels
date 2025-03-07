@@ -23,17 +23,17 @@ namespace :db do
       setting.value = site_contact_email
       setting.save
 
-      owner_role = UserRole.find_by(name: 'Owner')
-      owner_user = User.find_by(role: owner_role)
-      owner_account = owner_user&.account
+      admin_role = UserRole.find_by(name: 'Admin')
+      admin_user = User.find_by(role: admin_role)
+      admin_account = admin_user&.account
 
       setting = Setting.find_or_initialize_by(var: 'site_contact_username')
-      setting.value = owner_account&.username
+      setting.value = admin_account&.username
       setting.save
 
       is_lock = channel_type == 'group_channel'
       Chewy.strategy(:atomic) do
-        owner_account.update(locked: is_lock)
+        admin_account.update(locked: is_lock)
       end
 
       puts 'Seeding completed successfully!'
