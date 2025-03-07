@@ -176,7 +176,7 @@ class ColumnsArea extends ImmutablePureComponent {
                       />
                     </button>
                     <Link to='/'>
-                      {(subdomain === 'news') ? <img width='120px' src='./temp-images/newsmast.png' alt='news logo' /> : subdomain === 'informationtechnology' ? <img width='120px' alt='information technology logo' src='./temp-images/binarylab.png' /> : logo_image ? <img src={logo_image} width='auto' height={33} alt='channel logo' /> : channel_display_name}
+                      {(subdomain === 'news') ? <img width='120px' src='./temp-images/newsmast.png' alt='news logo' /> : subdomain === 'informationtechnology' ? <img width='120px' alt='information technology logo' src='./temp-images/binarylab.png' /> : logo_image ? <img src={logo_image} width='auto' height={33} alt='channel logo' /> : <span style={{ textTransform:'capitalize' }}>{subdomain}</span>}
                     </Link>
                   </div>
 
