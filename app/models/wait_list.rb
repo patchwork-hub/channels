@@ -1,5 +1,19 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: patchwork_wait_lists
+#
+#  id              :bigint(8)        not null, primary key
+#  confirmed_at    :datetime
+#  description     :text
+#  email           :text
+#  invitation_code :text             not null
+#  used            :boolean          default(FALSE)
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  account_id      :bigint(8)
+#
 class WaitList < ApplicationRecord
   self.table_name = 'patchwork_wait_lists'
   belongs_to :account, class_name: 'Account', optional: true
