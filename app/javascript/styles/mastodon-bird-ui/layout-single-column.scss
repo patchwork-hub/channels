@@ -4069,13 +4069,12 @@ body .compose-form .compose-form__uploads {
   .layout-single-column .column-link {
     align-items: center;
     height: 56px;
-    justify-content: center;
     margin-right: unset;
     padding-bottom: 0;
     padding-left: var(--gap-column-link);
     padding-right: var(--gap-column-link);
     padding-top: 0;
-    width: 38px;
+    width: 100%;
   }
 
   .navigation-panel__legal hr {
