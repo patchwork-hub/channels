@@ -605,7 +605,7 @@ code {
     &:active,
     &:focus,
     &:hover {
-      background-color: $ui-button-focus-background-color;
+      opacity: 0.85;
     }
 
     &:disabled,
