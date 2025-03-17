@@ -32,20 +32,20 @@ const SignInBanner = () => {
   if (registrationsOpen) {
     signupButton = (
       <a href={signupUrl} className='button button--block'>
-        <FormattedMessage id='sign_in_banner.create_account' defaultMessage='Create account' />
+        Create a social web account
       </a>
     );
   } else {
     signupButton = (
       <button className='button button--block' onClick={openClosedRegistrationsModal}>
-        <FormattedMessage id='sign_in_banner.create_account' defaultMessage='Create account' />
+        Create a social web account
       </button>
     );
   }
 
   return (
     <div className='sign-in-banner'>
-      <p>Follow and interact with this channel by creating an  account lorem ipsum dolor sit amet consectetur. Ut nisi etiam sapien nec tortor molestie duis. </p>
+      <p>Follow and interact with this Channel through a federated social web account.</p>
       {signupButton}
       <a href='/auth/sign_in' className='button button--block button-tertiary'>Sign in</a>
     </div>
