@@ -65,7 +65,8 @@ class Oauth::TokensController < Doorkeeper::TokensController
     belong_any_channel?(community_admin) &&
       (
         (community_admin&.role.eql?('OrganisationAdmin') && user.role&.name.eql?('OrganisationAdmin')) ||
-        (community_admin&.role.eql?('UserAdmin') && user.role&.name.eql?('UserAdmin'))
+        (community_admin&.role.eql?('UserAdmin') && user.role&.name.eql?('UserAdmin')) ||
+        (community_admin&.role.eql?('HubAdmin') && user.role&.name.eql?('HubAdmin'))
       )
   end
 
