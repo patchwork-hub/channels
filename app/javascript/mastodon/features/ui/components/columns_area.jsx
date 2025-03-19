@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { Children, cloneElement, useCallback } from 'react';
 
+import { NavLink } from 'react-router-dom';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 
@@ -34,7 +35,8 @@ import FeedIcon from '@/material-icons/400-24px/feed_icon.svg?.react';
 import ColumnLink from './column_link';
 import { channel_display_name, custom_links, logo_image } from 'mastodon/initial_state';
 import { icons } from './navIcons';
-import { NavLink } from 'react-router-dom';
+import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
+import NavigationPanel from './navigation_panel';
 
 const componentMap = {
   'COMPOSE': Compose,
@@ -64,8 +66,9 @@ const TabsBarPortal = () => {
   return <div id='tabs-bar__portal' ref={setRef} />;
 };
 
-export default class ColumnsArea extends ImmutablePureComponent {
+class ColumnsArea extends ImmutablePureComponent {
   static propTypes = {
+    identity: identityContextPropShape,
     columns: ImmutablePropTypes.list.isRequired,
     isModalOpen: PropTypes.bool.isRequired,
     singleColumn: PropTypes.bool,
@@ -140,7 +143,9 @@ export default class ColumnsArea extends ImmutablePureComponent {
   };
 
   render() {
-    const { columns, children, singleColumn, isModalOpen } = this.props;
+    const { columns, children, singleColumn, isModalOpen, identity } = this.props;
+
+    const { signedIn } = identity;
     const { renderComposePanel, isMenuOpen } = this.state;
 
     const navItems = custom_links && typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
@@ -171,7 +176,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
                       />
                     </button>
                     <Link to='/'>
-                      {(subdomain === 'news') ? <img width='120px' src='./temp-images/newsmast.png' alt='news logo' /> : subdomain === 'informationtechnology' ? <img width='120px' alt='information technology logo' src='./temp-images/binarylab.png' /> : logo_image ? <img src={logo_image} width='auto' height={33} alt='channel logo' /> : channel_display_name}
+                      {(subdomain === 'news') ? <img width='120px' src='./temp-images/newsmast.png' alt='news logo' /> : subdomain === 'informationtechnology' ? <img width='120px' alt='information technology logo' src='./temp-images/binarylab.png' /> : logo_image ? <img src={logo_image} width='auto' height={33} alt='channel logo' /> : <span style={{ textTransform:'capitalize' }}>{subdomain}</span>}
                     </Link>
                   </div>
 
@@ -248,8 +253,7 @@ export default class ColumnsArea extends ImmutablePureComponent {
 
           <div className='columns-area__panels__pane columns-area__panels__pane--start columns-area__panels__pane--navigational'>
             <div className='columns-area__panels__pane__inner'>
-              {/* <NavigationPanel /> */}
-              <Navigations />
+              {signedIn ? <NavigationPanel /> : <Navigations />}
             </div>
           </div>
         </div>
@@ -294,3 +298,5 @@ export default class ColumnsArea extends ImmutablePureComponent {
     );
   }
 }
+
+export default withIdentity(ColumnsArea);

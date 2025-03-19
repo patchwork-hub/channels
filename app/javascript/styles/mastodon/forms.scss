@@ -145,7 +145,7 @@ code {
       }
 
       label a {
-        color: $highlight-text-color;
+        color: $orange-channel-theme;
         text-decoration: underline;
 
         &:hover,
@@ -178,16 +178,24 @@ code {
   }
 
   .title {
-    font-size: 28px;
-    line-height: 33px;
+    font-size: 30px;
     font-weight: 700;
+    font-family: "ibm-plex-sans";
+    font-feature-settings: "liga off, clig off";
+    line-height: 120%;
+    background: linear-gradient(180deg, #F8F8FF 50.5%, #BABAF8 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     margin-bottom: 15px;
   }
 
   .lead {
-    font-size: 17px;
-    line-height: 22px;
-    color: $secondary-text-color;
+    color: '#D2D2FF';
+    font-size: 16px;
+    font-weight: 400;
+    font-family: 'source-sans-pro';
+    line-height: 148%;
     margin-bottom: 30px;
 
     &.invited-by {
@@ -270,10 +278,11 @@ code {
       display: flex;
 
       & > label {
-        font-family: inherit;
-        font-size: 14px;
-        color: $primary-text-color;
-        font-weight: 500;
+        font-family:'source-sans-pro';
+        font-size:16px;
+        font-weight:400;
+        line-height:'148%';
+        color:'#D2D2FF';
         min-width: 150px;
         flex: 0 0 auto;
       }
@@ -596,7 +605,7 @@ code {
     &:active,
     &:focus,
     &:hover {
-      background-color: $ui-button-focus-background-color;
+      opacity: 0.85;
     }
 
     &:disabled,
@@ -1208,7 +1217,7 @@ code {
     flex: 1 1 auto;
 
     &.completed {
-      background: $highlight-text-color;
+      background: $orange-channel-theme;
     }
   }
 
@@ -1256,14 +1265,14 @@ code {
   }
 
   .active .circle {
-    border-color: $highlight-text-color;
+    border-color: $orange-channel-theme;
 
     &::before {
       content: '';
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: $highlight-text-color;
+      background: $orange-channel-theme;
       position: absolute;
       left: 50%;
       top: 50%;
@@ -1272,8 +1281,8 @@ code {
   }
 
   .completed .circle {
-    border-color: $highlight-text-color;
-    background: $highlight-text-color;
+    border-color: $orange-channel-theme;
+    background: $orange-channel-theme;
   }
 }
 

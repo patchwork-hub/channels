@@ -6,7 +6,6 @@ namespace :db do
     begin
       server_rules = JSON.parse(ENV.fetch('RULES', '{}'))
       information = JSON.parse(ENV.fetch('INFORMATION', '{}'))
-      site_contact_email = ENV.fetch('SITE_CONTACT_EMAIL', nil)
       channel_type = ENV.fetch('CHANNEL_TYPE', nil)
 
       server_rules.each_value do |rule|
@@ -15,25 +14,22 @@ namespace :db do
         end
       end
 
-      Setting.where(var: 'site_extended_description').delete_all
       formatted_info = information.values.map { |info| info['text'] }.join("\n")
-      Setting.create(var: 'site_extended_description', value: formatted_info)
+      Setting.site_extended_description = formatted_info
 
-      setting = Setting.find_or_initialize_by(var: 'site_contact_email')
-      setting.value = site_contact_email
-      setting.save
+      Setting.registrations_mode = ENV.fetch('REGISTRATIONS_MODE', 'none')
 
-      owner_role = UserRole.find_by(name: 'Owner')
-      owner_user = User.find_by(role: owner_role)
-      owner_account = owner_user&.account
+      Setting.site_contact_email = ENV.fetch('SITE_CONTACT_EMAIL', nil)
 
-      setting = Setting.find_or_initialize_by(var: 'site_contact_username')
-      setting.value = owner_account&.username
-      setting.save
+      admin_role = UserRole.find_by(name: 'Admin')
+      admin_user = User.find_by(role: admin_role)
+      admin_account = admin_user&.account
+
+      Setting.site_contact_username = admin_account&.username
 
       is_lock = channel_type == 'group_channel'
       Chewy.strategy(:atomic) do
-        owner_account.update(locked: is_lock)
+        admin_account.update(locked: is_lock)
       end
 
       puts 'Seeding completed successfully!'

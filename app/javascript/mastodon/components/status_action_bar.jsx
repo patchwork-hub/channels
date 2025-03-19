@@ -118,11 +118,11 @@ class StatusActionBar extends ImmutablePureComponent {
     'withDismiss',
   ];
 
-  handleLogin = ()=>{
+  handleLogin = () => {
     const { dispatch } = this.props;
     dispatch(openModal({
-      modalType:'SIGNIN',
-      modalProps:{}
+      modalType: 'SIGNIN',
+      modalProps: {}
     }));
   };
 
@@ -132,8 +132,7 @@ class StatusActionBar extends ImmutablePureComponent {
     if (signedIn) {
       this.props.onReply(this.props.status);
     } else {
-      this.handleLogin();
-      // this.props.onInteractionModal('reply', this.props.status);
+      this.props.onInteractionModal('reply', this.props.status);
     }
   };
 
@@ -151,8 +150,7 @@ class StatusActionBar extends ImmutablePureComponent {
     if (signedIn) {
       this.props.onFavourite(this.props.status);
     } else {
-      this.handleLogin();
-      // this.props.onInteractionModal('favourite', this.props.status);
+      this.props.onInteractionModal('favourite', this.props.status);
     }
   };
 
@@ -162,16 +160,15 @@ class StatusActionBar extends ImmutablePureComponent {
     if (signedIn) {
       this.props.onReblog(this.props.status, e);
     } else {
-      this.handleLogin();
-      // this.props.onInteractionModal('reblog', this.props.status);
+      this.props.onInteractionModal('reblog', this.props.status);
     }
   };
 
   handleBookmarkClick = () => {
     const { signedIn } = this.props.identity;
-    if(signedIn){
+    if (signedIn) {
       this.props.onBookmark(this.props.status);
-    }else{
+    } else {
       this.handleLogin();
     }
   };
@@ -261,16 +258,16 @@ class StatusActionBar extends ImmutablePureComponent {
     navigator.clipboard.writeText(url);
   };
 
-  render () {
+  render() {
     const { status, relationship, intl, withDismiss, withCounters, scrollKey } = this.props;
     const { signedIn, permissions } = this.props.identity;
 
-    const publicStatus       = ['public', 'unlisted'].includes(status.get('visibility'));
-    const pinnableStatus     = ['public', 'unlisted', 'private'].includes(status.get('visibility'));
+    const publicStatus = ['public', 'unlisted'].includes(status.get('visibility'));
+    const pinnableStatus = ['public', 'unlisted', 'private'].includes(status.get('visibility'));
     const mutingConversation = status.get('muted');
-    const account            = status.get('account');
-    const writtenByMe        = status.getIn(['account', 'id']) === me;
-    const isRemote           = status.getIn(['account', 'username']) !== status.getIn(['account', 'acct']);
+    const account = status.get('account');
+    const writtenByMe = status.getIn(['account', 'id']) === me;
+    const isRemote = status.getIn(['account', 'username']) !== status.getIn(['account', 'acct']);
 
     let menu = [];
 

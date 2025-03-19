@@ -3,8 +3,6 @@ import { Component, useEffect } from 'react';
 
 import { defineMessages, injectIntl, useIntl } from 'react-intl';
 
-import { Link } from 'react-router-dom';
-
 import { useSelector, useDispatch } from 'react-redux';
 
 import AlternateEmailIcon from '@/material-icons/400-24px/alternate_email.svg?react';
@@ -32,7 +30,7 @@ import { fetchFollowRequests } from 'mastodon/actions/accounts';
 import { IconWithBadge } from 'mastodon/components/icon_with_badge';
 import { NavigationPortal } from 'mastodon/components/navigation_portal';
 import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
-import { channel_display_name, logo_image, timelinePreview, trendsEnabled } from 'mastodon/initial_state';
+import { timelinePreview, trendsEnabled } from 'mastodon/initial_state';
 import { transientSingleColumn } from 'mastodon/is_mobile';
 import { canManageReports, canViewAdminDashboard } from 'mastodon/permissions';
 import { selectUnreadNotificationGroupsCount } from 'mastodon/selectors/notifications';
@@ -41,6 +39,8 @@ import ColumnLink from './column_link';
 import DisabledAccountBanner from './disabled_account_banner';
 import { ListPanel } from './list_panel';
 import SignInBanner from './sign_in_banner';
+import { Logo } from './logo';
+import { ServerInformation } from './server_information';
 
 const messages = defineMessages({
   home: { id: 'tabs_bar.home', defaultMessage: 'Home' },
@@ -119,8 +119,6 @@ class NavigationPanel extends Component {
 
     let banner = undefined;
 
-    const subdomain = window.location.hostname.split('.')[0];
-
     if(transientSingleColumn)
       banner = (<div className='switch-to-advanced'>
         {intl.formatMessage(messages.openedInClassicInterface)}
@@ -132,11 +130,7 @@ class NavigationPanel extends Component {
 
     return (
       <div className='navigation-panel'>
-        <div className='navigation-panel__logo' style={{ paddingInline:16 }}>
-          <Link to='/' className='column-link column-link--logo'>
-            {(subdomain==='news') ? <img width='175px' src='./temp-images/newsmast.png' alt='news logo' />:subdomain==='informationtechnology'?<img width='150px' alt='information technology logo' src='./temp-images/binarylab.png' />:logo_image?<img src={logo_image} width={250} alt='channel logo' />:channel_display_name}
-          </Link>
-        </div>
+        <Logo />
 
         {banner &&
           <div className='navigation-panel__banner'>
@@ -177,6 +171,7 @@ class NavigationPanel extends Component {
               <ColumnLink transparent to='/favourites' icon='star' iconComponent={StarIcon} activeIconComponent={StarActiveIcon} text={intl.formatMessage(messages.favourites)} />
               <ColumnLink transparent to='/lists' icon='list-ul' iconComponent={ListAltIcon} activeIconComponent={ListAltActiveIcon} text={intl.formatMessage(messages.lists)} />
 
+              <ServerInformation style={{ order:1111, paddingBlock:40 }} />
               <ListPanel />
 
               <hr />

@@ -22,33 +22,32 @@ const SignInBanner = () => {
   if (sso_redirect) {
     return (
       <div className='sign-in-banner'>
-        <p><strong><FormattedMessage id='sign_in_banner.mastodon_is' defaultMessage="Mastodon is the best way to keep up with what's happening." /></strong></p>
+        <p><strong>Follow and interact with this channel by creating an  account.</strong></p>
         <p><FormattedMessage id='sign_in_banner.follow_anyone' defaultMessage='Follow anyone across the fediverse and see it all in chronological order. No algorithms, ads, or clickbait in sight.' /></p>
         <a href={sso_redirect} data-method='post' className='button button--block button-tertiary'><FormattedMessage id='sign_in_banner.sso_redirect' defaultMessage='Login or Register' /></a>
       </div>
     );
   }
 
-  // if (registrationsOpen) {
-  //   signupButton = (
-  //     <a href={signupUrl} className='button button--block'>
-  //       <FormattedMessage id='sign_in_banner.create_account' defaultMessage='Create account' />
-  //     </a>
-  //   );
-  // } else {
-  //   signupButton = (
-  //     <button className='button button--block' onClick={openClosedRegistrationsModal}>
-  //       <FormattedMessage id='sign_in_banner.create_account' defaultMessage='Create account' />
-  //     </button>
-  //   );
-  // }
+  if (registrationsOpen) {
+    signupButton = (
+      <a href={signupUrl} className='button button--block'>
+        Create a social web account
+      </a>
+    );
+  } else {
+    signupButton = (
+      <button className='button button--block' onClick={openClosedRegistrationsModal}>
+        Create a social web account
+      </button>
+    );
+  }
 
   return (
     <div className='sign-in-banner'>
-      <p><strong><FormattedMessage id='sign_in_banner.mastodon_is' defaultMessage="Mastodon is the best way to keep up with what's happening." /></strong></p>
-      <p><FormattedMessage id='sign_in_banner.follow_anyone' defaultMessage='Follow anyone across the fediverse and see it all in chronological order. No algorithms, ads, or clickbait in sight.' /></p>
-      {/* {signupButton} */}
-      <a href='/auth/sign_in' className='button button--block button-tertiary'><FormattedMessage id='sign_in_banner.sign_in' defaultMessage='Login' /></a>
+      <p>Follow and interact with this Channel through a federated social web account.</p>
+      {signupButton}
+      <a href='/auth/sign_in' className='button button--block button-tertiary'>Sign in</a>
     </div>
   );
 };
