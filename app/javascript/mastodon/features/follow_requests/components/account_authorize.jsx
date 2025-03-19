@@ -40,7 +40,7 @@ class AccountAuthorize extends ImmutablePureComponent {
             <DisplayName account={account} />
           </Link>
 
-          <div className='account__header__content translate' dangerouslySetInnerHTML={content} />
+          <div className='account__header__content translate' dangerouslySetInnerHTML={content.replace("[[BR]]","<br />")} />
         </div>
 
         <div className='account--panel'>
