@@ -37,7 +37,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
     user = fetch_user_credentials
     return 'You don\'t have access to login.' if user.nil? || user&.confirmed_at.nil?
 
-    return 'Organisation admin isn\'t allowed to access login.' unless user.role&.name.eql?('UserAdmin')
+    return 'Organisation admin isn\'t allowed to access login.' unless user.role&.name.eql?('UserAdmin') ||  user.role&.name.eql?('HubAdmin')
 
     nil
   end
