@@ -64,7 +64,7 @@ const Navigations = () => {
           <ul>
             <li>
               <a
-                href='https://channel.org/terms/'
+                href='https://www.newsmastfoundation.org/terms-conditions/'
                 target='_blank'
                 className='footer-link' rel='noopener'
               >
