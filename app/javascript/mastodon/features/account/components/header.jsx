@@ -400,7 +400,7 @@ class Header extends ImmutablePureComponent {
       }
     }
 
-    const content         = { __html: account.get('note_emojified') };
+    const content         = { __html: account.get('note_emojified').replace("[[BR]]","<br />") };
     const displayNameHtml = { __html: account.get('display_name_html') };
     const fields          = account.get('fields');
     const isLocal         = account.get('acct').indexOf('@') === -1;
@@ -468,7 +468,7 @@ class Header extends ImmutablePureComponent {
               <div className='account__header__bio' ref={this.setRef}>
                 {(account.get('id') !== me && signedIn) && <AccountNoteContainer account={account} />}
 
-                {account.get('note').length > 0 && account.get('note') !== '<p></p>' && <div className='account__header__content translate' dangerouslySetInnerHTML={content.replace("[[BR]]","<br />")} />}
+                {account.get('note').length > 0 && account.get('note') !== '<p></p>' && <div className='account__header__content translate' dangerouslySetInnerHTML={content} />}
 
                 <div className='account__header__fields'>
                   <dl>
