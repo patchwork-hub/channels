@@ -58,6 +58,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
 
   # This is a solution to allow the creation of a Channel feed and Hub
   def is_web_login?
+    puts "Received is_web_login: #{params[:is_web_login].inspect}"
     truthy_param?(params[:is_web_login])
   end
 
