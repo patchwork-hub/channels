@@ -30,7 +30,7 @@ class AccountAuthorize extends ImmutablePureComponent {
 
   render () {
     const { intl, account, onAuthorize, onReject } = this.props;
-    const content = { __html: account.get('note_emojified') };
+    const content = { __html: account.get('note_emojified').replace("[[BR]]","<br />") };
 
     return (
       <div className='account-authorize__wrapper'>
