@@ -17,7 +17,7 @@ namespace :db do
       formatted_info = information.values.map { |info| info['text'] }.join("\n")
       Setting.site_extended_description = formatted_info
 
-      Setting.registrations_mode = ENV.fetch('REGISTRATIONS_MODE', 'none')
+      Setting.registrations_mode = ENV.fetch('REGISTRATION_MODE', 'none')
 
       Setting.site_contact_email = ENV.fetch('SITE_CONTACT_EMAIL', nil)
 
