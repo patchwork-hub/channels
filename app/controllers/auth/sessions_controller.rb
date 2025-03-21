@@ -209,7 +209,7 @@ class Auth::SessionsController < Devise::SessionsController
   end
 
   def handle_user_admin_login(user)
-    community_admin = CommunityAdmin.find_by(account_id: 113674140887589885, role: ['UserAdmin', 'HubAdmin'], is_boost_bot: true)
+    community_admin = CommunityAdmin.find_by(account_id: user.account_id, role: ['UserAdmin', 'HubAdmin'], is_boost_bot: true)
     return false unless community_admin
 
     community = Community.find_by(id: community_admin.patchwork_community_id)
