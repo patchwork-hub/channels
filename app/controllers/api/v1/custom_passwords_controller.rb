@@ -93,7 +93,7 @@ class Api::V1::CustomPasswordsController < Api::BaseController
 
   def change_email
     @user = current_user
-    return render_password_error(message: 'Missing required fields.') unless @user && params[:email].present? && params[:current_password].present? && @user&.otp_secret.nil?
+    return render_password_error(message: 'Missing required fields.') unless @user && params[:email].present? && params[:current_password].present?
 
     return render_password_error(message: 'Current password is incorrect.') unless @user.valid_password?(params[:current_password])
 
