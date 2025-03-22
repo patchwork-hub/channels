@@ -51,7 +51,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
     community_admin = fetch_channel_credentials(user)
     return 'Invalid credentials. Please make sure you\'ve created a channel.' if community_admin.nil?
 
-    return 'Invalid credentials or insufficient permissions to access login.' unless valid_permissions?(community_admin, user)
+    return 'Invalid credentials or insufficient permissions to access login.' unless valid_app_permissions?(community_admin, user)
 
     nil
   end
@@ -71,11 +71,21 @@ class Oauth::TokensController < Doorkeeper::TokensController
       )
   end
 
+  def valid_app_permissions?(community_admin, user)
+    belong_any_channel?(community_admin) &&
+      (
+        (community_admin&.role.eql?('OrganisationAdmin') && user.role&.name.eql?('OrganisationAdmin')) ||
+        (community_admin&.role.eql?('UserAdmin') && user.role&.name.eql?('UserAdmin'))
+      )
+  end
+
   def belong_any_channel?(community_admin)
-    community = Community.where(id: community_admin.patchwork_community_id)
-                         .where.not(visibility: nil)
-                         .first
-    community.present?
+    return false unless community_admin&.patchwork_community_id.present?
+  
+    Community.exists?(
+      id: community_admin.patchwork_community_id,
+      visibility: Community.visibilities.keys
+    )
   end
 
   def render_error(error)

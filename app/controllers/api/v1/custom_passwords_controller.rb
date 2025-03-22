@@ -48,30 +48,14 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   def verify_otp
     return render_password_error(message: 'Invalid otp!') unless @user && verify_otp?(params[:otp_secret], reset_password: reset_password?)
 
-    can_register = enable_to_access?
-    return render_password_error(message: 'You\'r not allowed to register!') unless can_register
+    @can_register = registration_allowed?
+    return render_password_error(message: 'You\'r not allowed to register!') unless @can_register
 
     ActiveRecord::Base.transaction do
-      # This stage is known as the user was just registered
-      # If confirmation_sent_at is present, that account was unconfirmed yet
-      if @user.confirmation_sent_at.present?
-        @user.account.update!(discoverable: false)
-        @user.update!(otp_secret: nil, confirmed_at: Time.now.utc, confirmation_sent_at: nil)
-        create_useage_wait_list if can_register
-
-        if change_email?
-          new_mail = @user.unconfirmed_email
-          @user.skip_confirmation!
-          if @user.update(email: new_mail)
-            @user.unconfirmed_email = nil
-            @user.confirmation_token = nil
-            @user.save # Save the user with the new email
-          end
-        end
-      else
-        @user.update!(otp_secret: nil)
-      end
+      handle_user_confirmation
+      handle_email_change if change_email?
     end
+
     render json: { message: generate_access_token }, status: 200
   rescue ActiveRecord::RecordInvalid => e
     render_password_error(message: e.message)
@@ -175,30 +159,52 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   end
 
   def create_useage_wait_list
-    wait_list = WaitList.find_by(invitation_code: params[:invitation_code], used: false)
+    wait_list = WaitList.find_by(invitation_code: params[:invitation_code], used: false, channel_type: params[:channel_type])
     return unless wait_list
 
     wait_list.update!(used: true, account_id: @user.account.id, confirmed_at: Time.zone.now)
   end
 
-  def enable_to_access?
-    if reset_password? || change_email?
-      true
-    else
-      skip_waitlist = params[:skip_waitlist].nil? ? 'false' : params[:skip_waitlist].to_s
-      if skip_waitlist == 'true'
-        true
-      else
-        WaitList.find_by(invitation_code: params[:invitation_code], used: false).present?
-      end
-    end
+  def registration_allowed?
+    return true if reset_password? || change_email? || skip_waitlist?
+      
+    WaitList.exists?(
+      invitation_code: params[:invitation_code],
+      used: false,
+      channel_type: params[:channel_type]
+    )
   end
 
   def generate_otp_token
     SecureRandom.random_number(10_000).to_s.rjust(4, '0')
   end
 
+  def skip_waitlist?
+    truthy_param?(params[:skip_waitlist])
+  end
+
   def truthy_param?(key)
     ActiveModel::Type::Boolean.new.cast(key)
+  end
+
+  def handle_user_confirmation
+    # This stage is known as the user was just registered
+    # If confirmation_sent_at is present, that account wasn't confirmed yet!
+    if @user.confirmation_sent_at.present?
+      @user.account.update!(discoverable: false)
+      @user.skip_confirmation!
+      @user.update!(otp_secret: nil, confirmed_at: Time.now.utc, confirmation_sent_at: nil, confirmation_token: nil)
+      create_useage_wait_list if @can_register
+    else
+      @user.update!(otp_secret: nil)
+    end
+  end
+  
+  def handle_email_change
+    new_email = @user.unconfirmed_email
+    @user.skip_confirmation!
+    if @user.update(email: new_email)
+      @user.update!(unconfirmed_email: nil, confirmation_token: nil)
+    end
   end
 end
