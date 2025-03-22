@@ -11,7 +11,7 @@ class ActivityPub::ActivityPresenter < ActiveModelSerializers::Model
         presenter.actor     = ActivityPub::TagManager.instance.uri_for(status.account)
         presenter.published = status.created_at
         presenter.to        = ActivityPub::TagManager.instance.to(status)
-        presenter.cc        = [] # ActivityPub::TagManager.instance.cc(status)
+        presenter.cc        = ActivityPub::TagManager.instance.cc(status)
 
         presenter.virtual_object = begin
           if status.reblog?
