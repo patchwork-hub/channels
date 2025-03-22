@@ -23,7 +23,9 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
   end
 
   def activity
-    ActivityPub::ActivityPresenter.from_status(@status)
+    activity_presenter = ActivityPub::ActivityPresenter.from_status(@status)
+    Rails.logger.info "ActivityPub::DistributionWorker#activity: #{activity_presenter.inspect}"
+    activity_presenter
   end
 
   def options
