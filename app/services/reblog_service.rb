@@ -38,7 +38,7 @@ class ReblogService < BaseService
 
     Trends.register!(reblog)
     DistributionWorker.perform_async(reblog.id)
-    # ActivityPub::DistributionWorker.perform_async(reblog.id)
+    ActivityPub::DistributionWorker.perform_async(reblog.id)
 
     create_notification(reblog)
     increment_statistics
