@@ -8,7 +8,7 @@ class ActivityPub::ActivityPresenter < ActiveModelSerializers::Model
       new.tap do |presenter|
         presenter.id        = ActivityPub::TagManager.instance.activity_uri_for(status)
         presenter.type      = status.reblog? ? 'Announce' : 'Create'
-        presenter.actor     = ActivityPub::TagManager.instance.uri_for(status.account)
+        presenter.actor     = '' # ActivityPub::TagManager.instance.uri_for(status.account)
         presenter.published = status.created_at
         presenter.to        = ActivityPub::TagManager.instance.to(status)
         presenter.cc        = ActivityPub::TagManager.instance.cc(status)
