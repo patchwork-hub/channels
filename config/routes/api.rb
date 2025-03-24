@@ -63,6 +63,8 @@ namespace :api, format: false do
     resources :notification_tokens, only: [:create] do
       collection do
         post :revoke_token, to: 'notification_tokens#revoke_notification_token'
+        post :update_mute, to: 'notification_tokens#update_mute'
+        get :get_mute_status, to: 'notification_tokens#get_mute_status'
       end
     end
 
