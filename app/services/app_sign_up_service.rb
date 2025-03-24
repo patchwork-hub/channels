@@ -8,11 +8,12 @@ class AppSignUpService < BaseService
     @remote_ip = remote_ip
     @params    = params
 
+    waitlist_entry = find_waitlist_entry
     raise Mastodon::NotPermittedError unless allowed_registration?(remote_ip, invite)
-    raise Mastodon::NotPermittedError unless registration_allowed
+    raise Mastodon::NotPermittedError unless registration_allowed(waitlist_entry)
 
     ApplicationRecord.transaction do
-      create_user!
+      create_user!(waitlist_entry)
       create_access_token!
     end
 
@@ -21,8 +22,8 @@ class AppSignUpService < BaseService
 
   private
 
-  def create_user!
-    user_role = find_user_role
+  def create_user!(waitlist_entry)
+    user_role = find_user_role(waitlist_entry)
     @user = User.create!(
       user_params.merge(
         role_id: user_role&.id,
@@ -45,8 +46,8 @@ class AppSignUpService < BaseService
     )
   end
 
-  def find_user_role
-    channel_type = invitation_code_params[:channel_type].to_s
+  def find_user_role(waitlist_entry)
+    channel_type = waitlist_entry&.channel_type.to_s
     role_name = channel_type.eql?('channel') ? 'UserAdmin' : 'HubAdmin'
     UserRole.find_by(name: role_name)
   end
@@ -64,20 +65,19 @@ class AppSignUpService < BaseService
   end
 
   def invitation_code_params
-    @params.slice(:skip_waitlist, :invitation_code, :channel_type)
+    @params.slice(:skip_waitlist, :invitation_code)
   end
 
   def invite_request_params
     { text: @params[:reason] }
   end
 
-  def registration_allowed
+  def registration_allowed(waitlist_entry)
     return true if skip_waitlist?
     
     WaitList.exists?(
       invitation_code: invitation_code_params[:invitation_code],
-      used: false,
-      channel_type: invitation_code_params[:channel_type]
+      used: false
     )
   end
 
@@ -87,5 +87,9 @@ class AppSignUpService < BaseService
 
   def truthy_param?(key)
     ActiveModel::Type::Boolean.new.cast(key)
+  end
+
+  def find_waitlist_entry
+    WaitList.find_by(invitation_code: invitation_code_params[:invitation_code], used: false)
   end
 end
