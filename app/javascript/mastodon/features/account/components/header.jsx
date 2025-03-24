@@ -400,7 +400,7 @@ class Header extends ImmutablePureComponent {
       }
     }
 
-    const content         = { __html: account.get('note_emojified').replace("[[BR]]","<br />") };
+    const content         = { __html: account.get('note_emojified') };
     const displayNameHtml = { __html: account.get('display_name_html') };
     const fields          = account.get('fields');
     const isLocal         = account.get('acct').indexOf('@') === -1;
