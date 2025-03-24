@@ -468,7 +468,7 @@ class Header extends ImmutablePureComponent {
               <div className='account__header__bio' ref={this.setRef}>
                 {(account.get('id') !== me && signedIn) && <AccountNoteContainer account={account} />}
 
-                {account.get('note').length > 0 && account.get('note') !== '<p></p>' && <div className='account__header__content translate' dangerouslySetInnerHTML={content.replace("[[BR]]","<br />")} />}
+                {account.get('note').length > 0 && account.get('note') !== '<p></p>' && <div className='account__header__content translate' dangerouslySetInnerHTML={content} />}
 
                 <div className='account__header__fields'>
                   <dl>
