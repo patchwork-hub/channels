@@ -8,6 +8,7 @@ import { NavLink, useParams } from 'react-router-dom';
 import { fetchCollectionDetail } from 'mastodon/actions/collection_detail';
 import ArrowBackIcon from '@/material-icons/400-24px/arrow_back.svg?react';
 import { Icon } from 'mastodon/components/icon';
+import { Helmet } from 'react-helmet';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 
 const CollectionDetail = () => {
@@ -48,6 +49,9 @@ const CollectionDetail = () => {
 
   return (
     <div className='channels'>
+      <Helmet>
+        <title>{title.charAt(0).toUpperCase() + title.slice(1)}</title>
+      </Helmet>
       <div className='channels__header'>
         <h2 className='title'>Explore channels</h2>
         <ChannelSearch  onSearch={handleSearch} isLoading={searchChannelsLoading}/>
