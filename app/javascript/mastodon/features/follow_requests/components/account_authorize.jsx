@@ -30,7 +30,7 @@ class AccountAuthorize extends ImmutablePureComponent {
 
   render () {
     const { intl, account, onAuthorize, onReject } = this.props;
-    const content = { __html: account.get('note_emojified').replace("[[BR]]","<br />") };
+    const content = { __html: account.get('note_emojified') };
 
     return (
       <div className='account-authorize__wrapper'>
@@ -40,7 +40,7 @@ class AccountAuthorize extends ImmutablePureComponent {
             <DisplayName account={account} />
           </Link>
 
-          <div className='account__header__content translate' dangerouslySetInnerHTML={content} />
+          <div className='account__header__content translate' dangerouslySetInnerHTML={content.replace("[[BR]]","<br />")} />
         </div>
 
         <div className='account--panel'>
