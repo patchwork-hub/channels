@@ -3,6 +3,7 @@ import { fetchChannels, fetchSearchedChannels } from 'mastodon/actions/channel_b
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ChannelSearch from '../channel_search';
+import { Helmet } from 'react-helmet';
 import ChannelCard from 'mastodon/components/channel_card';
 import CollectionCard from 'mastodon/components/collection_card';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
@@ -39,6 +40,9 @@ const Collections = () => {
 
   return (
     <div className='channels'>
+       <Helmet>
+        <title>Explore channels</title>
+      </Helmet>
       <div className='channels__header'>
         <h2 className='title'>Explore channels </h2>
         <ChannelSearch  onSearch={handleSearch} isLoading={searchChannelsLoading}/>

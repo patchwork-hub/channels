@@ -31,6 +31,7 @@ const ChannelBanner = (props) => {
 
   return (
     <div className='explore-channels'>
+      
       <div className='header'>
         <h2 className='channel-header'>Explore channels</h2>
         <NavLink to='/collections' className='see-all'>

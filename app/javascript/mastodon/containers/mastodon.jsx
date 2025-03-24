@@ -19,7 +19,7 @@ import { IntlProvider } from 'mastodon/locales';
 import { store } from 'mastodon/store';
 import { isProduction } from 'mastodon/utils/environment';
 
-const title = isProduction() ? siteTitle : `${siteTitle} (Dev)`;
+const title = isProduction() ? "Channel.org" : "Channel.org (Dev)";
 
 const hydrateAction = hydrateStore(initialState);
 
