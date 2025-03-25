@@ -49,13 +49,13 @@ class ReblogChannelsService < BaseService
 
       next unless valid_post_type?(community, admin_account) && status_has_keyword?(@status.id, community.id, 'filter_in') && !status_has_keyword?(@status.id, community.id, 'filter_out')
 
-      BlockService.new.call(admin_account, @status.account)
-      Rails.logger.info '*****ACCOUNT_HAS_BEEN_BLOCKED_SUCCESSFULLY*****'
+      # BlockService.new.call(admin_account, @status.account)
+      # Rails.logger.info '*****ACCOUNT_HAS_BEEN_BLOCKED_SUCCESSFULLY*****'
 
       ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
       Rails.logger.info "*****STATUS_HAS_BEEN_SHARED_BY #{admin_account.username}*****" if admin_account&.username == 'tech'
 
-      # UnblockService.new.call(admin_account, @status.account)
+      UnblockService.new.call(admin_account, @status.account)
       Rails.logger.info '*****ACCOUNT_HAS_BEEN_UNBLOCKED_SUCCESSFULLY*****'
     end
   end
