@@ -91,6 +91,7 @@ import {
   Search,
   About,
   PrivacyPolicy,
+  NewsmastChannels,
 } from './util/async-components';
 import { ColumnsContextProvider } from './util/columns_context';
 import { WrappedSwitch, WrappedRoute } from './util/react_router_helpers';
@@ -303,6 +304,13 @@ class SwitchingColumnsArea extends PureComponent {
             <WrappedRoute
               path='/collections/:name'
               component={CollectionDetail}
+              content={children}
+              exact
+              />
+
+            <WrappedRoute
+              path='/newsmasts/:name'
+              component={NewsmastChannels}
               content={children}
               exact
               />
