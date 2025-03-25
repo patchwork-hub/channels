@@ -48,26 +48,26 @@ class ReblogChannelsService < BaseService
 
       # Process this reblog synchronously with complete block/unblock cycle
       begin
-        Rails.logger.info "*****STARTING REBLOG PROCESS FOR #{admin_account.username}*****"
+        Rails.logger.info "*****STARTING REBLOG PROCESS FOR #{admin_account.username}*****" if admin_account&.username == 'ai'
 
         # 1. Block the account
         BlockService.new.call(admin_account, @status.account)
-        Rails.logger.info '*****ACCOUNT_HAS_BEEN_BLOCKED_SUCCESSFULLY*****'
+        Rails.logger.info "*****ACCOUNT_HAS_BEEN_BLOCKED_SUCCESSFULLY by #{admin_account&.username} to #{@status.account.username} *****" if admin_account&.username == 'ai'
 
         sleep(0.5)
 
         # 2. Reblog the status (directly instead of using a worker)
         reblog_status(admin_account, @status)
-        Rails.logger.info "*****STATUS_HAS_BEEN_SHARED_BY #{admin_account.username}*****"
+        Rails.logger.info "*****STATUS_HAS_BEEN_SHARED_BY #{admin_account.username}*****" if admin_account&.username == 'ai'
 
         # 3. Wait a moment to ensure federation processing completes
         sleep(0.5)
 
         # 4. Unblock the account
         UnblockService.new.call(admin_account, @status.account)
-        Rails.logger.info '*****ACCOUNT_HAS_BEEN_UNBLOCKED_SUCCESSFULLY*****'
+        Rails.logger.info "*****ACCOUNT_HAS_BEEN_UNBLOCKED_SUCCESSFULLY by #{admin_account&.username} to #{@status.account.username}*****" if admin_account&.username == 'ai'
 
-        Rails.logger.info "*****COMPLETED REBLOG PROCESS FOR #{admin_account.username}*****"
+        Rails.logger.info "*****COMPLETED REBLOG PROCESS FOR #{admin_account.username}*****" if admin_account&.username == 'ai'
       rescue => e
         # Ensure unblock happens even if reblog fails
         begin
