@@ -55,8 +55,8 @@ class ReblogChannelsService < BaseService
       ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
       Rails.logger.info "*****STATUS_HAS_BEEN_SHARED_BY #{admin_account.username}*****" if admin_account&.username == 'tech'
 
-      UnblockService.new.call(admin_account, @status.account)
-      Rails.logger.info '*****ACCOUNT_HAS_BEEN_UNBLOCKED_SUCCESSFULLY*****'
+      # UnblockService.new.call(admin_account, @status.account)
+      # Rails.logger.info '*****ACCOUNT_HAS_BEEN_UNBLOCKED_SUCCESSFULLY*****'
     end
   end
 
