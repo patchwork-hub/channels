@@ -17,7 +17,7 @@ const SignInBanner = () => {
 
   let signupButton;
 
-  const signupUrl = useAppSelector((state) => state.getIn(['server', 'server', 'registrations', 'url'], null) || '/auth/sign_up');
+  const signupUrl = useAppSelector((state) => state.getIn(['server', 'server', 'registrations', 'url'], null) || 'https://newsmast.social/auth/sign_up');
 
   if (sso_redirect) {
     return (
