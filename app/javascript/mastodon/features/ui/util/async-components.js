@@ -241,6 +241,12 @@ export function CollectionDetail() {
   );
 }
 
+export function NewsmastChannels() {
+  return import(
+    /* webpackChunkName: "features/collecton-detail" */ '../../newsmasts'
+  );
+}
+
 export function Search () {
   return import(/* webpackChunkName: "features/explore" */'../../search');
 }

@@ -12,13 +12,19 @@ const imgs = [
 ]
 
 
-const CollectionCard = ({ channel }) => {
-  const count = channel.attributes?.community_count;
+const CollectionCard = ({ channel,type }) => {
+ 
+  const count = channel.attributes?.community_count??0;
   const label = pluralize(count, 'Channel', 'Channels');
+  const path = type === 'newsmast' ? "newsmasts" :"collections"
 
   const goToDetail = () => {
+    if(type==='newsmast'){
+      const url = `https://${channel?.attributes?.domain_name}/${channel?.attributes?.community_admin?.username}`;
+    window.open(url, '_blank'); 
+    }
     const queryString = `?slug=${encodeURIComponent(channel.attributes.slug)}`;
-    browserHistory.push(`/collections/${channel.attributes.name.toLowerCase()}${queryString}`);
+    browserHistory.push(`/${path}/${channel.attributes.name.toLowerCase()}${queryString}`);
   }
 
   const hasImage = (channel) => (channel.attributes.avatar_image_url ?? "").startsWith("https");
@@ -33,7 +39,7 @@ const CollectionCard = ({ channel }) => {
       <div className='info'>
         <p className='info__detail'>
           <span className='title'>{channel.attributes.name}</span>
-          <span className='subtitle'>{formatNumber(count)} {label}</span>
+         {type==="newsmast" ? <></> : <span className='subtitle'>{formatNumber(count)} {label}</span>}
         </p>
         <Icon icon={ArrowRightUpAltIcon} id={''} className='icon' />
       </div>
