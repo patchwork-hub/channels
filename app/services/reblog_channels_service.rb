@@ -18,12 +18,17 @@ class ReblogChannelsService < BaseService
 
   def process_custom_channels(community_admin_account_ids)
     status_follower_admin_account_ids = @status.account.followers.local.channel_admins(community_admin_account_ids).pluck(:id)
+    # Rails.logger.info "*****STATUS_FOLLOWER_ADMIN_ACCOUNT #{status_follower_admin_account_ids}*****"
+
     tag_ids = @status.tags.ids
+    # Rails.logger.info "*****STATUS_OF_TAGS #{@status.tags.inspect}*****"
     tag_follower_admin_account_ids = TagFollow.where(tag_id: tag_ids).pluck(:account_id)
+    # Rails.logger.info "*****TAG_FOLLOWER_ADMIN_ACCOUNT #{tag_follower_admin_account_ids}*****"
+
     unique_admin_account_ids = (status_follower_admin_account_ids + tag_follower_admin_account_ids).uniq
 
     Account.where(id: unique_admin_account_ids).find_each do |admin_account|
-      Rails.logger.info "*****PROCESSING ACCOUNT #{admin_account&.username}*****"
+      Rails.logger.info "*****TAG_FOLLOWER_ADMIN #{admin_account&.username}*****" if admin_account&.username == 'tech'
       id = admin_account&.id
       next unless id
 
@@ -42,47 +47,10 @@ class ReblogChannelsService < BaseService
         next
       end
 
-      next unless valid_post_type?(community, admin_account) &&
-                  status_has_keyword?(@status.id, community.id, 'filter_in') &&
-                  !status_has_keyword?(@status.id, community.id, 'filter_out')
+      next unless valid_post_type?(community, admin_account) && status_has_keyword?(@status.id, community.id, 'filter_in') && !status_has_keyword?(@status.id, community.id, 'filter_out')
 
-      # Process this reblog synchronously with complete block/unblock cycle
-      begin
-        Rails.logger.info "*****STARTING REBLOG PROCESS FOR #{admin_account.username}*****" if admin_account&.username == 'ai'
-
-        # 1. Block the account
-        BlockService.new.call(admin_account, @status.account)
-        Rails.logger.info "*****ACCOUNT_HAS_BEEN_BLOCKED_SUCCESSFULLY by #{admin_account&.username} to #{@status.account.username} *****" if admin_account&.username == 'ai'
-
-        sleep(0.5)
-
-        # 2. Reblog the status (directly instead of using a worker)
-        reblog_status(admin_account, @status)
-        Rails.logger.info "*****STATUS_HAS_BEEN_SHARED_BY #{admin_account.username}*****" if admin_account&.username == 'ai'
-
-        # 3. Wait a moment to ensure federation processing completes
-        sleep(0.5)
-
-        # 4. Unblock the account
-        UnblockService.new.call(admin_account, @status.account)
-        Rails.logger.info "*****ACCOUNT_HAS_BEEN_UNBLOCKED_SUCCESSFULLY by #{admin_account&.username} to #{@status.account.username}*****" if admin_account&.username == 'ai'
-
-        Rails.logger.info "*****COMPLETED REBLOG PROCESS FOR #{admin_account.username}*****" if admin_account&.username == 'ai'
-      rescue => e
-        # Ensure unblock happens even if reblog fails
-        begin
-          UnblockService.new.call(admin_account, @status.account)
-        rescue
-          nil
-        end
-        Rails.logger.error "Error during reblog process: #{e.message}"
-      end
+      ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
     end
-  end
-
-  # Helper method to perform reblog directly
-  def reblog_status(account, status)
-    ReblogService.new.call(account, status)
   end
 
   def process_group_channels(community_admin_account_ids)
