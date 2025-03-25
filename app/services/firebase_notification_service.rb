@@ -33,7 +33,6 @@ class FirebaseNotificationService
       'Content-Type' => 'application/json',
     }
 
-    Rails.logger.info("**********payyyyyy data #{data} **********")
     payload = {
       message: {
         token: token,
