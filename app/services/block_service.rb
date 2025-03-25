@@ -22,9 +22,7 @@ class BlockService < BaseService
   private
 
   def create_notification(block)
-    block_acitivity = ActivityPub::DeliveryWorker.perform_async(build_json(block), block.account_id, block.target_account.inbox_url)
-    Rails.logger.info "BLOCK ACTIVITY: #{block_acitivity}"
-    block_acitivity
+    ActivityPub::DeliveryWorker.perform_async(build_json(block), block.account_id, block.target_account.inbox_url)
   end
 
   def build_json(block)
