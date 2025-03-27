@@ -46,6 +46,7 @@ import myChannelReducer from './my_channel';
 import newsmastChannelsReducer from './newsmast_channels';
 import channelFeedsReducer from './channel_feeds';
 import newsmastDetailReducer from './newsmast_detail';
+import channelFeedDetailReducer from './channel_feed';
 
 const reducers = {
   announcements,
@@ -89,6 +90,7 @@ const reducers = {
   search_channels: searchChannelsReducer,
   collection_detail: collectionDetailReducer,
   newsmast_detail: newsmastDetailReducer,
+  channel_feed_detail: channelFeedDetailReducer,
   my_channel: myChannelReducer,
   newsmast_channels: newsmastChannelsReducer,
   channel_feeds: channelFeedsReducer,
