@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-namespace :mastodon do
-  desc 'Delete accounts by ID (options: ids=123,456,789)'
-  task delete_accounts_by_id: :environment do
+namespace :cleanup do
+  desc 'Delete accounts by not reserving username and email'
+  task accounts: :environment do
     # Get account IDs from command line parameter
     account_ids = []
 
