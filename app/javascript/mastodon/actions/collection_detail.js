@@ -10,6 +10,11 @@ export const COLLECTION_DETAIL_FETCH_SUCCESS = 'COLLECTION_DETAIL_FETCH_SUCCESS'
 export const COLLECTION_DETAIL_FETCH_FAIL = 'COLLECTION_DETAIL_FETCH_FAIL';
 
 
+export const CHANNEL_FEED_DETAIL_FETCH_REQUEST = 'CHANNEL_FEED_DETAIL_FETCH_REQUEST';
+export const CHANNEL_FEED_DETAIL_FETCH_SUCCESS = 'CHANNEL_FEED_DETAIL_FETCH_SUCCESS';
+export const CHANNEL_FEED_DETAIL_FETCH_FAIL = 'CHANNEL_FEED_DETAIL_FETCH_FAIL';
+
+
 export function fetchCollectionDetail(slug) {
   return (dispatch) => {
     dispatch(fetchCollectionDetailRequest());
@@ -36,6 +41,21 @@ export function fetchNewsmastDetail(slug) {
       })
       .catch((error) => {
         dispatch(fetchNewsmastDetailFail(error));
+      });
+  };
+}
+
+export function fetchChannelFeedDetail(slug) {
+  return (dispatch) => {
+    dispatch(fetchChannelFeedDetailRequest());
+
+    axios
+      .get(`https://dashboard.channel.org/api/v1/collections/fetch_channels?slug=${slug}&type=channel_feed`)
+      .then((response) => {
+        dispatch(fetchChannelFeedDetailSuccess(response.data.data));
+      })
+      .catch((error) => {
+        dispatch(fetchChannelFeedDetailFail(error));
       });
   };
 }
@@ -83,6 +103,31 @@ export function fetchNewsmastDetailSuccess(channels) {
 export function fetchNewsmastDetailFail(error) {
   return {
     type: NEWSMAST_DETAIL_FETCH_FAIL,
+    error,
+    skipLoading: true,
+    skipAlert: true,
+  };
+}
+
+
+export function fetchChannelFeedDetailRequest() {
+  return {
+    type: CHANNEL_FEED_DETAIL_FETCH_REQUEST,
+    skipLoading: true,
+  };
+}
+
+export function fetchChannelFeedDetailSuccess(channels) {
+  return {
+    type: CHANNEL_FEED_DETAIL_FETCH_SUCCESS,
+    channels,
+    skipLoading: true,
+  };
+}
+
+export function fetchChannelFeedDetailFail(error) {
+  return {
+    type: CHANNEL_FEED_DETAIL_FETCH_FAIL,
     error,
     skipLoading: true,
     skipAlert: true,
