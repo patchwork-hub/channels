@@ -77,21 +77,6 @@ export function fetchSearchedChannels(searchTerm) {
 }
 
 
-export function fetchSearchedChannels(searchTerm) {
-  return (dispatch) => {
-    dispatch(fetchSearchChannelsRequest());
-
-    axios
-      .get(`https://dashboard.channel.org/api/v1/channels/search?q=${searchTerm}`)
-      .then((response) => {
-        dispatch(fetchSearchChannelsSuccess(response.data.data));
-      })
-      .catch((error) => {
-        dispatch(fetchSearchChannelsFail(error));
-      });
-  };
-}
-
 
 export function fetchChannelsRequest() {
   return {
@@ -164,17 +149,6 @@ export function fetchChannelFeedsFail(error) {
   };
 }
 
-export function fetchSearchChannelsRequest() {
-  return { type: SEARCH_CHANNELS_FETCH_REQUEST, skipLoading: true };
-}
-
-export function fetchSearchChannelsSuccess(channels) {
-  return { type: SEARCH_CHANNELS_FETCH_SUCCESS, channels, skipLoading: true };
-}
-
-export function fetchSearchChannelsFail(error) {
-  return { type: SEARCH_CHANNELS_FETCH_FAIL, error, skipLoading: true, skipAlert: true };
-}
 export function fetchSearchChannelsRequest() {
   return { type: SEARCH_CHANNELS_FETCH_REQUEST, skipLoading: true };
 }
