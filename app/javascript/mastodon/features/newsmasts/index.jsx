@@ -37,14 +37,14 @@ const NewsmastChannels = () => {
     if (term.trim()) {
       dispatch(fetchSearchedChannels(term));
     } else {
-      dispatch(fetchNewsmastDetail(newSlug??decodedSlug));
+      dispatch(fetchNewsmastDetail("all-collection"));
     }
   };
 
 
   useEffect(() => {
     if (!searchTerm) {
-      dispatch(fetchNewsmastDetail(newSlug??decodedSlug));
+      dispatch(fetchNewsmastDetail("all-collection"));
     }
   }, [searchTerm,dispatch, slug, newSlug]);
 
