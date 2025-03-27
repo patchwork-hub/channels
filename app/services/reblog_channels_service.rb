@@ -4,7 +4,7 @@ class ReblogChannelsService < BaseService
   def call(status)
     @status = status
     unless @status.sensitive? || @status.account.bot?
-      community_admin_account_ids = CommunityAdmin.where(is_boost_bot: true).pluck(:account_id)
+      community_admin_account_ids = CommunityAdmin.where(is_boost_bot: true, account_status: 0).pluck(:account_id)
 
       # Custom Channel
       process_custom_channels(community_admin_account_ids)
