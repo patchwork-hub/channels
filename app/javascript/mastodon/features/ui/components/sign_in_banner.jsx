@@ -17,7 +17,7 @@ const SignInBanner = () => {
 
   let signupButton;
 
-  const signupUrl = useAppSelector((state) => state.getIn(['server', 'server', 'registrations', 'url'], null) || '/auth/sign_up');
+  const signupUrl = useAppSelector((state) => state.getIn(['server', 'server', 'registrations', 'url'], null) || 'https://newsmast.social/auth/sign_up');
 
   if (sso_redirect) {
     return (
@@ -45,7 +45,7 @@ const SignInBanner = () => {
 
   return (
     <div className='sign-in-banner'>
-      <p>Follow and interact with this Channel through a federated social web account.</p>
+      <p>Follow and interact with this Channel by creating a social web account.</p>
       {signupButton}
       <a href='/auth/sign_in' className='button button--block button-tertiary'>Sign in</a>
     </div>

@@ -23,7 +23,7 @@ class Auth::SessionsController < Devise::SessionsController
   def create
     self.resource = warden.authenticate!(auth_options)
 
-    user_admin = handle_user_admin_login(resource) if resource.role&.name == 'UserAdmin' || resource.role.id == -99 || resource.role.id.nil?
+    user_admin = handle_user_admin_login(resource) if resource.role&.name == 'UserAdmin' || resource.role.id == -99 || resource.role.id.nil? || resource.role&.name == 'HubAdmin'
     if user_admin == false
       sign_out(resource)
       flash[:error] = I18n.t('migrations.errors.not_found')
@@ -209,7 +209,7 @@ class Auth::SessionsController < Devise::SessionsController
   end
 
   def handle_user_admin_login(user)
-    community_admin = CommunityAdmin.find_by(account_id: user.account_id, role: 'UserAdmin', is_boost_bot: true)
+    community_admin = CommunityAdmin.find_by(account_id: user.account_id, role: ['UserAdmin', 'HubAdmin'], is_boost_bot: true)
     return false unless community_admin
 
     community = Community.find_by(id: community_admin.patchwork_community_id)

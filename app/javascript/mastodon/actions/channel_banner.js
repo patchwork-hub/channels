@@ -4,6 +4,14 @@ export const CHANNELS_FETCH_REQUEST = 'CHANNELS_FETCH_REQUEST';
 export const CHANNELS_FETCH_SUCCESS = 'CHANNELS_FETCH_SUCCESS';
 export const CHANNELS_FETCH_FAIL = 'CHANNELS_FETCH_FAIL';
 
+export const NEWSMAST_CHANNELS_FETCH_REQUEST = 'NEWSMAST_CHANNELS_FETCH_REQUEST';
+export const NEWSMAST_CHANNELS_FETCH_SUCCESS = 'NEWSMAST_CHANNELS_FETCH_SUCCESS';
+export const NEWSMAST_CHANNELS_FETCH_FAIL = 'NEWSMAST_CHANNELS_FETCH_FAIL';
+
+export const CHANNELS_FEED_FETCH_REQUEST = 'CHANNELS_FEED_FETCH_REQUEST';
+export const CHANNELS_FEED_FETCH_SUCCESS = 'CHANNELS_FEED_FETCH_SUCCESS';
+export const CHANNELS_FEED_FETCH_FAIL = 'CHANNELS_FEED_FETCH_FAIL';
+
 export const SEARCH_CHANNELS_FETCH_REQUEST = 'SEARCH_CHANNELS_FETCH_REQUEST';
 export const SEARCH_CHANNELS_FETCH_SUCCESS = 'SEARCH_CHANNELS_FETCH_SUCCESS';
 export const SEARCH_CHANNELS_FETCH_FAIL = 'SEARCH_CHANNELS_FETCH_FAIL';
@@ -22,6 +30,52 @@ export function fetchChannels() {
       });
   };
 }
+
+export function fetchNewsmastChannels() {
+  return (dispatch) => {
+    dispatch(fetchNewmastChannelsRequest());
+
+    axios
+      .get('https://dashboard.channel.org/api/v1/collections/newsmast_collections')
+      .then((response) => {
+        dispatch(fetchNewmastChannelsSuccess(response.data.data));
+      })
+      .catch((error) => {
+        dispatch(fetchNewmastChannelsFail(error));
+      });
+  };
+}
+
+export function fetchChannelFeeds() {
+  return (dispatch) => {
+    dispatch(fetchChannelFeedsRequest());
+
+    axios
+      .get('https://dashboard.channel.org/api/v1/channels/channel_feeds')
+      .then((response) => {
+        dispatch(fetchChannelFeedsSuccess(response.data.data));
+      })
+      .catch((error) => {
+        dispatch(fetchChannelFeedsFail(error));
+      });
+  };
+}
+
+export function fetchSearchedChannels(searchTerm) {
+  return (dispatch) => {
+    dispatch(fetchSearchChannelsRequest());
+
+    axios
+      .get(`https://dashboard.channel.org/api/v1/channels/search?q=${searchTerm}`)
+      .then((response) => {
+        dispatch(fetchSearchChannelsSuccess(response.data.data));
+      })
+      .catch((error) => {
+        dispatch(fetchSearchChannelsFail(error));
+      });
+  };
+}
+
 
 export function fetchSearchedChannels(searchTerm) {
   return (dispatch) => {
@@ -63,6 +117,64 @@ export function fetchChannelsFail(error) {
   };
 }
 
+export function fetchNewmastChannelsRequest() {
+  return {
+    type: NEWSMAST_CHANNELS_FETCH_REQUEST,
+    skipLoading: true,
+  };
+}
+
+export function fetchNewmastChannelsSuccess(channels) {
+  return {
+    type: NEWSMAST_CHANNELS_FETCH_SUCCESS,
+    channels,
+    skipLoading: true,
+  };
+}
+
+export function fetchNewmastChannelsFail(error) {
+  return {
+    type: NEWSMAST_CHANNELS_FETCH_FAIL,
+    error,
+    skipLoading: true,
+    skipAlert: true,
+  };
+}
+export function fetchChannelFeedsRequest() {
+  return {
+    type: CHANNELS_FEED_FETCH_REQUEST,
+    skipLoading: true,
+  };
+}
+
+export function fetchChannelFeedSuccess(channels) {
+  return {
+    type: CHANNELS_FEED_FETCH_SUCCESS,
+    channels,
+    skipLoading: true,
+  };
+}
+
+export function fetchChannelFeedsFail(error) {
+  return {
+    type: CHANNELS_FEED_FETCH_FAIL,
+    error,
+    skipLoading: true,
+    skipAlert: true,
+  };
+}
+
+export function fetchSearchChannelsRequest() {
+  return { type: SEARCH_CHANNELS_FETCH_REQUEST, skipLoading: true };
+}
+
+export function fetchSearchChannelsSuccess(channels) {
+  return { type: SEARCH_CHANNELS_FETCH_SUCCESS, channels, skipLoading: true };
+}
+
+export function fetchSearchChannelsFail(error) {
+  return { type: SEARCH_CHANNELS_FETCH_FAIL, error, skipLoading: true, skipAlert: true };
+}
 export function fetchSearchChannelsRequest() {
   return { type: SEARCH_CHANNELS_FETCH_REQUEST, skipLoading: true };
 }

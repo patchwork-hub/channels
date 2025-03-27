@@ -1,5 +1,16 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: patchwork_content_types
+#
+#  id                     :bigint(8)        not null, primary key
+#  channel_type           :string           not null
+#  custom_condition       :string
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  patchwork_community_id :bigint(8)        not null
+#
 class ContentType < ApplicationRecord
   self.table_name = 'patchwork_content_types'
 

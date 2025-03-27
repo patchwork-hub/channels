@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.12
+# syntax=docker/dockerfile:1.9
 
 # Define build arguments
 ARG TARGETPLATFORM
@@ -78,11 +78,16 @@ RUN \
   libjemalloc2 \
   patchelf \
   procps \
+  unzip \
   tini \
   tzdata \
   wget && \
   patchelf --add-needed libjemalloc.so.2 /usr/local/bin/ruby && \
   apt-get purge -y patchelf;
+
+#install aws cli 
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip
+RUN ./aws/install && aws --version
 
 # Build stage for dependencies
 FROM ruby AS build
@@ -305,7 +310,8 @@ RUN bundle exec bootsnap precompile --gemfile app/ lib/;
 RUN \
   mkdir -p /opt/mastodon/public/system; \
   chown mastodon:mastodon /opt/mastodon/public/system; \
-  chown -R mastodon:mastodon /opt/mastodon/tmp;
+  chown -R mastodon:mastodon /opt/mastodon/tmp;\
+  chown -R mastodon:mastodon /opt/mastodon/config;
 
 # Set Mastodon user and expose ports
 USER mastodon

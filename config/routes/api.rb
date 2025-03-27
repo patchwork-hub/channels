@@ -56,12 +56,15 @@ namespace :api, format: false do
         post :verify_otp, to: 'custom_passwords#verify_otp'
         get :request_otp, to: 'custom_passwords#request_otp'
         post :change_password, to: 'custom_passwords#change_password'
+        post :change_email, to: 'custom_passwords#change_email'
       end
     end
 
     resources :notification_tokens, only: [:create] do
       collection do
         post :revoke_token, to: 'notification_tokens#revoke_notification_token'
+        post :update_mute, to: 'notification_tokens#update_mute'
+        get :get_mute_status, to: 'notification_tokens#get_mute_status'
       end
     end
 

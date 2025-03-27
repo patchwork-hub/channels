@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_08_111200) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_03_081432) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -198,6 +198,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_111200) do
     t.datetime "requested_review_at", precision: nil
     t.boolean "indexable", default: false, null: false
     t.string "attribution_domains", default: [], array: true
+    t.string "devices_url"
     t.index "(((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\")))", name: "search_index", using: :gin
     t.index "lower((username)::text), COALESCE(lower((domain)::text), ''::text)", name: "index_accounts_on_username_and_domain_lower", unique: true
     t.index ["domain", "id"], name: "index_accounts_on_domain_and_id"
@@ -265,6 +266,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_111200) do
     t.bigint "account_id", null: false
     t.bigint "statuses_count", null: false
     t.index ["year", "account_id"], name: "idx_on_year_account_id_ff3e167cef", unique: true
+  end
+
+  create_table "api_keys", force: :cascade do |t|
+    t.string "key"
+    t.string "secret"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "appeals", force: :cascade do |t|
@@ -565,6 +574,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_111200) do
     t.index ["ip"], name: "index_ip_blocks_on_ip", unique: true
   end
 
+  create_table "keyword_filter_groups", force: :cascade do |t|
+    t.string "name"
+    t.boolean "is_custom", default: true
+    t.boolean "is_active", default: true
+    t.bigint "server_setting_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["server_setting_id"], name: "index_keyword_filter_groups_on_server_setting_id"
+  end
+
+  create_table "keyword_filters", force: :cascade do |t|
+    t.string "keyword"
+    t.integer "filter_type"
+    t.bigint "keyword_filter_group_id", null: false
+    t.index ["keyword_filter_group_id"], name: "index_keyword_filters_on_keyword_filter_group_id"
+  end
+
   create_table "list_accounts", force: :cascade do |t|
     t.bigint "list_id", null: false
     t.bigint "account_id", null: false
@@ -631,7 +657,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_111200) do
     t.integer "thumbnail_file_size"
     t.datetime "thumbnail_updated_at", precision: nil
     t.string "thumbnail_remote_url"
+    t.bigint "patchwork_drafted_status_id"
     t.index ["account_id", "status_id"], name: "index_media_attachments_on_account_id_and_status_id", order: { status_id: :desc }
+    t.index ["patchwork_drafted_status_id"], name: "index_media_attachments_on_patchwork_drafted_status_id", where: "(patchwork_drafted_status_id IS NOT NULL)"
     t.index ["scheduled_status_id"], name: "index_media_attachments_on_scheduled_status_id", where: "(scheduled_status_id IS NOT NULL)"
     t.index ["shortcode"], name: "index_media_attachments_on_shortcode", unique: true, opclass: :text_pattern_ops, where: "(shortcode IS NOT NULL)"
     t.index ["status_id"], name: "index_media_attachments_on_status_id"
@@ -757,6 +785,221 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_111200) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
+  create_table "patchwork_collections", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.integer "sorting_index", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "avatar_image_file_name"
+    t.string "avatar_image_content_type"
+    t.bigint "avatar_image_file_size"
+    t.datetime "avatar_image_updated_at"
+    t.string "banner_image_file_name"
+    t.string "banner_image_content_type"
+    t.bigint "banner_image_file_size"
+    t.datetime "banner_image_updated_at"
+    t.index ["slug"], name: "index_patchwork_collections_on_slug", unique: true
+  end
+
+  create_table "patchwork_communities", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.string "description"
+    t.boolean "is_recommended", default: false, null: false
+    t.integer "admin_following_count", default: 0
+    t.bigint "patchwork_collection_id", null: false
+    t.integer "position", default: 0
+    t.jsonb "guides", default: {}
+    t.integer "participants_count", default: 0
+    t.integer "visibility"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "avatar_image_file_name"
+    t.string "avatar_image_content_type"
+    t.bigint "avatar_image_file_size"
+    t.datetime "avatar_image_updated_at"
+    t.string "banner_image_file_name"
+    t.string "banner_image_content_type"
+    t.bigint "banner_image_file_size"
+    t.datetime "banner_image_updated_at"
+    t.bigint "patchwork_community_type_id"
+    t.string "logo_image_file_name"
+    t.string "logo_image_content_type"
+    t.bigint "logo_image_file_size"
+    t.datetime "logo_image_updated_at"
+    t.string "channel_type", default: "channel", null: false
+    t.string "did_value"
+    t.boolean "is_custom_domain", default: false, null: false
+    t.index ["name"], name: "index_patchwork_communities_on_name", unique: true
+    t.index ["patchwork_collection_id"], name: "index_patchwork_communities_on_patchwork_collection_id"
+    t.index ["patchwork_community_type_id"], name: "index_patchwork_communities_on_patchwork_community_type_id"
+    t.index ["slug"], name: "index_patchwork_communities_on_slug", unique: true
+  end
+
+  create_table "patchwork_communities_admins", force: :cascade do |t|
+    t.bigint "patchwork_community_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "display_name"
+    t.string "email"
+    t.string "username"
+    t.string "password"
+    t.bigint "account_id"
+    t.string "role"
+    t.boolean "is_boost_bot", default: false, null: false
+    t.index ["account_id", "patchwork_community_id"], name: "unique_community_admin_index", unique: true
+    t.index ["account_id"], name: "index_patchwork_communities_admins_on_account_id"
+    t.index ["patchwork_community_id"], name: "index_patchwork_communities_admins_on_patchwork_community_id"
+  end
+
+  create_table "patchwork_communities_filter_keywords", force: :cascade do |t|
+    t.bigint "patchwork_community_id", null: false
+    t.string "keyword", null: false
+    t.boolean "is_filter_hashtag", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "filter_type", default: "filter_out", null: false
+    t.index ["keyword", "is_filter_hashtag", "patchwork_community_id"], name: "index_on_keyword_is_filter_hashtag_and_patchwork_community_id", unique: true
+    t.index ["patchwork_community_id"], name: "idx_on_patchwork_community_id_eadde3c87b"
+  end
+
+  create_table "patchwork_communities_hashtags", force: :cascade do |t|
+    t.bigint "patchwork_community_id", null: false
+    t.string "hashtag"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["patchwork_community_id", "hashtag"], name: "index_patchwork_communities_hashtags_on_hashtag_and_community", unique: true
+    t.index ["patchwork_community_id"], name: "index_patchwork_communities_hashtags_on_patchwork_community_id"
+  end
+
+  create_table "patchwork_communities_statuses", force: :cascade do |t|
+    t.bigint "status_id", null: false
+    t.bigint "patchwork_community_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["patchwork_community_id"], name: "index_patchwork_communities_statuses_on_patchwork_community_id"
+    t.index ["status_id", "patchwork_community_id"], name: "index_patchwork_communities_statuses_on_status_and_community", unique: true
+    t.index ["status_id"], name: "index_patchwork_communities_statuses_on_status_id"
+  end
+
+  create_table "patchwork_community_additional_informations", force: :cascade do |t|
+    t.string "heading"
+    t.text "text"
+    t.bigint "patchwork_community_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["patchwork_community_id"], name: "idx_on_patchwork_community_id_018a30d4a0"
+  end
+
+  create_table "patchwork_community_amplifiers", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "patchwork_community_id", null: false
+    t.jsonb "amplifier_settings", default: {}, null: false
+    t.boolean "amplifier_turn_on", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "patchwork_community_id"], name: "index_patchwork_commu_amplifiers_on_account_and_patchwork_commu", unique: true
+    t.index ["account_id"], name: "index_patchwork_community_amplifiers_on_account_id"
+    t.index ["patchwork_community_id"], name: "index_patchwork_community_amplifiers_on_patchwork_community_id"
+  end
+
+  create_table "patchwork_community_contact_emails", force: :cascade do |t|
+    t.string "contact_email"
+    t.bigint "patchwork_community_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["patchwork_community_id"], name: "idx_on_patchwork_community_id_a7f23c413c"
+  end
+
+  create_table "patchwork_community_links", force: :cascade do |t|
+    t.string "icon"
+    t.string "name"
+    t.string "url"
+    t.bigint "patchwork_community_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "is_social", default: false
+    t.index ["patchwork_community_id"], name: "index_patchwork_community_links_on_patchwork_community_id"
+    t.index ["url", "patchwork_community_id"], name: "index_community_links_on_url_and_patchwork_id", unique: true
+  end
+
+  create_table "patchwork_community_post_types", force: :cascade do |t|
+    t.bigint "patchwork_community_id", null: false
+    t.boolean "posts", default: false, null: false
+    t.boolean "reposts", default: false, null: false
+    t.boolean "replies", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["patchwork_community_id"], name: "index_patchwork_community_post_types_on_patchwork_community_id"
+  end
+
+  create_table "patchwork_community_rules", force: :cascade do |t|
+    t.bigint "patchwork_community_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "rule"
+    t.index ["patchwork_community_id"], name: "index_patchwork_community_rules_on_patchwork_community_id"
+  end
+
+  create_table "patchwork_community_types", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.integer "sorting_index", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_patchwork_community_types_on_slug", unique: true
+  end
+
+  create_table "patchwork_content_types", force: :cascade do |t|
+    t.string "channel_type", null: false
+    t.string "custom_condition"
+    t.bigint "patchwork_community_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["patchwork_community_id"], name: "index_patchwork_content_types_on_patchwork_community_id"
+  end
+
+  create_table "patchwork_drafted_statuses", force: :cascade do |t|
+    t.bigint "account_id"
+    t.jsonb "params"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_patchwork_drafted_statuses_on_account_id"
+  end
+
+  create_table "patchwork_joined_communities", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "patchwork_community_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_patchwork_joined_communities_on_account_id"
+    t.index ["patchwork_community_id"], name: "index_patchwork_joined_communities_on_patchwork_community_id"
+  end
+
+  create_table "patchwork_notification_tokens", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "notification_token"
+    t.string "platform_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_patchwork_notification_tokens_on_account_id"
+  end
+
+  create_table "patchwork_wait_lists", force: :cascade do |t|
+    t.text "email"
+    t.text "description"
+    t.text "invitation_code", null: false
+    t.boolean "used", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "account_id"
+    t.datetime "confirmed_at"
+    t.index ["account_id"], name: "index_patchwork_wait_lists_on_account_id"
+    t.index ["invitation_code"], name: "index_patchwork_wait_lists_on_invitation_code", unique: true
+  end
+
   create_table "pghero_space_stats", force: :cascade do |t|
     t.text "database"
     t.text "schema"
@@ -793,6 +1036,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_111200) do
     t.bigint "voters_count"
     t.index ["account_id"], name: "index_polls_on_account_id"
     t.index ["status_id"], name: "index_polls_on_status_id"
+  end
+
+  create_table "post_hashtags_communities", force: :cascade do |t|
+    t.bigint "patchwork_community_id", null: false
+    t.string "hashtag"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["patchwork_community_id"], name: "index_post_hashtags_communities_on_patchwork_community_id"
   end
 
   create_table "preview_card_providers", force: :cascade do |t|
@@ -920,6 +1171,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_111200) do
     t.jsonb "params"
     t.index ["account_id"], name: "index_scheduled_statuses_on_account_id"
     t.index ["scheduled_at"], name: "index_scheduled_statuses_on_scheduled_at"
+  end
+
+  create_table "server_settings", force: :cascade do |t|
+    t.string "name"
+    t.string "optional_value"
+    t.boolean "value"
+    t.integer "position"
+    t.bigint "parent_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "session_activations", force: :cascade do |t|
@@ -1299,6 +1561,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_111200) do
   add_foreign_key "identities", "users", name: "fk_bea040f377", on_delete: :cascade
   add_foreign_key "imports", "accounts", name: "fk_6db1b6e408", on_delete: :cascade
   add_foreign_key "invites", "users", on_delete: :cascade
+  add_foreign_key "keyword_filter_groups", "server_settings", on_delete: :cascade
+  add_foreign_key "keyword_filters", "keyword_filter_groups", on_delete: :cascade
   add_foreign_key "list_accounts", "accounts", on_delete: :cascade
   add_foreign_key "list_accounts", "follow_requests", on_delete: :cascade
   add_foreign_key "list_accounts", "follows", on_delete: :cascade
@@ -1307,6 +1571,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_111200) do
   add_foreign_key "login_activities", "users", on_delete: :cascade
   add_foreign_key "markers", "users", on_delete: :cascade
   add_foreign_key "media_attachments", "accounts", name: "fk_96dd81e81b", on_delete: :nullify
+  add_foreign_key "media_attachments", "patchwork_drafted_statuses", on_delete: :nullify
   add_foreign_key "media_attachments", "scheduled_statuses", on_delete: :nullify
   add_foreign_key "media_attachments", "statuses", on_delete: :nullify
   add_foreign_key "mentions", "accounts", name: "fk_970d43f9d1", on_delete: :cascade
@@ -1326,10 +1591,31 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_111200) do
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id", name: "fk_f5fc4c1ee3", on_delete: :cascade
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id", name: "fk_e84df68546", on_delete: :cascade
   add_foreign_key "oauth_applications", "users", column: "owner_id", name: "fk_b0988c7c0a", on_delete: :cascade
+  add_foreign_key "patchwork_communities", "patchwork_collections"
+  add_foreign_key "patchwork_communities_admins", "accounts", on_delete: :cascade
+  add_foreign_key "patchwork_communities_admins", "patchwork_communities"
+  add_foreign_key "patchwork_communities_filter_keywords", "patchwork_communities", on_delete: :cascade
+  add_foreign_key "patchwork_communities_hashtags", "patchwork_communities", on_delete: :cascade
+  add_foreign_key "patchwork_communities_statuses", "patchwork_communities"
+  add_foreign_key "patchwork_communities_statuses", "statuses"
+  add_foreign_key "patchwork_community_additional_informations", "patchwork_communities", on_delete: :cascade
+  add_foreign_key "patchwork_community_amplifiers", "accounts"
+  add_foreign_key "patchwork_community_amplifiers", "patchwork_communities"
+  add_foreign_key "patchwork_community_contact_emails", "patchwork_communities", on_delete: :cascade
+  add_foreign_key "patchwork_community_links", "patchwork_communities", on_delete: :cascade
+  add_foreign_key "patchwork_community_post_types", "patchwork_communities", on_delete: :cascade
+  add_foreign_key "patchwork_community_rules", "patchwork_communities"
+  add_foreign_key "patchwork_content_types", "patchwork_communities", on_delete: :cascade
+  add_foreign_key "patchwork_drafted_statuses", "accounts", on_delete: :cascade
+  add_foreign_key "patchwork_joined_communities", "accounts"
+  add_foreign_key "patchwork_joined_communities", "patchwork_communities"
+  add_foreign_key "patchwork_notification_tokens", "accounts", on_delete: :cascade
+  add_foreign_key "patchwork_wait_lists", "accounts"
   add_foreign_key "poll_votes", "accounts", on_delete: :cascade
   add_foreign_key "poll_votes", "polls", on_delete: :cascade
   add_foreign_key "polls", "accounts", on_delete: :cascade
   add_foreign_key "polls", "statuses", on_delete: :cascade
+  add_foreign_key "post_hashtags_communities", "patchwork_communities", on_delete: :cascade
   add_foreign_key "preview_card_trends", "preview_cards", on_delete: :cascade
   add_foreign_key "preview_cards", "accounts", column: "author_account_id", on_delete: :nullify
   add_foreign_key "report_notes", "accounts", on_delete: :cascade

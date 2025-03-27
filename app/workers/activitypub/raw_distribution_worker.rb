@@ -26,6 +26,11 @@ class ActivityPub::RawDistributionWorker
     return if inboxes.empty?
 
     ActivityPub::DeliveryWorker.push_bulk(inboxes, limit: 1_000) do |inbox_url|
+      if inbox_url.include?('mastodon.social')
+        Rails.logger.info '++++++++ MASTODON.SOCIAL DELIVERY ++++++++'
+        Rails.logger.info "Inbox URL: #{inbox_url}"
+        Rails.logger.info "Payload: #{payload}"
+      end
       [payload, source_account_id, inbox_url, options]
     end
   end

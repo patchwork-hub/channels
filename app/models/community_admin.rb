@@ -1,5 +1,21 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: patchwork_communities_admins
+#
+#  id                     :bigint(8)        not null, primary key
+#  display_name           :string
+#  email                  :string
+#  is_boost_bot           :boolean          default(FALSE), not null
+#  password               :string
+#  role                   :string
+#  username               :string
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  account_id             :bigint(8)
+#  patchwork_community_id :bigint(8)        not null
+#
 class CommunityAdmin < ApplicationRecord
   self.table_name = 'patchwork_communities_admins'
   belongs_to :account

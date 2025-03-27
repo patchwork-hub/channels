@@ -9,6 +9,7 @@ class AppSignUpService < BaseService
     @params    = params
 
     raise Mastodon::NotPermittedError unless allowed_registration?(remote_ip, invite)
+    raise Mastodon::NotPermittedError unless enable_to_register?
 
     ApplicationRecord.transaction do
       create_user!
@@ -51,7 +52,20 @@ class AppSignUpService < BaseService
     @params.slice(:username)
   end
 
+  def invitation_code_params
+    @params.slice(:skip_waitlist, :invitation_code)
+  end
+
   def invite_request_params
     { text: @params[:reason] }
+  end
+
+  def enable_to_register?
+    skip_waitlist = invitation_code_params[:skip_waitlist].nil? ? 'false' : invitation_code_params[:skip_waitlist].to_s
+    if skip_waitlist == 'true'
+      true
+    else
+      WaitList.find_by(invitation_code: invitation_code_params[:invitation_code], used: false).present?
+    end
   end
 end

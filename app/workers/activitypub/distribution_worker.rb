@@ -16,12 +16,6 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
 
   def inboxes
     @inboxes ||= StatusReachFinder.new(@status).inboxes
-    if @status.reblog?
-      community_account_ids = User.joins(:role).where(user_roles: { name: 'community-admin' }).pluck(:account_id)
-      domain = @status.reblog.account&.domain
-      @inboxes.delete("https://#{domain}/inbox") if domain && !@inboxes.empty? && community_account_ids.include?(@status.account_id)
-    end
-    @inboxes
   end
 
   def payload
@@ -29,7 +23,9 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
   end
 
   def activity
-    ActivityPub::ActivityPresenter.from_status(@status)
+    activity_presenter = ActivityPub::ActivityPresenter.from_status(@status)
+    Rails.logger.info "ActivityPub::DistributionWorker#activity: #{activity_presenter.inspect}"
+    activity_presenter
   end
 
   def options

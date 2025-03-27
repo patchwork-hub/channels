@@ -5,26 +5,27 @@ import { useDispatch, useSelector } from 'react-redux';
 import ChannelCard from 'mastodon/components/channel_card';
 import ChannelSearch from '../channel_search';
 import { NavLink, useParams } from 'react-router-dom';
-import { fetchCollectionDetail } from 'mastodon/actions/collection_detail';
+import { fetchNewsmastDetail } from 'mastodon/actions/collection_detail';
 import ArrowBackIcon from '@/material-icons/400-24px/arrow_back.svg?react';
 import { Icon } from 'mastodon/components/icon';
 import { Helmet } from 'react-helmet';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
+import CollectionCard from 'mastodon/components/collection_card';
 
-const CollectionDetail = () => {
+const NewsmastChannels = () => {
 
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState('');
   const { name } = useParams();
 //   const [slug, setSlug] = useState("")
 
-  const collectionsDetail = useSelector(state => state.collection_detail.get('items'));
-  const collectionsDetailLoading = useSelector(state => state.collection_detail.get('isLoading'));
+  const collectionsDetail = useSelector(state => state.newsmast_detail.get('items'));
+  const collectionsDetailLoading = useSelector(state => state.newsmast_detail.get('isLoading'));
   const searchChannels = useSelector(state => state.search_channels.get('items'));
   const searchChannelsLoading = useSelector(state => state.search_channels.get('isLoading'));
-
-      const queryParams = new URLSearchParams(location.search);
-    const newSlug = queryParams.get('slug');
+  
+  const queryParams = new URLSearchParams(location.search);
+  const newSlug = queryParams.get('slug');
 
   const [title, slugPart] = name?.split('?');
   const slug = slugPart?.replace('slug=', '');
@@ -36,14 +37,14 @@ const CollectionDetail = () => {
     if (term.trim()) {
       dispatch(fetchSearchedChannels(term));
     } else {
-      dispatch(fetchCollectionDetail(newSlug??decodedSlug));
+      dispatch(fetchNewsmastDetail(newSlug??decodedSlug));
     }
   };
 
 
   useEffect(() => {
     if (!searchTerm) {
-      dispatch(fetchCollectionDetail(newSlug??decodedSlug));
+      dispatch(fetchNewsmastDetail(newSlug??decodedSlug));
     }
   }, [searchTerm,dispatch, slug, newSlug]);
 
@@ -83,13 +84,9 @@ const CollectionDetail = () => {
             fontWeight: '400',
             fontSize:'30px',
             lineHeight:"30px"
-        }}>{title.charAt(0).toUpperCase() + title.slice(1)}</h4>
+        }}>All</h4>
         </div>
-      {/* <div className='channels__list'>
-        {channels.map((channel, index) => (
-          <ChannelCard key={index} channel={channel} />
-        ))}
-      </div> */}
+   
       {searchChannelsLoading || collectionsDetailLoading ? (
         <div className='channels__loading'>
           <LoadingIndicator />
@@ -101,7 +98,7 @@ const CollectionDetail = () => {
       ) : (
         <div className='channels__list'>
           {channels.map((channel, index) => (
-            <ChannelCard key={index} channel={channel} />
+            <CollectionCard key={index} channel={channel} type="newsmast"/>
           ))}
         </div>
       )}
@@ -110,4 +107,4 @@ const CollectionDetail = () => {
   );
 };
 
-export default CollectionDetail;
+export default NewsmastChannels;
