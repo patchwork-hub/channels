@@ -5,22 +5,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import ChannelCard from 'mastodon/components/channel_card';
 import ChannelSearch from '../channel_search';
 import { NavLink, useParams } from 'react-router-dom';
-import { fetchNewsmastDetail } from 'mastodon/actions/collection_detail';
+import { fetchChannelFeedDetail } from 'mastodon/actions/collection_detail';
 import ArrowBackIcon from '@/material-icons/400-24px/arrow_back.svg?react';
 import { Icon } from 'mastodon/components/icon';
 import { Helmet } from 'react-helmet';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import CollectionCard from 'mastodon/components/collection_card';
 
-const NewsmastChannels = () => {
+const ChannelsFeed = () => {
 
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState('');
   const { name } = useParams();
 //   const [slug, setSlug] = useState("")
 
-  const collectionsDetail = useSelector(state => state.newsmast_detail.get('items'));
-  const collectionsDetailLoading = useSelector(state => state.newsmast_detail.get('isLoading'));
+  const collectionsDetail = useSelector(state => state.channel_feed_detail.get('items'));
+  const collectionsDetailLoading = useSelector(state => state.channel_feed_detail.get('isLoading'));
   const searchChannels = useSelector(state => state.search_channels.get('items'));
   const searchChannelsLoading = useSelector(state => state.search_channels.get('isLoading'));
   
@@ -32,19 +32,21 @@ const NewsmastChannels = () => {
   const decodedSlug = decodeURIComponent(slug);
 
   const channels = searchTerm ? searchChannels : collectionsDetail;
+  console.log("channels",channels)
   const handleSearch = (term) => {
     setSearchTerm(term);
     if (term.trim()) {
       dispatch(fetchSearchedChannels(term));
     } else {
-      dispatch(fetchNewsmastDetail("all-collection"));
+      dispatch(fetchChannelFeedDetail("all-collection"));
     }
   };
 
 
   useEffect(() => {
     if (!searchTerm) {
-      dispatch(fetchNewsmastDetail("all-collection"));
+      dispatch(fetchChannelFeedDetail("all-collection"));
+      console.log("riunnnnnn")
     }
   }, [searchTerm,dispatch, slug, newSlug]);
 
@@ -98,7 +100,8 @@ const NewsmastChannels = () => {
       ) : (
         <div className='channels__list'>
           {channels.map((channel, index) => (
-            <CollectionCard key={index} channel={channel} type="newsmast"/>
+            // <div>{channel.attributes.name}</div>
+            <CollectionCard key={index} channel={channel} type="channel"/>
           ))}
         </div>
       )}
@@ -107,4 +110,4 @@ const NewsmastChannels = () => {
   );
 };
 
-export default NewsmastChannels;
+export default ChannelsFeed;

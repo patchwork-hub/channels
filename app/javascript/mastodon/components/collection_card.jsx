@@ -16,14 +16,16 @@ const CollectionCard = ({ channel,type }) => {
  
   const count = channel.attributes?.community_count??0;
   const label = pluralize(count, 'Channel', 'Channels');
-  const path = type === 'newsmast' ? "newsmasts" :"collections"
+  const path = type === 'newsmast' ? "newsmasts" : type==="channel"? "channels" :"collections"
 
   const goToDetail = () => {
-    if(type==='newsmast'){
-      const url = `https://${channel?.attributes?.domain_name}/${channel?.attributes?.community_admin?.username}`;
-    window.open(url, '_blank'); 
-    }
     const queryString = `?slug=${encodeURIComponent(channel.attributes.slug)}`;
+    if(type==='newsmast' || type==="channel"){
+      browserHistory.replace(`/${type==="newsmast"?"newsmasts/newsmast channels":"channels/channels"}?slug=all-collection`);
+      const url = `https://${channel?.attributes?.domain_name}/${channel?.attributes?.community_admin?.username}`;
+      window.open(url, '_blank'); 
+    }
+  
     browserHistory.push(`/${path}/${channel.attributes.name.toLowerCase()}${queryString}`);
   }
 
@@ -39,7 +41,7 @@ const CollectionCard = ({ channel,type }) => {
       <div className='info'>
         <p className='info__detail'>
           <span className='title'>{channel.attributes.name}</span>
-         {type==="newsmast" ? <></> : <span className='subtitle'>{formatNumber(count)} {label}</span>}
+         {type==="newsmast" || type==="channel" ? <></> : <span className='subtitle'>{formatNumber(count)} {label}</span>}
         </p>
         <Icon icon={ArrowRightUpAltIcon} id={''} className='icon' />
       </div>

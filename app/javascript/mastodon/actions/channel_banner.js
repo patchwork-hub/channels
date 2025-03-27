@@ -51,7 +51,7 @@ export function fetchChannelFeeds() {
     dispatch(fetchChannelFeedsRequest());
 
     axios
-      .get('https://dashboard.channel.org/api/v1/channels/channel_feeds')
+      .get('https://dashboard.channel.org/api/v1/collections/channel_feed_collections')
       .then((response) => {
         dispatch(fetchChannelFeedsSuccess(response.data.data));
       })
@@ -132,7 +132,7 @@ export function fetchChannelFeedsRequest() {
   };
 }
 
-export function fetchChannelFeedSuccess(channels) {
+export function fetchChannelFeedsSuccess(channels) {
   return {
     type: CHANNELS_FEED_FETCH_SUCCESS,
     channels,
