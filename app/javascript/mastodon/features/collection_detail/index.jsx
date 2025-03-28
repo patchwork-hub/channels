@@ -16,13 +16,17 @@ const CollectionDetail = () => {
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState('');
   const { name } = useParams();
-//   const [slug, setSlug] = useState("")
+
 
   const collectionsDetail = useSelector(state => state.collection_detail.get('items'));
   const collectionsDetailLoading = useSelector(state => state.collection_detail.get('isLoading'));
-  const searchChannels = useSelector(state => state.search_channels.get('items'));
-  const searchChannelsLoading = useSelector(state => state.search_channels.get('isLoading'));
-
+  const searchChannels = useSelector(state => 
+    state.getIn(['search_channels', 'items']).toJS()
+  );
+  
+  const searchChannelsLoading = useSelector(state => 
+    state.getIn(['search_channels', 'isLoading'])
+  );
       const queryParams = new URLSearchParams(location.search);
     const newSlug = queryParams.get('slug');
 
@@ -85,26 +89,29 @@ const CollectionDetail = () => {
             lineHeight:"30px"
         }}>{title.charAt(0).toUpperCase() + title.slice(1)}</h4>
         </div>
-      {/* <div className='channels__list'>
-        {channels.map((channel, index) => (
-          <ChannelCard key={index} channel={channel} />
-        ))}
-      </div> */}
-      {searchChannelsLoading || collectionsDetailLoading ? (
-        <div className='channels__loading'>
-          <LoadingIndicator />
-        </div>
-      ) : channels.size === 0 ? (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-          <p style={{ fontSize:"20px"}}>No channels found.</p>
-        </div>
-      ) : (
-        <div className='channels__list'>
-          {channels.map((channel, index) => (
-            <ChannelCard key={index} channel={channel} />
-          ))}
-        </div>
-      )}
+          {searchChannelsLoading || collectionsDetailLoading ? (
+            <div className='channels__loading'>
+              <LoadingIndicator />
+            </div>
+          ) : !searchTerm && channels.length === 0 ? (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+              <p style={{ fontSize: '20px' }}>No community channels found</p>
+            </div>
+          ) : channels.length === 0 ? (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+              <p style={{ fontSize: '20px' }}>No community channels found</p>
+            </div>
+          ) : (
+            <div className='channels__list'>
+              {channels.map((channel, index) => (
+                channel.type === 'channel' ? (
+                  <ChannelCard key={index} channel={channel} />
+                ) : (
+                  <CollectionCard key={index} channel={channel} type="all" />
+                )
+              ))}
+            </div>
+          )}
      </div>
     </div>
   );
