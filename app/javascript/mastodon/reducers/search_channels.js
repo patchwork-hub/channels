@@ -16,7 +16,9 @@ export default function searchChannelsReducer(state = initialState, action) {
     case SEARCH_CHANNELS_FETCH_REQUEST:
       return state.set('isLoading', true).set('error', null);
     case SEARCH_CHANNELS_FETCH_SUCCESS:
-      return state.set('isLoading', false).set('items', ImmutableList(action.channels));
+      return state
+        .set('isLoading', false)
+        .set('items', ImmutableList(action.channels.map(channel => ImmutableMap(channel))));
     case SEARCH_CHANNELS_FETCH_FAIL:
       return state.set('isLoading', false).set('error', action.error);
     default:
