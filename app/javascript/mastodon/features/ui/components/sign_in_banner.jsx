@@ -17,7 +17,10 @@ const SignInBanner = () => {
 
   let signupButton;
 
-  const signupUrl = useAppSelector((state) => state.getIn(['server', 'server', 'registrations', 'url'], null) || 'https://newsmast.social/auth/sign_up');
+  const baseUrl = typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.host}` : '';
+  const signupUrl = useAppSelector((state) =>
+    state.getIn(['server', 'server', 'registrations', 'url'], null) || `${baseUrl}/auth/sign_up`
+  );
 
   if (sso_redirect) {
     return (
