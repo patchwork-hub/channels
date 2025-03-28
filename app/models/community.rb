@@ -27,10 +27,12 @@
 #  name                        :string           not null
 #  participants_count          :integer          default(0)
 #  position                    :integer          default(0)
+#  registration_mode           :string           default("none")
 #  slug                        :string           not null
 #  visibility                  :integer
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
+#  ip_address_id               :bigint(8)
 #  patchwork_collection_id     :bigint(8)        not null
 #  patchwork_community_type_id :bigint(8)
 #
