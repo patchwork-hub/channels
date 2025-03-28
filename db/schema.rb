@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_03_081432) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_20_090740) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -564,6 +564,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_03_081432) do
     t.index ["user_id"], name: "index_invites_on_user_id"
   end
 
+  create_table "ip_addresses", force: :cascade do |t|
+    t.string "ip", null: false
+    t.integer "use_count", default: 0, null: false
+    t.datetime "reserved_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ip"], name: "index_ip_addresses_on_ip", unique: true
+  end
+
   create_table "ip_blocks", force: :cascade do |t|
     t.inet "ip", default: "0.0.0.0", null: false
     t.integer "severity", default: 0, null: false
@@ -831,6 +840,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_03_081432) do
     t.string "channel_type", default: "channel", null: false
     t.string "did_value"
     t.boolean "is_custom_domain", default: false, null: false
+    t.string "registration_mode", default: "none"
+    t.bigint "ip_address_id"
+    t.index ["ip_address_id"], name: "index_patchwork_communities_on_ip_address_id"
     t.index ["name"], name: "index_patchwork_communities_on_name", unique: true
     t.index ["patchwork_collection_id"], name: "index_patchwork_communities_on_patchwork_collection_id"
     t.index ["patchwork_community_type_id"], name: "index_patchwork_communities_on_patchwork_community_type_id"
@@ -996,6 +1008,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_03_081432) do
     t.datetime "updated_at", null: false
     t.bigint "account_id"
     t.datetime "confirmed_at"
+    t.integer "channel_type", default: 0, null: false
     t.index ["account_id"], name: "index_patchwork_wait_lists_on_account_id"
     t.index ["invitation_code"], name: "index_patchwork_wait_lists_on_invitation_code", unique: true
   end

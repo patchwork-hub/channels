@@ -61,20 +61,32 @@ export function fetchChannelFeeds() {
   };
 }
 
+
 export function fetchSearchedChannels(searchTerm) {
   return (dispatch) => {
     dispatch(fetchSearchChannelsRequest());
 
     axios
-      .get(`https://dashboard.channel.org/api/v1/channels/search?q=${searchTerm}`)
+      .post(`https://dashboard.channel.org/api/v1/search?q=${searchTerm}`)
       .then((response) => {
-        dispatch(fetchSearchChannelsSuccess(response.data.data));
+       
+        const communities = response.data.communities.data || [];
+        const channelFeeds = response.data.channel_feeds.data || [];
+        const newsmastChannels = response.data.newsmast_channels.data || [];
+        const allChannels = [
+          ...communities,
+          ...channelFeeds,
+          ...newsmastChannels
+        ];
+        
+        dispatch(fetchSearchChannelsSuccess(allChannels));
       })
       .catch((error) => {
         dispatch(fetchSearchChannelsFail(error));
       });
   };
 }
+
 
 
 

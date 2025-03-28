@@ -21,8 +21,13 @@ const ChannelsFeed = () => {
 
   const collectionsDetail = useSelector(state => state.channel_feed_detail.get('items'));
   const collectionsDetailLoading = useSelector(state => state.channel_feed_detail.get('isLoading'));
-  const searchChannels = useSelector(state => state.search_channels.get('items'));
-  const searchChannelsLoading = useSelector(state => state.search_channels.get('isLoading'));
+  const searchChannels = useSelector(state => 
+    state.getIn(['search_channels', 'items']).toJS()
+  );
+  
+  const searchChannelsLoading = useSelector(state => 
+    state.getIn(['search_channels', 'isLoading'])
+  );
   
   const queryParams = new URLSearchParams(location.search);
   const newSlug = queryParams.get('slug');
@@ -32,7 +37,7 @@ const ChannelsFeed = () => {
   const decodedSlug = decodeURIComponent(slug);
 
   const channels = searchTerm ? searchChannels : collectionsDetail;
-  console.log("channels",channels)
+ 
   const handleSearch = (term) => {
     setSearchTerm(term);
     if (term.trim()) {
@@ -46,7 +51,7 @@ const ChannelsFeed = () => {
   useEffect(() => {
     if (!searchTerm) {
       dispatch(fetchChannelFeedDetail("all-collection"));
-      console.log("riunnnnnn")
+   
     }
   }, [searchTerm,dispatch, slug, newSlug]);
 
@@ -88,23 +93,25 @@ const ChannelsFeed = () => {
             lineHeight:"30px"
         }}>All</h4>
         </div>
-   
-      {searchChannelsLoading || collectionsDetailLoading ? (
-        <div className='channels__loading'>
-          <LoadingIndicator />
-        </div>
-      ) : channels.size === 0 ? (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-          <p style={{ fontSize:"20px"}}>No channels found.</p>
-        </div>
-      ) : (
-        <div className='channels__list'>
-          {channels.map((channel, index) => (
-            // <div>{channel.attributes.name}</div>
-            <CollectionCard key={index} channel={channel} type="channel"/>
-          ))}
-        </div>
-      )}
+          {searchChannelsLoading || collectionsDetailLoading ? (
+          <div className='channels__loading'>
+            <LoadingIndicator />
+          </div>
+        ) : !searchTerm && channels.length === 0 ? (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+            <p style={{ fontSize: '20px' }}>No channels found</p>
+          </div>
+        ) : channels.length === 0 ? (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+            <p style={{ fontSize: '20px' }}>No channels found</p>
+          </div>
+        ) : (
+          <div className='channels__list'>
+            {channels.map((channel, index) => (
+              <CollectionCard key={index} channel={channel} type="channel" />
+            ))}
+          </div>
+        )}
      </div>
     </div>
   );

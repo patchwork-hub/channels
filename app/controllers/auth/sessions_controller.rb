@@ -23,11 +23,9 @@ class Auth::SessionsController < Devise::SessionsController
   def create
     self.resource = warden.authenticate!(auth_options)
 
-    user_admin = handle_user_admin_login(resource) if resource.role&.name == 'UserAdmin' || resource.role.id == -99 || resource.role.id.nil? || resource.role&.name == 'HubAdmin'
-    if user_admin == false
-      sign_out(resource)
-      flash[:error] = I18n.t('migrations.errors.not_found')
-      redirect_to new_user_session_path and return
+    if user_admin_login_invalid?(resource)
+      handle_invalid_user_login(resource)
+      return
     end
 
     super do |resource|
@@ -208,11 +206,25 @@ class Auth::SessionsController < Devise::SessionsController
     end
   end
 
-  def handle_user_admin_login(user)
-    community_admin = CommunityAdmin.find_by(account_id: user.account_id, role: ['UserAdmin', 'HubAdmin'], is_boost_bot: true)
-    return false unless community_admin
+  def user_admin_login_invalid?(user)
+    user.role&.name.in?(%w[UserAdmin HubAdmin]) || user.role.id == -99 || user.role.id.nil? ? !handle_user_login(user) : false
+  end
 
-    community = Community.find_by(id: community_admin.patchwork_community_id)
-    community.present?
+  def handle_user_login(user)
+    return false unless user&.account_id
+
+    Community.joins(:community_admins).exists?(
+      community_admins: {
+      account_id: user.account_id,
+      role: ['UserAdmin', 'HubAdmin'],
+      is_boost_bot: true
+      }
+    )
+  end
+  
+  def handle_invalid_user_login(user)
+    sign_out(user)
+    flash[:error] = I18n.t('migrations.errors.not_found')
+    redirect_to new_user_session_path
   end
 end
