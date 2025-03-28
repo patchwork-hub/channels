@@ -22,4 +22,7 @@ class CommunityAdmin < ApplicationRecord
 
   belongs_to :community,
              foreign_key: 'patchwork_community_id'
+
+ enum :account_status, active: 0, suspended: 1, deleted: 2
+
 end
