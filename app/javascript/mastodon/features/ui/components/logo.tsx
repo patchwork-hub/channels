@@ -13,3 +13,11 @@ export const Logo = () => {
         </div>
     );
 };
+
+export const MobileLogo = () => {
+    const subdomain = window.location.hostname.split('.')[0];
+    const isMainChannel = window.location.hostname === 'channel.org';
+    return (
+        (subdomain === 'news') ? <img width='120px' src='./temp-images/newsmast.png' alt='news logo' /> : subdomain === 'informationtechnology' ? <img width='120px' alt='information technology logo' src='./temp-images/binarylab.png' /> : logo_image ? <img src={logo_image} width='auto' height={33} alt='channel logo' /> : <span style={{ textTransform:'capitalize' }}>{isMainChannel ? "Channels" : subdomain}</span>
+    );
+};

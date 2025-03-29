@@ -37,6 +37,7 @@ import { channel_display_name, custom_links, logo_image } from 'mastodon/initial
 import { icons } from './navIcons';
 import { identityContextPropShape, withIdentity } from 'mastodon/identity_context';
 import NavigationPanel from './navigation_panel';
+import { MobileLogo } from './logo';
 
 const componentMap = {
   'COMPOSE': Compose,
@@ -176,7 +177,7 @@ class ColumnsArea extends ImmutablePureComponent {
                       />
                     </button>
                     <Link to='/'>
-                      {(subdomain === 'news') ? <img width='120px' src='./temp-images/newsmast.png' alt='news logo' /> : subdomain === 'informationtechnology' ? <img width='120px' alt='information technology logo' src='./temp-images/binarylab.png' /> : logo_image ? <img src={logo_image} width='auto' height={33} alt='channel logo' /> : <span style={{ textTransform:'capitalize' }}>{subdomain}</span>}
+                      <MobileLogo />
                     </Link>
                   </div>
 
