@@ -129,7 +129,7 @@ const ChannelBanner = (props) => {
         gap: '10px' 
       }}>
         {renderChannelSection(channels, 'Communities', dummyImages.communities, 'collections')}
-        {renderChannelSection(newsmast_channels, 'Newsmast channels', dummyImages.newsmast, 'newsmasts')}
+        {renderChannelSection(newsmast_channels, 'Newsmast Channels', dummyImages.newsmast, 'newsmasts')}
         {renderChannelSection(channel_feeds, 'Channels', dummyImages.channels, 'channels')}
       </div>
 
