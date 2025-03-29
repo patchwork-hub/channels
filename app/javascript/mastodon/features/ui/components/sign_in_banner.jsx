@@ -40,12 +40,6 @@ const SignInBanner = () => {
         Create a social web account
       </a>
     );
-  } else {
-    signupButton = (
-      <button className='button button--block' onClick={openClosedRegistrationsModal}>
-        Create a social web account
-      </button>
-    );
   }
 
   return (

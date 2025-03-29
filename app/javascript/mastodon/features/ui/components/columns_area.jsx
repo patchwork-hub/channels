@@ -182,7 +182,7 @@ class ColumnsArea extends ImmutablePureComponent {
                   </div>
 
                   <div className='columns-area__top-nav__explore-channels'>
-                    <Link to='/explore-channels'>
+                    <Link to='/collections'>
                       <button>Explore channels</button>
                     </Link>
                   </div>
