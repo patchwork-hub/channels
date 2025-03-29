@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: 6cd363185327f7ef269c6037416da49aac282e7f
+  revision: a5fd467431e4d887d12c7a2e26aedaf81dc3be0f
   branch: fitler_refactor
   specs:
     content_filters (0.1.0)
