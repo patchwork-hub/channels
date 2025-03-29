@@ -87,9 +87,7 @@ const CollectionCard = ({ channel, type, from }) => {
         <p className='info__detail'>
           <span className='title'>{channel?.attributes?.name || 'Unnamed'}</span>
           {type==="newsmast" || type==="channel" ? null : (
-            from==="community"? null : (
-              <span className='subtitle'>{formatNumber(count)} {label}</span>
-            )
+            from==="community" && <span className='subtitle'>{formatNumber(count)} {label}</span>
           )}
         </p>
         <Icon icon={ArrowRightUpAltIcon} id='' className='icon' />

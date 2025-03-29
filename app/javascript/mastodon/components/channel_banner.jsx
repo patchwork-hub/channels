@@ -11,7 +11,7 @@ import { browserHistory } from "./router";
 // Dummy images
 const dummyImages = {
   communities: "https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/banner_images/000/000/001/original/cropped-image.jpg?1734719920",
-  newsmast: "https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/banner_images/000/000/003/original/cropped-image.jpg?1734720221",
+  newsmast: "https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/banner_images/000/000/001/original/cropped-image.jpg?1734719920",
   channels: "https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/banner_images/000/000/001/original/cropped-image.jpg?1734719920"
 };
 
@@ -128,9 +128,9 @@ const ChannelBanner = (props) => {
         flexDirection: 'column', 
         gap: '10px' 
       }}>
-        {renderChannelSection(channels, 'Communities', dummyImages.communities, 'collections')}
-        {renderChannelSection(newsmast_channels, 'Newsmast Channels', dummyImages.newsmast, 'newsmasts')}
         {renderChannelSection(channel_feeds, 'Channels', dummyImages.channels, 'channels')}
+        {renderChannelSection(newsmast_channels, 'Newsmast Channels', dummyImages.newsmast, 'newsmasts')}
+        {renderChannelSection(channels, 'Communities', dummyImages.communities, 'collections')}
       </div>
 
       {signedIn && channelFeed && channelFeed.id && (
