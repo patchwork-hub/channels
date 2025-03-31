@@ -39,8 +39,8 @@ class Api::V1::AccountsController < Api::BaseController
 
     self.response_body = Oj.dump(response.body)
     self.status        = response.status
-    generate_opt_token
     create_community_admin
+    generate_opt_token
   rescue ActiveRecord::RecordInvalid => e
     render json: ValidationErrorFormatter.new(e, 'account.username': :username, 'invite_request.text': :reason).as_json, status: 422
   end
