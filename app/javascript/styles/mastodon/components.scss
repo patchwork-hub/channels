@@ -2699,12 +2699,12 @@ a.account__display-name {
   }
 }
 
-.tabs-bar__wrapper>.tabs-bar__portal:has(.column-back-button)+.columns-area>.columns-area__main {
-  padding-top:30px;
+.tabs-bar__wrapper:has(.tabs-bar__portal > .column-back-button) + .columns-area > .columns-area__main {
+  padding-top: 30px;
 }
 
-.tabs-bar__wrapper>.tabs-bar__portal:not(:has(.column-back-button))+.columns-area>.columns-area__main {
-  padding-top:82px;
+.tabs-bar__wrapper:not(:has(.tabs-bar__portal > .column-back-button)) + .columns-area > .columns-area__main {
+  padding-top: 82px;
 }
 
 .columns-area {
