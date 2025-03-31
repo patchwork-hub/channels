@@ -39,7 +39,6 @@ class Api::V1::AccountsController < Api::BaseController
 
     self.response_body = Oj.dump(response.body)
     self.status        = response.status
-    create_community_admin
     generate_opt_token
   rescue ActiveRecord::RecordInvalid => e
     render json: ValidationErrorFormatter.new(e, 'account.username': :username, 'invite_request.text': :reason).as_json, status: 422
@@ -137,13 +136,5 @@ class Api::V1::AccountsController < Api::BaseController
     user.otp_secret = SecureRandom.random_number(10_000).to_s.rjust(4, '0')
     user.save!
     CustomPasswordsMailer.with(user: user).reset_password_confirmation.deliver_later
-  end
-
-  def create_community_admin
-    CommunityAdmin.create!(
-      email: account_params[:email],
-      username: account_params[:username],
-      password: account_params[:password]
-    )
   end
 end
