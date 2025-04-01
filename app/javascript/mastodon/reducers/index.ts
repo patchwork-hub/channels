@@ -43,6 +43,10 @@ import channelsReducer from './channel_banner';
 import searchChannelsReducer from './search_channels';
 import collectionDetailReducer from './collection_detail';
 import myChannelReducer from './my_channel';
+import newsmastChannelsReducer from './newsmast_channels';
+import channelFeedsReducer from './channel_feeds';
+import newsmastDetailReducer from './newsmast_detail';
+import channelFeedDetailReducer from './channel_feed';
 
 const reducers = {
   announcements,
@@ -85,7 +89,11 @@ const reducers = {
   recommended_channels: channelsReducer,
   search_channels: searchChannelsReducer,
   collection_detail: collectionDetailReducer,
-  my_channel:myChannelReducer,
+  newsmast_detail: newsmastDetailReducer,
+  channel_feed_detail: channelFeedDetailReducer,
+  my_channel: myChannelReducer,
+  newsmast_channels: newsmastChannelsReducer,
+  channel_feeds: channelFeedsReducer,
 };
 
 // We want the root state to be an ImmutableRecord, which is an object with a defined list of keys,

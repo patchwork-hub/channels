@@ -241,6 +241,18 @@ export function CollectionDetail() {
   );
 }
 
+export function NewsmastChannels() {
+  return import(
+    /* webpackChunkName: "features/collecton-detail" */ '../../newsmasts'
+  );
+}
+export function ChannelsFeed() {
+  return import(
+    /* webpackChunkName: "features/collecton-detail" */ '../../channels'
+  );
+}
+
+
 export function Search () {
   return import(/* webpackChunkName: "features/explore" */'../../search');
 }

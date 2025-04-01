@@ -2,10 +2,11 @@
 
 class CustomNotificationService < BaseService
   def call(recipient, notification)
-    Rails.logger.info("**********recipient: #{recipient} , notification: #{notification}**********")
     notification_tokens = NotificationToken.where(account_id: recipient.id)
 
-    return unless notification_tokens.any?
+    return nil if notification_tokens.empty? || notification_tokens.any? { |token| token.mute }
+
+    Rails.logger.info("**********CustomNotificationService_notification_tokens: #{notification_tokens.pluck(:mute, :notification_token)} **********")
 
     body = ''
     destination_id = 0
@@ -54,12 +55,11 @@ class CustomNotificationService < BaseService
       reblogged_id: reblogged_id.to_s,
       visibility: visibility,
     }
-    Rails.logger.info("**********data: #{data} **********")
-    ## ios & android
+    # ios & android
     ios_android_devices = notification_tokens.where.not(platform_type: 'huawei').pluck(:notification_token)
-    Rails.logger.info("**********ios_android_devices: #{ios_android_devices} , ios_android_devices.last: #{ios_android_devices.last}**********")
-
-    FirebaseNotificationService.send_notification(ios_android_devices.last, 'Patchwork', body, data) if ios_android_devices.any?
+    ios_android_devices.each do |device|
+      FirebaseNotificationService.send_notification(device, 'Patchwork', body, data)
+    end
 
     # ## huawei
     # huawei_devices = notification_tokens.where(platform_type: 'huawei').pluck(:notification_token)

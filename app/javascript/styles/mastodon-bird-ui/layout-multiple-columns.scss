@@ -3653,7 +3653,6 @@ body .compose-form .compose-form__uploads {
   .layout-multiple-columns .ui__header,
   .layout-multiple-columns .columns-area__panels__main > div.tabs-bar__wrapper,
   .layout-multiple-columns .tabs-bar__wrapper {
-    backdrop-filter: unset;
     background-color: transparent;
     padding: 0;
   }
@@ -3721,7 +3720,7 @@ body .compose-form .compose-form__uploads {
   .layout-multiple-columns .tabs-bar__wrapper {
     margin-right: 0;
     position: sticky;
-    top: 55px;
+    top: 0;
     z-index: 2;
   }
 

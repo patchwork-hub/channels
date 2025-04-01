@@ -41,7 +41,7 @@ interface LoginFormMessage {
 
 const PERSISTENCE_KEY = 'mastodon_home';
 
-const EXAMPLE_VALUE = 'username@mastodon.social';
+const EXAMPLE_VALUE = 'mastodon.social';
 
 const isValidDomain = (value: string) => {
   const url = new URL('https:///path');

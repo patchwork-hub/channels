@@ -5,21 +5,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import ChannelCard from 'mastodon/components/channel_card';
 import ChannelSearch from '../channel_search';
 import { NavLink, useParams } from 'react-router-dom';
-import { fetchCollectionDetail } from 'mastodon/actions/collection_detail';
+import { fetchNewsmastDetail } from 'mastodon/actions/collection_detail';
 import ArrowBackIcon from '@/material-icons/400-24px/arrow_back.svg?react';
 import { Icon } from 'mastodon/components/icon';
 import { Helmet } from 'react-helmet';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
+import CollectionCard from 'mastodon/components/collection_card';
 
-const CollectionDetail = () => {
+const NewsmastChannels = () => {
 
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState('');
   const { name } = useParams();
+//   const [slug, setSlug] = useState("")
 
-
-  const collectionsDetail = useSelector(state => state.collection_detail.get('items'));
-  const collectionsDetailLoading = useSelector(state => state.collection_detail.get('isLoading'));
+  const collectionsDetail = useSelector(state => state.newsmast_detail.get('items'));
+  const collectionsDetailLoading = useSelector(state => state.newsmast_detail.get('isLoading'));
   const searchChannels = useSelector(state => 
     state.getIn(['search_channels', 'items']).toJS()
   );
@@ -27,8 +28,9 @@ const CollectionDetail = () => {
   const searchChannelsLoading = useSelector(state => 
     state.getIn(['search_channels', 'isLoading'])
   );
-      const queryParams = new URLSearchParams(location.search);
-    const newSlug = queryParams.get('slug');
+  
+  const queryParams = new URLSearchParams(location.search);
+  const newSlug = queryParams.get('slug');
 
   const [title, slugPart] = name?.split('?');
   const slug = slugPart?.replace('slug=', '');
@@ -40,14 +42,14 @@ const CollectionDetail = () => {
     if (term.trim()) {
       dispatch(fetchSearchedChannels(term));
     } else {
-      dispatch(fetchCollectionDetail(newSlug??decodedSlug));
+      dispatch(fetchNewsmastDetail("all-collection"));
     }
   };
 
 
   useEffect(() => {
     if (!searchTerm) {
-      dispatch(fetchCollectionDetail(newSlug??decodedSlug));
+      dispatch(fetchNewsmastDetail("all-collection"));
     }
   }, [searchTerm,dispatch, slug, newSlug]);
 
@@ -87,7 +89,7 @@ const CollectionDetail = () => {
             fontWeight: '400',
             fontSize:'30px',
             lineHeight:"30px"
-        }}>{title.charAt(0).toUpperCase() + title.slice(1)}</h4>
+        }}>All</h4>
         </div>
           {searchChannelsLoading || collectionsDetailLoading ? (
             <div className='channels__loading'>
@@ -95,20 +97,16 @@ const CollectionDetail = () => {
             </div>
           ) : !searchTerm && channels.length === 0 ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-              <p style={{ fontSize: '20px' }}>No community channels found</p>
+              <p style={{ fontSize: '20px' }}>No newsmast channels found</p>
             </div>
           ) : channels.length === 0 ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-              <p style={{ fontSize: '20px' }}>No community channels found</p>
+              <p style={{ fontSize: '20px' }}>No newsmast channels found</p>
             </div>
           ) : (
             <div className='channels__list'>
               {channels.map((channel, index) => (
-                channel.type === 'channel' ? (
-                  <ChannelCard key={index} channel={channel} />
-                ) : (
-                  <CollectionCard key={index} channel={channel} type="all" />
-                )
+                <CollectionCard key={index} channel={channel} type="channel" />
               ))}
             </div>
           )}
@@ -117,4 +115,4 @@ const CollectionDetail = () => {
   );
 };
 
-export default CollectionDetail;
+export default NewsmastChannels;

@@ -2699,6 +2699,10 @@ a.account__display-name {
   }
 }
 
+.tabs-bar__wrapper:not(:has(.column-back-button)) + .columns-area .columns-area__main {
+  padding-top: 82px;
+}
+
 .columns-area {
   display: flex;
   flex: 1 1 auto;
@@ -2712,7 +2716,7 @@ a.account__display-name {
   }
 
   &__main {
-    padding-top: 79px;
+    padding-top: 30px;
     @media screen and (min-width: 1174px) {
       padding-top: 0px;
     }
@@ -11384,21 +11388,18 @@ noscript {
 }
 
 .bg-grid {
-  background-image: 
-    url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/001/original/cropped-image.jpg?1734719920"),
-    url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/002/original/cropped-image.jpg?1734720033"),
-    url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/003/original/cropped-image.jpg?1734720221"),
-    url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/004/original/cropped-image.jpg?1734766791");
+  background-image: url('https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/001/original/cropped-image.jpg?1734719920');
+  // url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/002/original/cropped-image.jpg?1734720033"),
+  // url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/003/original/cropped-image.jpg?1734720221"),
+  // url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/004/original/cropped-image.jpg?1734766791");
 
-  background-size: 50% 50%;
-  background-position: 
-    top left, top right, 
-    bottom left, bottom right;
+  background-size: 100%;
+  background-position: center;
   background-repeat: no-repeat;
 }
 
 .hide-path {
-  & path{
-      display: none;
+  & path {
+    display: none;
   }
 }

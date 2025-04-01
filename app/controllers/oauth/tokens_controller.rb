@@ -51,7 +51,9 @@ class Oauth::TokensController < Doorkeeper::TokensController
     community_admin = fetch_channel_credentials(user)
     return 'Invalid credentials. Please make sure you\'ve created a channel.' if community_admin.nil?
 
-    return 'Invalid credentials or insufficient permissions to access login.' unless valid_app_permissions?(community_admin, user)
+    return 'Your account is already deleted.' if community_admin&.account_status == 'deleted'
+
+    return 'Invalid credentials or insufficient permissions to access login.' unless valid_permissions?(community_admin, user)
 
     nil
   end

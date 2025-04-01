@@ -4,7 +4,7 @@ SimpleNavigation::Configuration.run do |navigation|
   self_destruct = SelfDestructHelper.self_destruct?
 
   navigation.items do |n|
-    n.item :web, safe_join([material_symbol('chevron_left'), t('settings.back')]), root_path
+    n.item :web, safe_join([material_symbol('chevron_left'), 'Back']), "https://home.channel.org", link_html: { target: '_blank' }
 
     n.item :software_updates,
            safe_join([material_symbol('report'), t('admin.critical_update_pending')]),
@@ -33,6 +33,9 @@ SimpleNavigation::Configuration.run do |navigation|
       s.item :two_factor_authentication, safe_join([material_symbol('safety_check'), t('settings.two_factor_authentication')]), settings_two_factor_authentication_methods_path, highlights_on: %r{/settings/two_factor_authentication|/settings/otp_authentication|/settings/security_keys}
       s.item :authorized_apps, safe_join([material_symbol('list_alt'), t('settings.authorized_apps')]), oauth_authorized_applications_path, if: -> { !self_destruct }
     end
+
+    n.item :security, safe_join([material_symbol('add'), 'Add channel content']), 'https://home.channel.org/sign-in',  link_html: { target: '_blank' }
+    n.item :security, safe_join([material_symbol('filter_alt'), 'Filter channel content']), 'https://home.channel.org/sign-in', link_html: { target: '_blank' }
 
     n.item :data, safe_join([material_symbol('cloud_sync'), t('settings.import_and_export')]), settings_export_path do |s|
       s.item :import, safe_join([material_symbol('cloud_upload'), t('settings.import')]), settings_imports_path, highlights_on: %r{/settings/imports}, if: -> { current_user.functional? && !self_destruct }
