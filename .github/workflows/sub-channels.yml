@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false  # Changed to true for more efficient queue management
+  cancel-in-progress: true  # Changed to true for more efficient queue management
 
 jobs:
   build-and-push:
@@ -152,9 +152,3 @@ jobs:
             ssh-add ~/.ssh/github-action
             cd /home/ubuntu/create-channel
             bash alldeploy.sh
-
-
-
-
-
-  
