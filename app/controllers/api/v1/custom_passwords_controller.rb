@@ -117,13 +117,12 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   def set_user
     return nil if params[:id].nil?
 
-    if reset_password?
-      @user = User.find_by(reset_password_token: params[:id])
-    else
-      token = Doorkeeper::AccessToken.find_by(token: params[:id])
-      @user = User.find_by(id: token&.resource_owner_id) if token
-    end
-    @user
+    token = Doorkeeper::AccessToken.find_by(token: params[:id])
+    @user = if token
+              User.find_by(id: token.resource_owner_id)
+            else
+              User.find_by(reset_password_token: params[:id])
+            end
   end
 
   def render_password_error(message:)
@@ -161,7 +160,7 @@ class Api::V1::CustomPasswordsController < Api::BaseController
 
   def registration_allowed?(waitlist_entry)
     return true if reset_password? || change_email? || skip_waitlist?
-      
+
     waitlist_entry.present?
   end
 
@@ -189,13 +188,11 @@ class Api::V1::CustomPasswordsController < Api::BaseController
       @user.update!(otp_secret: nil)
     end
   end
-  
+
   def handle_email_change
     new_email = @user.unconfirmed_email
     @user.skip_confirmation!
-    if @user.update(email: new_email)
-      @user.update!(unconfirmed_email: nil, confirmation_token: nil)
-    end
+    @user.update!(unconfirmed_email: nil, confirmation_token: nil) if @user.update(email: new_email)
   end
 
   def find_waitlist_entry
