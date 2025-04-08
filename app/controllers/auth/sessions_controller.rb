@@ -217,7 +217,8 @@ class Auth::SessionsController < Devise::SessionsController
       community_admins: {
       account_id: user.account_id,
       role: ['UserAdmin', 'HubAdmin'],
-      is_boost_bot: true
+      is_boost_bot: true,
+      account_status: CommunityAdmin.account_statuses["active"]
       }
     )
   end

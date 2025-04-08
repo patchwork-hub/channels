@@ -3,7 +3,7 @@
 class ReblogChannelsService < BaseService
   def call(status)
     @status = status
-    unless @status.sensitive? || @status.account.bot?
+    unless @status.sensitive? || @status.account.bot? || @status.unlisted_visibility?
       community_admin_account_ids = CommunityAdmin.where(is_boost_bot: true, account_status: 0).pluck(:account_id)
 
       # Custom Channel
@@ -116,7 +116,7 @@ class ReblogChannelsService < BaseService
   end
 
   def get_community(account_id)
-    Community.find_by(id: CommunityAdmin.find_by(account_id: account_id)&.patchwork_community_id)
+    Community.find_by(id: CommunityAdmin.find_by(account_id: account_id, account_status: CommunityAdmin.account_statuses["active"])&.patchwork_community_id)
   end
 
   def status_has_keyword?(status_id, community_id, filter_type)

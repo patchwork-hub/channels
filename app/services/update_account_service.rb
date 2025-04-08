@@ -40,7 +40,7 @@ class UpdateAccountService < BaseService
   end
 
   def validate_account!(account)
-    community_admin = CommunityAdmin.find_by(account_id: account.id, is_boost_bot: true)
+    community_admin = CommunityAdmin.find_by(account_id: account.id, is_boost_bot: true, account_status: CommunityAdmin.account_statuses["active"])
     raise Mastodon::NotPermittedError if community_admin && (community_admin.role != 'UserAdmin')
   end
 end

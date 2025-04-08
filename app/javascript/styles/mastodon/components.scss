@@ -2700,7 +2700,9 @@ a.account__display-name {
 }
 
 .tabs-bar__wrapper:not(:has(.column-back-button)) + .columns-area .columns-area__main {
-  padding-top: 82px;
+  @media screen and (max-width: 1173px) {
+    padding-top: 82px;
+  }
 }
 
 .columns-area {

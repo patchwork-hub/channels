@@ -28,7 +28,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
   end
 
   def fetch_channel_credentials(user)
-    CommunityAdmin.find_by(account_id: user.account_id, is_boost_bot: true)
+    CommunityAdmin.find_by(account_id: user.account_id, is_boost_bot: true, account_status: CommunityAdmin.account_statuses["active"])
   end
 
   def handle_web_login
