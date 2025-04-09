@@ -4,6 +4,7 @@ class Api::V1::NotificationTokensController < Api::BaseController
   before_action :require_user!
   before_action -> { doorkeeper_authorize! :read, :write }
   before_action :set_notification_token, only: [:create, :revoke_notification_token]
+  before_action :set_platform_tokens, only: [:reset_device_tokens]
   before_action :fetch_notification_tokens, only: [:update_mute, :get_mute_status]
 
   rescue_from ArgumentError do |e|
@@ -45,6 +46,15 @@ class Api::V1::NotificationTokensController < Api::BaseController
     end
   end
 
+  def reset_device_tokens
+    if @notification_tokens.present?
+      @notification_tokens.destroy_all
+      render json: { message: 'Notification token deleted successfully' }
+    else
+      render json: { message: 'Record not found' }, status: 404
+    end
+  end
+
   private
 
   def set_notification_token
@@ -59,4 +69,7 @@ class Api::V1::NotificationTokensController < Api::BaseController
     @notification_tokens = NotificationToken.where( account_id: current_account.id)
   end
 
+  def set_platform_tokens
+    @notification_tokens = NotificationToken.where(platform_type: params[:platform_type], account_id: current_account.id)
+  end
 end
