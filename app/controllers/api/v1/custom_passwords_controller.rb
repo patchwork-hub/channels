@@ -84,6 +84,8 @@ class Api::V1::CustomPasswordsController < Api::BaseController
 
     new_email = params[:email]
 
+    return render_password_error(message: 'Email has already been taken.') if User.exists?(email: new_email)
+      
     email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
     return render_password_error(message: 'Invalid email format.') unless new_email.match?(email_regex)
 
