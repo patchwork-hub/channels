@@ -194,7 +194,7 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   def handle_email_change
     new_email = @user.unconfirmed_email
     @user.skip_confirmation!
-    @user.update!(unconfirmed_email: nil, confirmation_token: nil) if @user.update(email: new_email)
+    @user.update!(unconfirmed_email: nil, confirmation_token: nil, confirmed_at: Time.now.utc) if @user.update(email: new_email)
   end
 
   def find_waitlist_entry
