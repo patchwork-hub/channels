@@ -7,7 +7,9 @@ import ColumnLink from './column_link';
 import { icons } from './navIcons';
 import { ServerInformation } from './server_information';
 import { Logo } from './logo';
-
+import { useEffect } from 'react';
+import { fetchServer } from 'mastodon/actions/server';
+import { useDispatch, useSelector } from 'react-redux';
 const messages = defineMessages({
   home: { id: 'tabs_bar.home', defaultMessage: 'Home' },
   notifications: {
@@ -27,8 +29,14 @@ const messages = defineMessages({
 
 const Navigations = () => {
 
+  const dispatch = useDispatch();
   const intl = useIntl();
   const navItems = custom_links && typeof custom_links === 'string' ? JSON.parse(custom_links) : custom_links;
+  const server = useSelector(state => state.server.get('server')?.toJS() || {});
+
+  useEffect(() => {
+    dispatch(fetchServer());
+  },[])
 
   return (
     <aside className='navigation-panel navigation-panel__sidebar sidebar'>
@@ -59,9 +67,13 @@ const Navigations = () => {
               />
             ))}
         </div>
-
-        <footer className='footer'>
-          <ul>
+       <div className="footer">
+       <ServerInformation />
+       </div>
+       
+      </div>
+      <div className='navigation-panel__sidebar__bottom'>
+          <ul style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
             <li>
               <a
                 href='https://www.newsmastfoundation.org/terms-conditions/'
@@ -80,7 +92,7 @@ const Navigations = () => {
                 Privacy Policy
               </a>
             </li>
-            <li>
+            {/* <li>
               <a
                 href='https://github.com/patchwork-hub/'
                 target='_blank'
@@ -88,26 +100,22 @@ const Navigations = () => {
               >
                 Source Code
               </a>
-            </li>
+            </li> */}
           </ul>
-
-          <ServerInformation />
-        </footer>
-      </div>
-      <div className='navigation-panel__sidebar__bottom'>
         <p>
           <a href="https://channel.org/public" className="link label ml-0">channel.org: </a>
-          <a href="#" className="link underline">About</a><span>·</span>
+          {/* <a href="#" className="link underline">About</a><span>·</span>
           <a href="https://home.channel.org/search" className="link underline">Channel Directory</a><span>·</span>
           <a href="#" className="link underline">Get the App</a><span>·</span>
-          <a href="#" className="link underline">Privacy Policy</a>
+          <a href="#" className="link underline">Privacy Policy</a> */}
           <a href="https://github.com/patchwork-hub/channels/" className="link underline">View source code</a>
         </p>
 
         <p>
           <a href="#" className="link label ml-0">Mastodon: </a>
           <a href="https://joinmastodon.org/" className="link underline">About</a><span>·</span>
-          <a href="https://github.com/mastodon/mastodon" className="link underline">View source code</a>
+          <a href="https://github.com/mastodon/mastodon" className="link underline">View source code</a><br/>
+          <a href="#" className="link label ml-0">{server&& server.version} </a>
         </p>
       </div>
     </aside>

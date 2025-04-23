@@ -212,14 +212,14 @@ const Firehose = ({ feedType, multiColumn }) => {
         <NavLink exact to='/public'>
           <FormattedMessage tagName='div' id='firehose.all' defaultMessage='All' />
         </NavLink> */}
-
+        <NavLink exact to='/public'>
+          <FormattedMessage tagName='div' defaultMessage='Posts' />
+        </NavLink>
         <NavLink exact to='/about'>
           <FormattedMessage tagName='div' defaultMessage='About' />
         </NavLink>
 
-        <NavLink exact to='/public'>
-          <FormattedMessage tagName='div' defaultMessage='Posts' />
-        </NavLink>
+       
       </div>
 
       <StatusListContainer
