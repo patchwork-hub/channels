@@ -3,8 +3,7 @@
 namespace :cleanup do
   desc "Deletes communities, associated users, accounts and community admins"
   task :communities, [:ids] => :environment do |t, args|
-    ids_string = args[:ids] || ""
-    community_ids = ids_string.split(",").map(&:strip).map(&:to_i)
+    community_ids = (args[:ids] || "").split(",").map(&:strip).map(&:to_i)
 
     # Get account IDs from command line parameter
     account_ids = []
@@ -23,7 +22,7 @@ namespace :cleanup do
 
       begin
         ActiveRecord::Base.transaction do
-          account_ids << community.community_admins.last.account_id
+          account_ids << community&.community_admins&.last&.account_id
           puts "Deleting community with ID: #{community.id}..."
           community.destroy
         end
