@@ -2,8 +2,10 @@
 
 namespace :cleanup do
   desc "Deletes communities, associated users, accounts and community admins"
-  task :communities, [:ids] => :environment do |t, args|
-    community_ids = (args[:ids] || "").split(",").map(&:strip).map(&:to_i)
+  task :communities => :environment do
+
+    community_ids = ENV['IDS'].to_s.split(",").map(&:strip).map(&:to_i)
+    puts "Starting community cleanup process for #{community_ids} communities..."
 
     # Get account IDs from command line parameter
     account_ids = []
