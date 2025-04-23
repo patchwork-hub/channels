@@ -11215,11 +11215,11 @@ noscript {
   place-items: center;
   gap: 20px;
   padding: 30px 20px;
-  // @media screen and (min-width: 380px) {
-  //   grid-template-columns: repeat(2, 1fr);
-  // }
-  @media screen and (min-width: 768px) {
+  @media screen and (min-width: 380px) {
     grid-template-columns: repeat(2, 1fr);
+  }
+  @media screen and (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
   }
   .card {
     background-color: #1e1e1e;
@@ -11263,13 +11263,13 @@ noscript {
       padding-left: 10px;
       .subtitle {
         font-weight: 300;
-        font-size: 14px;
+        font-size: 13px;
         line-height: 20px;
       }
       .title {
         font-family: 'ibm-plex-sans';
-        font-size: 20px;
-        line-height: 26px;
+        font-size: 16px;
+        line-height: 16px;
         font-weight: 600;
       }
     }
