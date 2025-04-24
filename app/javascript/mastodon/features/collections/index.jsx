@@ -25,15 +25,91 @@ const Collections = () => {
     state.getIn(['search_channels', 'isLoading'])
   );
 
+  const images = {
+    communities: "https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/banner_images/000/000/001/original/cropped-image.jpg?1734719920",
+    newsmast: "https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/banner_images/000/000/003/original/cropped-image.jpg?1734720221",
+    channels: "https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/banner_images/000/000/001/original/cropped-image.jpg?1734719920"
+  };
+
   const channels = searchTerm 
   ? searchChannels 
   : [
-      collections?.size > 0 ? collections.get(0) : null,
-      newsmast_channels?.size > 0 ? newsmast_channels.get(0) : null,
-      channel_feeds?.size > 0 ? channel_feeds.get(0) : null
+    channel_feeds?.size > 0 ? channel_feeds.get(0) : null,
+    newsmast_channels?.size > 0 ? newsmast_channels.get(0) : null,
+    collections?.size > 0 ? collections.get(0) : null,
     ].filter(item => item !== null);
 
   const isLoading = searchTerm ? searchChannelsLoading : collectionsLoading;
+
+
+  const collectionsTiles = collections?.size > 0
+  ? {
+      tiles: [
+        collections.get(1)?.attributes?.avatar_image_url.startsWith('https')
+          ? collections.get(1)?.attributes?.avatar_image_url
+          : images.channels,
+        collections.get(2)?.attributes?.avatar_image_url.startsWith('https')
+          ? collections.get(2)?.attributes?.avatar_image_url
+          : images.channels,
+        collections.get(3)?.attributes?.avatar_image_url.startsWith('https')
+          ? collections.get(3)?.attributes?.avatar_image_url
+          : images.channels,
+        collections.get(4)?.attributes?.avatar_image_url.startsWith('https')
+          ? collections.get(4)?.attributes?.avatar_image_url
+          : images.channels,
+      ],
+      collection: true,
+      channel: false,
+      newsmast: false,
+    }
+  : { tiles: [], collection: true, channel: false, newsmast: false, };
+
+
+  const channelsTiles = channel_feeds?.size > 0
+  ? {
+      tiles: [
+        channel_feeds.get(1)?.attributes?.avatar_image_url.startsWith('https')
+          ? channel_feeds.get(1)?.attributes?.avatar_image_url
+          : images.channels,
+        channel_feeds.get(2)?.attributes?.avatar_image_url.startsWith('https')
+          ? channel_feeds.get(2)?.attributes?.avatar_image_url
+          : images.channels,
+        channel_feeds.get(3)?.attributes?.avatar_image_url.startsWith('https')
+          ? channel_feeds.get(3)?.attributes?.avatar_image_url
+          : images.channels,
+        channel_feeds.get(4)?.attributes?.avatar_image_url.startsWith('https')
+          ? channel_feeds.get(4)?.attributes?.avatar_image_url
+          : images.channels,
+      ],
+      collection: false,
+      channel: true,
+      newsmast: false,
+    }
+  : { tiles: [], collection: false, channel: true, newsmast: false, };
+
+
+  const newsmastTiles = newsmast_channels?.size > 0
+  ? {
+      tiles: [
+        newsmast_channels.get(1)?.attributes?.avatar_image_url.startsWith('https')
+          ? newsmast_channels.get(1)?.attributes?.avatar_image_url
+          : images.channels,
+        newsmast_channels.get(2)?.attributes?.avatar_image_url.startsWith('https')
+          ? newsmast_channels.get(2)?.attributes?.avatar_image_url
+          : images.channels,
+        newsmast_channels.get(3)?.attributes?.avatar_image_url.startsWith('https')
+          ? newsmast_channels.get(3)?.attributes?.avatar_image_url
+          : images.channels,
+        newsmast_channels.get(4)?.attributes?.avatar_image_url.startsWith('https')
+          ? newsmast_channels.get(4)?.attributes?.avatar_image_url
+          : images.channels,
+      ],
+      collection: false,
+      channel: false,
+      newsmast: true,
+    }
+  : { tiles: [], collection: false, channel: false, newsmast: true, };
+
 
 
   const handleSearch = (term) => {
@@ -81,9 +157,9 @@ const Collections = () => {
             <div className='channels__list'>
               {channels.map((channel, index) => (
                 channel.type === 'channel' ? (
-                  <ChannelCard key={index} channel={channel} />
+                  <ChannelCard key={index} channel={channel} isFourTiles/>
                 ) : (
-                  <CollectionCard key={index} channel={channel} type="all" from="community"/>
+                  <CollectionCard key={index} channel={channel} type="all" from="community" isFourTiles collections={collectionsTiles} channel_feeds={channelsTiles} newsmast_channels={newsmastTiles}/>
                 )
               ))}
             </div>

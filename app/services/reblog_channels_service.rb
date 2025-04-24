@@ -3,7 +3,7 @@
 class ReblogChannelsService < BaseService
   def call(status)
     @status = status
-    unless @status.sensitive? || @status.account.bot?
+    unless @status.sensitive? || @status.account.bot? || @status.unlisted_visibility?
       community_admin_account_ids = CommunityAdmin.where(is_boost_bot: true, account_status: 0).pluck(:account_id)
 
       # Custom Channel
@@ -79,7 +79,7 @@ class ReblogChannelsService < BaseService
 
     unless community_post_type
       Rails.logger.warn "No community post type found for community #{community&.name}" if admin_account&.username == 'tech'
-      return true
+      return false
     end
 
     Rails.logger.info "Fetched community post type: #{community_post_type}"
@@ -89,9 +89,9 @@ class ReblogChannelsService < BaseService
       return false
     end
 
-    if post_type_rejected?(community_post_type)
+    if post_type_accepted?(community_post_type)
       Rails.logger.warn "Post type rejected for community #{community&.name}" if admin_account&.username == 'tech'
-      return false
+      return true
     end
 
     true
@@ -100,12 +100,16 @@ class ReblogChannelsService < BaseService
   def fetch_community_post_type(community)
     community&.community_post_type
   end
-
+  
   def all_post_types_excluded?(community_post_type)
-    community_post_type.posts? && community_post_type.reposts? && community_post_type.replies?
+    !any_post_types_included?(community_post_type)
   end
 
-  def post_type_rejected?(community_post_type)
+  def any_post_types_included?(community_post_type)
+    community_post_type.posts? || community_post_type.reposts? || community_post_type.replies?
+  end
+
+  def post_type_accepted?(community_post_type)
     if @status.reply?
       community_post_type.replies?
     elsif @status.reblog?
