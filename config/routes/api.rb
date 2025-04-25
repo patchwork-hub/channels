@@ -77,6 +77,14 @@ namespace :api, format: false do
       end
 
       resources :relays, only: [:create, :destroy]
+
+      resources :email_settings, only: [:index] do
+        collection do
+          post '/notification', to: 'email_settings#email_notification'
+        end
+      end
+
+      
     end
 
     resources :suggestions, only: [:index, :destroy]
