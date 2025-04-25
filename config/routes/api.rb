@@ -83,8 +83,6 @@ namespace :api, format: false do
           post '/notification', to: 'email_settings#email_notification'
         end
       end
-
-      
     end
 
     resources :suggestions, only: [:index, :destroy]
