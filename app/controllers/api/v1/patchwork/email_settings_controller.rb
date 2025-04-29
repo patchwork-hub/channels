@@ -34,9 +34,7 @@ class Api::V1::Patchwork::EmailSettingsController < Api::BaseController
 
   def email_notification_attributes(enabled = false)
     {
-    always_send_emails: false
-  }.merge(
-    {
+      "always_send_emails" => enabled,
       "notification_emails.follow" => enabled,
       "notification_emails.reblog" => enabled,
       "notification_emails.favourite" => enabled,
@@ -48,6 +46,5 @@ class Api::V1::Patchwork::EmailSettingsController < Api::BaseController
       "notification_emails.appeal" => enabled,
       "notification_emails.software_updates" => enabled ? 'critical' : 'none'
     }
-  )
   end
 end
