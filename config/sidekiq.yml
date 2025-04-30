@@ -67,3 +67,7 @@
       interval: 1 hour
       class: Scheduler::AutoCloseRegistrationsScheduler
       queue: scheduler
+    community_cleanup:
+      cron: '0 0 * * *' # every day at midnight
+      class: 'CommunityCleanupWorker'
+      queue: default
