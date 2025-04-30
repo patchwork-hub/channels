@@ -3,7 +3,7 @@
 class ReblogChannelsService < BaseService
   def call(status)
     @status = status
-    unless @status.sensitive? || @status.account.bot? || @status.unlisted_visibility?
+    unless @status.sensitive? || @status.unlisted_visibility?
       community_admin_account_ids = CommunityAdmin.where(is_boost_bot: true, account_status: 0).pluck(:account_id)
 
       # Custom Channel
@@ -28,7 +28,6 @@ class ReblogChannelsService < BaseService
     unique_admin_account_ids = (status_follower_admin_account_ids + tag_follower_admin_account_ids).uniq
 
     Account.where(id: unique_admin_account_ids).find_each do |admin_account|
-      Rails.logger.info "*****TAG_FOLLOWER_ADMIN #{admin_account&.username}*****" if admin_account&.username == 'tech'
       id = admin_account&.id
       next unless id
 
@@ -40,6 +39,9 @@ class ReblogChannelsService < BaseService
 
       # Skip if the admin_account has muted the status account
       next if Mute.exists?(account_id: admin_account.id, target_account_id: @status.account.id)
+
+      # Skip if the admin_account does not follow the status owner and the owner is a bot
+      next if !status_follower_admin_account_ids.include?(admin_account.id) && @status.account.bot?
 
       # Skip if `and_condition?` is true and admin_account is not in both follower lists
       if content_type&.and_condition? && !(tag_follower_admin_account_ids.include?(admin_account.id) &&
@@ -73,24 +75,20 @@ class ReblogChannelsService < BaseService
   end
 
   def valid_post_type?(community, admin_account)
-    Rails.logger.info "Evaluating if community #{community&.name} is sharable for admin account #{admin_account&.username}" if admin_account&.username == 'tech'
 
     community_post_type = fetch_community_post_type(community)
 
     unless community_post_type
-      Rails.logger.warn "No community post type found for community #{community&.name}" if admin_account&.username == 'tech'
       return false
     end
 
     Rails.logger.info "Fetched community post type: #{community_post_type}"
 
     if all_post_types_excluded?(community_post_type)
-      Rails.logger.warn "All post types are excluded for community #{community&.name}" if admin_account&.username == 'tech'
       return false
     end
 
     if post_type_accepted?(community_post_type)
-      Rails.logger.warn "Post type rejected for community #{community&.name}" if admin_account&.username == 'tech'
       return true
     end
 
@@ -99,7 +97,7 @@ class ReblogChannelsService < BaseService
   def fetch_community_post_type(community)
     community&.community_post_type
   end
-  
+
   def all_post_types_excluded?(community_post_type)
     !any_post_types_included?(community_post_type)
   end
