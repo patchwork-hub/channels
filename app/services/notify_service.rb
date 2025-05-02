@@ -294,7 +294,7 @@ class NotifyService < BaseService
     NotificationMailer
       .with(recipient: @recipient, notification: @notification)
       .public_send(@notification.type)
-      .deliver_later(wait: 2.minutes)
+      .deliver_later
   end
 
   def email_needed?
