@@ -171,7 +171,7 @@ class NavigationPanel extends Component {
               <ColumnLink transparent to='/favourites' icon='star' iconComponent={StarIcon} activeIconComponent={StarActiveIcon} text={intl.formatMessage(messages.favourites)} />
               <ColumnLink transparent to='/lists' icon='list-ul' iconComponent={ListAltIcon} activeIconComponent={ListAltActiveIcon} text={intl.formatMessage(messages.lists)} />
 
-              <ServerInformation style={{ order:1111, paddingBlock:40 }} />
+              <ServerInformation style={{ order:1111, paddingBlock:40,paddingInlineStart: 18 }} />
               <ListPanel />
 
               <hr />
