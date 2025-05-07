@@ -60,17 +60,17 @@ const ChannelBanner = (props) => {
         <div style={{
           display: 'flex',
           alignItems: 'flex-end',
-          width: '305px',
+          width: 'auto',
           height: '147px',
           padding: '10px',
           borderRadius: '10px',
           background: `
           linear-gradient(180deg, rgba(43, 43, 43, 0.00) 0%, rgba(37, 37, 37, 0.60) 56.93%),
         
-          url(${imageOne}) 0% 0% / 162.5px 85px no-repeat,
-          url(${imageTwo}) 100% 0% / 162.5px 85px no-repeat,
-          url(${imageThree}) 0% 100% / 162.5px 85px no-repeat,
-          url(${imageFour}) 100% 100% / 162.5px 85px no-repeat
+          url(${imageOne}) 0% 0% / 175.5px 85px no-repeat,
+          url(${imageTwo}) 100% 0% / 175.5px 85px no-repeat,
+          url(${imageThree}) 0% 100% / 175.5px 85px no-repeat,
+          url(${imageFour}) 100% 100% / 175.5px 85px no-repeat
         `,
         }}>
           <div style={{
@@ -119,7 +119,7 @@ const ChannelBanner = (props) => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '20px 0' }}>
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
