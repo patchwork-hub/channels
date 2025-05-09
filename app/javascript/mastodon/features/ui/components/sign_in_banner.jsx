@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 
 
 import { openModal } from 'mastodon/actions/modal';
-import { registrationsOpen, sso_redirect } from 'mastodon/initial_state';
+import { registrationsOpen, sso_redirect, is_hub, singleUserMode } from 'mastodon/initial_state';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
 const SignInBanner = () => {
@@ -22,8 +22,21 @@ const SignInBanner = () => {
   //   state.getIn(['server', 'server', 'registrations', 'url'], null) || `${baseUrl}/auth/sign_up`
   // );
 
-  const signupUrl = useAppSelector((state) => state.getIn(['server', 'server', 'registrations', 'url'], null) || 'https://newsmast.social/auth/sign_up');
-
+  // const signupUrl = useAppSelector((state) => state.getIn(['server', 'server', 'registrations', 'url'], null) || 'https://newsmast.social/auth/sign_up');
+  
+  const signupUrl = useAppSelector((state) => {
+    const defaultUrl = state.getIn(['server', 'server', 'registrations', 'url'], null) || 'https://newsmast.social/auth/sign_up';
+  
+    if (is_hub && (singleUserMode || !registrationsOpen)) {
+      return 'https://newsmast.social/auth/sign_up';
+    }
+    
+    if (registrationsOpen && !is_hub && !singleUserMode) {
+      return 'https://mastodon.social/auth/sign_up';
+    }
+    return defaultUrl;
+    
+  });
   if (sso_redirect) {
     return (
       <div className='sign-in-banner'>
