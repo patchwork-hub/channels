@@ -1007,7 +1007,7 @@ body > [data-popper-placement] {
 }
 
 .sign-in-banner {
-  padding: 10px;
+  padding: 10px 0;
 
   p {
     font-size: 15px;
@@ -2699,7 +2699,9 @@ a.account__display-name {
   }
 }
 
-.tabs-bar__wrapper:not(:has(.column-back-button)) + .columns-area .columns-area__main {
+.tabs-bar__wrapper:not(:has(.column-back-button))
+  + .columns-area
+  .columns-area__main {
   @media screen and (max-width: 1173px) {
     padding-top: 82px;
   }
@@ -3783,7 +3785,8 @@ $ui-header-logo-wordmark-width: 99px;
   color: $secondary-text-color;
   cursor: pointer;
   border-left: 4px solid transparent;
-
+  width: fit-content;
+  max-width: fit-content;
   &:hover,
   &:focus,
   &:active {
@@ -11213,8 +11216,11 @@ noscript {
   place-items: center;
   gap: 20px;
   padding: 30px 20px;
-  @media screen and (min-width: 768px) {
+  @media screen and (min-width: 380px) {
     grid-template-columns: repeat(2, 1fr);
+  }
+  @media screen and (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
   }
   .card {
     background-color: #1e1e1e;
@@ -11258,13 +11264,13 @@ noscript {
       padding-left: 10px;
       .subtitle {
         font-weight: 300;
-        font-size: 14px;
+        font-size: 13px;
         line-height: 20px;
       }
       .title {
         font-family: 'ibm-plex-sans';
-        font-size: 20px;
-        line-height: 26px;
+        font-size: 16px;
+        line-height: 16px;
         font-weight: 600;
       }
     }
@@ -11404,4 +11410,7 @@ noscript {
   & path {
     display: none;
   }
+}
+.nav-width-fit {
+  width: fit-content;
 }

@@ -84,6 +84,8 @@ class Api::V1::CustomPasswordsController < Api::BaseController
 
     new_email = params[:email]
 
+    return render_password_error(message: 'Email has already been taken.') if User.exists?(email: new_email)
+      
     email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
     return render_password_error(message: 'Invalid email format.') unless new_email.match?(email_regex)
 
@@ -192,7 +194,7 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   def handle_email_change
     new_email = @user.unconfirmed_email
     @user.skip_confirmation!
-    @user.update!(unconfirmed_email: nil, confirmation_token: nil) if @user.update(email: new_email)
+    @user.update!(unconfirmed_email: nil, confirmation_token: nil, confirmed_at: Time.now.utc) if @user.update(email: new_email)
   end
 
   def find_waitlist_entry

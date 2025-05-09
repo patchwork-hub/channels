@@ -72,8 +72,8 @@ class ServerBanner extends PureComponent {
             <Account id={server.getIn(['contact', 'account', 'id'])} size={36} minimal />
           </div>
 
-          <div className='server-banner__meta__column'>
-            {/* <h4><FormattedMessage id='server_banner.server_stats' defaultMessage='Server stats:' /></h4> */}
+          {/* <div className='server-banner__meta__column'>
+           
             <h4>USERS:</h4>
 
             {isLoading ? (
@@ -88,7 +88,7 @@ class ServerBanner extends PureComponent {
                 <span className='server-banner__number-label' title={intl.formatMessage(messages.aboutActiveUsers)}><FormattedMessage id='server_banner.active_users' defaultMessage='active users' /></span>
               </>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     );

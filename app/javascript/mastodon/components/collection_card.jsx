@@ -10,7 +10,7 @@ const images = {
 };
 
 
-const CollectionCard = ({ channel, type, from }) => {
+const CollectionCard = ({ channel, type, from,isFourTiles=false, collections={}, channel_feeds={}, newsmast_channels={} }) => {
   const count = channel?.attributes?.community_count ?? 0;
   const label = pluralize(count, 'Channel', 'Channels');
   const path = type === 'newsmast' ? "newsmasts" : type === "channel" ? "channels" : "collections";
@@ -71,29 +71,80 @@ const CollectionCard = ({ channel, type, from }) => {
 
   const hasImage = (channel) => (channel?.attributes?.avatar_image_url ?? '').startsWith('https');
 
-
-
   return (
     <div className={`card ${hasImage(channel) ? '' : 'bg-grid'}`} onClick={goToDetail}>
-      {hasImage(channel) ? (
+      {hasImage(channel) && !isFourTiles ? (
         <img
           src={hasImage(channel)?channel.attributes.avatar_image_url:images.newsmast}
           alt={channel.attributes.name}
           className='image'
         />
       ) : null}
-      <div className='overlay' />
-      <div className='info'>
-        <p className='info__detail'>
-          <span className='title'>{channel?.attributes?.name || 'Unnamed'}</span>
-          {type==="newsmast" || type==="channel" ? null : (
-            from==="community" && <span className='subtitle'>{formatNumber(count)} {label}</span>
-          )}
-        </p>
-        <Icon icon={ArrowRightUpAltIcon} id='' className='icon' />
-      </div>
-    </div>
-  );
-};
+      {isFourTiles&& channel?.attributes?.name === "Communities" &&
+      <div style={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          width: '155px',
+          height: '155px',
+          padding: '10px',
+          borderRadius: '10px',
+          background: `
+            linear-gradient(180deg, rgba(43, 43, 43, 0.00) 0%, rgba(37, 37, 37, 0.60) 56.93%),
+            url(${collections.tiles[0]}) 0% 0% / 50% 50% no-repeat,
+            url(${collections.tiles[1]}) 100% 0% / 50% 50% no-repeat,
+            url(${collections.tiles[2]}) 0% 100% / 50% 50% no-repeat,
+            url(${collections.tiles[3]}) 100% 100% / 50% 50% no-repeat
+          `,
+        }} />
+        }
+
+
+      {isFourTiles && channel?.attributes?.name === "Channels" &&
+            <div style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                width: '155px',
+                height: '155px',
+                padding: '10px',
+                borderRadius: '10px',
+                background: `
+                  linear-gradient(180deg, rgba(43, 43, 43, 0.00) 0%, rgba(37, 37, 37, 0.60) 56.93%),
+                  url(${channel_feeds.tiles[0]}) 0% 0% / 50% 50% no-repeat,
+                  url(${channel_feeds.tiles[1]}) 100% 0% / 50% 50% no-repeat,
+                  url(${channel_feeds.tiles[2]}) 0% 100% / 50% 50% no-repeat,
+                  url(${channel_feeds.tiles[3]}) 100% 100% / 50% 50% no-repeat
+                `,
+              }} />}
+
+
+      {isFourTiles && channel?.attributes?.name === "Newsmast Channels" &&
+            <div style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                width: '155px',
+                height: '155px',
+                padding: '10px',
+                borderRadius: '10px',
+                background: `
+                  linear-gradient(180deg, rgba(43, 43, 43, 0.00) 0%, rgba(37, 37, 37, 0.60) 56.93%),
+                  url(${newsmast_channels.tiles[0]}) 0% 0% / 50% 50% no-repeat,
+                  url(${newsmast_channels.tiles[1]}) 100% 0% / 50% 50% no-repeat,
+                  url(${newsmast_channels.tiles[2]}) 0% 100% / 50% 50% no-repeat,
+                  url(${newsmast_channels.tiles[3]}) 100% 100% / 50% 50% no-repeat
+                `,
+              }} />}
+            <div className='overlay' />
+            <div className='info'>
+              <p className='info__detail'>
+                <span className='title'>{channel?.attributes?.name || 'Unnamed'}</span>
+                {type==="newsmast" || type==="channel" ? null : (
+                  from==="community" && <span className='subtitle'>{formatNumber(count)} {label}</span>
+                )}
+              </p>
+              <Icon icon={ArrowRightUpAltIcon} id='' className='icon' />
+            </div>
+          </div>
+        );
+      };
 
 export default CollectionCard;

@@ -17,11 +17,11 @@ const dummyImages = {
 
 const ChannelBanner = (props) => {
   const { signedIn } = props.identity;
-  const channels = useSelector(state => state.recommended_channels.get("items"));
-  const channel_feeds = useSelector(state => state.channel_feeds.get("items"));
-  const newsmast_channels = useSelector(state => state.newsmast_channels.get("items"));
+  const channel_feeds = useSelector(state => state.channel_feeds.get("items")?.toJS() || []);
+  const newsmast_channels = useSelector(state => state.newsmast_channels.get("items")?.toJS() || []);
+  const channels = useSelector(state => state.recommended_channels.get("items")?.toJS() || []);
   
-  const channelFeed = useSelector(state => state.my_channel.get('item').get("channel_feed"));
+  const channelFeed = useSelector(state => state.my_channel.get('item')?.get("channel_feed")?.toJS());
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -35,8 +35,17 @@ const ChannelBanner = (props) => {
     const queryString = `?slug=${encodeURIComponent(channel.attributes.slug)}`;
     browserHistory.push(`/${basePath}/${channel.attributes.name.toLowerCase()}${queryString}`);
   };
+  const getImageUrl = (channel, fallbackUrl) => {
+    const url = channel?.attributes?.avatar_image_url;
+    return url && typeof url === 'string' && url.startsWith("https") ? url : fallbackUrl;
+  };
 
   const renderChannelSection = (data, title, imageUrl, basePath) => {
+    const imageOne = getImageUrl(data?.[1], dummyImages.channels);
+      const imageTwo = getImageUrl(data?.[2], dummyImages.channels);
+      const imageThree = getImageUrl(data?.[3], dummyImages.channels);
+      const imageFour = getImageUrl(data?.[4], dummyImages.channels);
+
     return data?.slice(0, 1).map((channel, index) => (
       <button
         key={index}
@@ -51,11 +60,18 @@ const ChannelBanner = (props) => {
         <div style={{
           display: 'flex',
           alignItems: 'flex-end',
-          width: '305px',
+          width: 'auto',
           height: '147px',
           padding: '10px',
           borderRadius: '10px',
-          background: `linear-gradient(180deg, rgba(43, 43, 43, 0.00) 0%, rgba(37, 37, 37, 0.60) 56.93%), url(${imageUrl}) lightgray 50% / cover no-repeat`
+          background: `
+          linear-gradient(180deg, rgba(43, 43, 43, 0.00) 0%, rgba(37, 37, 37, 0.60) 56.93%),
+        
+          url(${imageOne}) 0% 0% / 175.5px 85px no-repeat,
+          url(${imageTwo}) 100% 0% / 175.5px 85px no-repeat,
+          url(${imageThree}) 0% 100% / 175.5px 85px no-repeat,
+          url(${imageFour}) 100% 100% / 175.5px 85px no-repeat
+        `,
         }}>
           <div style={{
             display: 'flex',
@@ -103,7 +119,7 @@ const ChannelBanner = (props) => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '20px 0' }}>
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
