@@ -102,6 +102,14 @@ class InitialStateSerializer < ActiveModel::Serializer
     ENV.fetch('DISPLAY_NAME', nil)
   end
 
+  def is_hub
+    ENV.fetch('IS_HUB', 'false') == 'true'
+  end
+
+  def is_main_channel
+    ENV.fetch('MAIN_CHANNEL', 'false') == 'true'
+  end
+
   private
 
   def default_meta_store
