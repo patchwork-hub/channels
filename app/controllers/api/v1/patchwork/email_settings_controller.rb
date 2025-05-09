@@ -10,7 +10,7 @@ class Api::V1::Patchwork::EmailSettingsController < Api::BaseController
     all_same = notification_emails.values.uniq.size == 1
     result_variable = all_same ? notification_emails.values.first : true
 
-    render json: { data: result_variable }, status: :ok
+    render json: { data: notification_emails.empty? ? false : result_variable }, status: :ok
   end
 
   def email_notification
