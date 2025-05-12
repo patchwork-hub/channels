@@ -44,7 +44,8 @@
  * @property {boolean=} use_pending_items
  * @property {string} version
  * @property {boolean} is_hub
- * @property {boolean} is_main_channel
+ * @property {boolean} is_main_channel 
+ * @property {boolean} is_newuser_with_approval
  * @property {string} sso_redirect
  * @property {string} status_page_url
  * @property {boolean} terms_of_service_enabled
@@ -126,6 +127,7 @@ export const useBlurhash = getMeta('use_blurhash');
 export const usePendingItems = getMeta('use_pending_items');
 export const version = getMeta('version');
 export const is_hub = getMeta('is_hub');
+export const is_newuser_with_approval = getMeta('is_newuser_with_approval');
 export const is_main_channel = getMeta('is_main_channel');
 export const criticalUpdatesPending = initialState?.critical_updates_pending;
 export const statusPageUrl = getMeta('status_page_url');
