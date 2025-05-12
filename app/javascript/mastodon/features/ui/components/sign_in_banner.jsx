@@ -31,7 +31,7 @@ const SignInBanner = () => {
       return 'https://newsmast.social/auth/sign_up';
     }
     
-    if (registrationsOpen && !is_hub && !singleUserMode) {
+    if (registrationsOpen) {
       return 'https://mastodon.social/auth/sign_up';
     }
     return defaultUrl;
