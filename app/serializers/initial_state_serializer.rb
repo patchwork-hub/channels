@@ -103,11 +103,11 @@ class InitialStateSerializer < ActiveModel::Serializer
   end
 
   def is_hub
-    ENV.fetch('IS_HUB', 'false') == 'true'
+    ENV.fetch('IS_HUB', nil)
   end
 
   def is_main_channel
-    ENV.fetch('MAIN_CHANNEL', 'false') == 'true'
+    ENV.fetch('MAIN_CHANNEL', nil)
   end
 
   private
