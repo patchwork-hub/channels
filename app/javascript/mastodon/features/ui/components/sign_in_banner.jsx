@@ -24,14 +24,19 @@ const SignInBanner = () => {
 
   // const signupUrl = useAppSelector((state) => state.getIn(['server', 'server', 'registrations', 'url'], null) || 'https://newsmast.social/auth/sign_up');
   
+
+  console.log('is_hub', is_hub);
+  console.log('singleUserMode', singleUserMode);
+  console.log('registrationsOpen', registrationsOpen);
+
   const signupUrl = useAppSelector((state) => {
     const defaultUrl = state.getIn(['server', 'server', 'registrations', 'url'], null) || 'https://newsmast.social/auth/sign_up';
   
-    if (is_hub && (singleUserMode || !registrationsOpen)) {
+    if (is_hub && (singleUserMode || registrationsOpen)) {
       return 'https://newsmast.social/auth/sign_up';
     }
     
-    if (registrationsOpen && !is_hub && !singleUserMode) {
+    if (registrationsOpen && !is_hub) {
       return 'https://mastodon.social/auth/sign_up';
     }
     return defaultUrl;
