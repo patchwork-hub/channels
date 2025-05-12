@@ -6,7 +6,7 @@ class InitialStateSerializer < ActiveModel::Serializer
   attributes :meta, :compose, :accounts,
              :media_attachments, :settings,
              :languages,
-             :header_image, :custom_links, :channel_display_name, :logo_image, :is_main_channel
+             :header_image, :custom_links, :channel_display_name, :logo_image, :is_main_channel, :is_newuser_with_approval
 
   attribute :critical_updates_pending, if: -> { object&.role&.can?(:view_devops) && SoftwareUpdate.check_enabled? }
 
@@ -104,6 +104,10 @@ class InitialStateSerializer < ActiveModel::Serializer
 
   def is_main_channel
     ENV.fetch('MAIN_CHANNEL', nil)
+  end
+
+  def is_newuser_with_approval
+    Setting.registrations_mode == 'approved'
   end
 
   private
