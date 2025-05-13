@@ -180,10 +180,10 @@ code {
   .title {
     font-size: 30px;
     font-weight: 700;
-    font-family: "ibm-plex-sans";
-    font-feature-settings: "liga off, clig off";
+    font-family: 'ibm-plex-sans';
+    font-feature-settings: 'liga off, clig off';
     line-height: 120%;
-    background: linear-gradient(180deg, #F8F8FF 50.5%, #BABAF8 100%);
+    background: linear-gradient(180deg, #f8f8ff 50.5%, #babaf8 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -278,11 +278,11 @@ code {
       display: flex;
 
       & > label {
-        font-family:'source-sans-pro';
-        font-size:16px;
-        font-weight:400;
-        line-height:'148%';
-        color:'#D2D2FF';
+        font-family: 'source-sans-pro';
+        font-size: 16px;
+        font-weight: 400;
+        line-height: '148%';
+        color: '#D2D2FF';
         min-width: 150px;
         flex: 0 0 auto;
       }
@@ -606,6 +606,7 @@ code {
     &:focus,
     &:hover {
       opacity: 0.85;
+      background: $orange-channel-theme;
     }
 
     &:disabled,
