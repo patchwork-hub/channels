@@ -11,7 +11,7 @@ module BrandingHelper
   end
 
   def _logo_as_symbol_wordmark
-    content_tag(:svg, tag.use(href: '#logo-symbol-wordmark'), viewBox: '0 0 192 36', class: 'logo logo--wordmark')
+    image_tag(frontend_asset_path('images/patchwork.png'), alt: 'ChannelOrg', class: 'logo logo--wordmark')
   end
 
   def _logo_as_symbol_icon
