@@ -4,13 +4,13 @@
 - content_for :content do
   .container-alt
     .logo-container
-      %h1
+      %h1{style: "display: flex; align-items: center; gap: 1rem"}
         = link_to root_path do
           = logo_as_symbol(:wordmark)
-
+        - domain_name = request.host.split('.').first.capitalize
+        %span= domain_name
     .form-container
       = render 'flashes'
-
       = yield
 
 = render template: 'layouts/application'
