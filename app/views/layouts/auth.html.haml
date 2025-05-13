@@ -7,8 +7,7 @@
       %h1{style: "display: flex; align-items: center; gap: 1rem"}
         = link_to root_path do
           = logo_as_symbol(:wordmark)
-        - domain_name = request.host.split('.').first.capitalize
-        %span= domain_name
+        %span= domain_brand_name
     .form-container
       = render 'flashes'
       = yield
