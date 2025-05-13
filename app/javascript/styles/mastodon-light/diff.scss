@@ -29,7 +29,8 @@
 }
 
 .rules-list li::before {
-  background: $ui-highlight-color;
+  // background: $ui-highlight-color;
+  background: $orange-channel-theme;
 }
 
 .directory__card__img {
