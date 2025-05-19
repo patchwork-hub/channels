@@ -11,13 +11,13 @@ class Patchwork::UpdateChannelNameServices < BaseService
     )
     return unless community_admin
 
-    community = community_admin.Community
+    community = community_admin.community
 
     community.update!(
       name: account.display_name.strip.presence,
       description: account.note,
-      avatar_image: URI.parse(account.avatar_original_url),
-      banner_image: URI.parse(account.header_original_url)
+      avatar_image: account.avatar,
+      banner_image: account.header
     )
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "[UpdateChannelNameServices] Community update failed: #{e.record.class} - #{e.message}"

@@ -39,6 +39,8 @@
 class Community < ApplicationRecord
   self.table_name = 'patchwork_communities'
 
+  LIMIT = 2.megabytes
+
   has_many :community_admins,
            foreign_key: 'patchwork_community_id',
            dependent: :destroy
@@ -62,4 +64,12 @@ class Community < ApplicationRecord
 
   has_attached_file :avatar_image
   has_attached_file :banner_image
+
+  validates_attachment :avatar_image,
+    content_type: { content_type: /\Aimage\/.*\z/ },
+    size: { less_than: LIMIT }
+
+  validates_attachment :banner_image,
+    content_type: { content_type: /\Aimage\/.*\z/ },
+    size: { less_than: LIMIT }
 end
