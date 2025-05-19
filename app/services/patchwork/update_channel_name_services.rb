@@ -11,7 +11,7 @@ class Patchwork::UpdateChannelNameServices < BaseService
     )
     return unless community_admin
 
-    community = community_admin.Community
+    community = community_admin.community
 
     community.update!(
       name: account.display_name.strip.presence,
