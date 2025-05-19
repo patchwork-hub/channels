@@ -2,30 +2,22 @@
 
 class Patchwork::UpdateChannelNameServices < BaseService
   def call(account, options = {})
-    @account = account
-    @options = options
-    @type    = options[:type]
+    return unless options[:type] == 'channel_feed'
 
-    update_channel_display_name if @type == 'channel_feed'
-  end
-
-  private
-
-  def update_channel_display_name
     community_admin = CommunityAdmin.find_by(
-      account_id: @account.id,
+      account_id: account.id,
       is_boost_bot: true,
-      account_status: CommunityAdmin.account_statuses["active"]
+      account_status: CommunityAdmin.account_statuses['active']
     )
-
     return unless community_admin
 
-    community_admin.update!(display_name: @account.display_name)
-    community_admin.community.update!(
-      name: @account.display_name,
-      description: @account.note,
-      avatar_image: @account.avatar_original_url,
-      banner_image: @account.header_original_url
+    community = community_admin.Community
+
+    community.update!(
+      name: account.display_name.strip.presence,
+      description: account.note,
+      avatar_image: URI.parse(account.avatar_original_url),
+      banner_image: URI.parse(account.header_original_url)
     )
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "[UpdateChannelNameServices] Community update failed: #{e.record.class} - #{e.message}"
