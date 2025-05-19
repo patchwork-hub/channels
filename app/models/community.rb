@@ -59,4 +59,7 @@ class Community < ApplicationRecord
   validates :name, presence: true, uniqueness: true
 
   enum :visibility, public_access: 0, guest_access: 1, private_local: 2
+
+  has_attached_file :avatar_image
+  has_attached_file :banner_image
 end
