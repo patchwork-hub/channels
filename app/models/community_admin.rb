@@ -21,6 +21,9 @@ class CommunityAdmin < ApplicationRecord
   belongs_to :community, foreign_key: 'patchwork_community_id', optional: true
   belongs_to :account, foreign_key: 'account_id', optional: true
 
- enum :account_status, active: 0, suspended: 1, deleted: 2
+  validates :email, presence: true,
+    format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email address" },
+    uniqueness: { case_sensitive: false, message: "is already in use. Please use a different email for the organisation admin account." }
 
+ enum :account_status, active: 0, suspended: 1, deleted: 2
 end
