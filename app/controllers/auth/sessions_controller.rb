@@ -89,9 +89,9 @@ class Auth::SessionsController < Devise::SessionsController
     last_url = stored_location_for(:user)
 
     if home_paths(resource).include?(last_url)
-      root_path
+      home_path
     else
-      last_url || root_path
+      last_url || home_path
     end
   end
 
