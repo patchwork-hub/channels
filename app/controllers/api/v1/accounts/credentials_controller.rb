@@ -15,7 +15,7 @@ class Api::V1::Accounts::CredentialsController < Api::BaseController
     UpdateAccountService.new.call(@account, account_params, raise_error: true)
     current_user.update(user_params) if user_params
     ActivityPub::UpdateDistributionWorker.perform_async(@account.id)
-    Patchwork::UpdateChannelNameServices.new.call(@account, type: 'channel_feed')
+    Patchwork::UpdateChannelNameServices.new.call(@account, type: 'channel_feed') if main_channel?
     render json: @account, serializer: REST::CredentialAccountSerializer
   rescue ActiveRecord::RecordInvalid => e
     render json: ValidationErrorFormatter.new(e).as_json, status: 422
