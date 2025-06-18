@@ -2,7 +2,8 @@
 
 class Auth::SessionsController < Devise::SessionsController
   include Redisable
-
+  include ChannelHelper
+  
   MAX_2FA_ATTEMPTS_PER_HOUR = 10
 
   layout 'auth'
