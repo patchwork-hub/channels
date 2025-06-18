@@ -43,4 +43,8 @@ class UpdateAccountService < BaseService
     community_admin = CommunityAdmin.find_by(account_id: account.id, is_boost_bot: true, account_status: CommunityAdmin.account_statuses["active"])
     raise Mastodon::NotPermittedError if community_admin && (community_admin.role != 'UserAdmin')
   end
+
+  def main_channel?
+    ENV.fetch('MAIN_CHANNEL', nil) != nil && ENV.fetch('MAIN_CHANNEL', nil) != 'false'
+  end
 end
