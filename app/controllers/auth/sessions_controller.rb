@@ -23,7 +23,7 @@ class Auth::SessionsController < Devise::SessionsController
   def create
     self.resource = warden.authenticate!(auth_options)
 
-    if ENV.fetch('MAIN_CHANNEL', nil) != nil  && ENV.fetch('MAIN_CHANNEL', nil) != 'false'
+    if main_channel?
       if user_admin_login_invalid?(resource)
         handle_invalid_user_login(resource)
         return
