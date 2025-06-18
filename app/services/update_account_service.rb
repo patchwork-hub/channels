@@ -5,7 +5,7 @@ class UpdateAccountService < BaseService
     was_locked    = account.locked
     update_method = raise_error ? :update! : :update
 
-    validate_account!(account)
+    validate_account!(account) if main_channel?
 
     account.send(update_method, params).tap do |ret|
       next unless ret
