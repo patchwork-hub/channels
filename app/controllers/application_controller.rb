@@ -23,6 +23,7 @@ class ApplicationController < ActionController::Base
   helper_method :sso_account_settings
   helper_method :limited_federation_mode?
   helper_method :skip_csrf_meta_tags?
+  helper_method :main_channel?
 
   rescue_from ActionController::ParameterMissing, Paperclip::AdapterRegistry::NoHandlerError, with: :bad_request
   rescue_from Mastodon::NotPermittedError, with: :forbidden
@@ -181,5 +182,9 @@ class ApplicationController < ActionController::Base
 
   def set_cache_control_defaults
     response.cache_control.replace(private: true, no_store: true)
+  end
+
+  def main_channel?
+    ENV.fetch('MAIN_CHANNEL', nil) != nil  && ENV.fetch('MAIN_CHANNEL', nil) != 'false'
   end
 end
