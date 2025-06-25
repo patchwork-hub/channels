@@ -26,9 +26,9 @@ class CommunityCleanupWorker
                 'reserve_username' => false,
                 'reserve_email' => false
               })
-              Rails.logger.info "[CommunityCleanupWorker] Enqueued deletion for account ##{account_id} associated with community ##{community_id}."
+              Rails.logger.info "[CommunityCleanupWorker] Enqueued deletion for account ##{account_id}."
             else
-              Rails.logger.warn "[CommunityCleanupWorker] Account ##{account_id} not found for community ##{community_id}. Skipping deletion."
+              Rails.logger.warn "[CommunityCleanupWorker] Account ##{account_id} not found. Skipping deletion."
             end
           end
           sleep(0.05)
