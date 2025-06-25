@@ -15,19 +15,23 @@ class CommunityCleanupWorker
     communities.find_each do |community|
       begin
         ActiveRecord::Base.transaction do
-          account_id = community.community_admins.last&.account_id
+          account_ids = community&.community_admins.pluck(:account_id)
 
           Rails.logger.info "[CommunityCleanupWorker] Deleting community ##{community.id}..."
           community.destroy
 
-          if account_id && Account.exists?(account_id)
-            Admin::AccountDeletionWorker.perform_async(account_id, {
-              'reserve_username' => false,
-              'reserve_email' => false
-            })
-
-            Rails.logger.info "[CommunityCleanupWorker] Queued account ##{account_id} for deletion."
-            sleep(0.05)
+          account_ids.compact.uniq.each do |account_id|
+            if Account.exists?(account_id)
+              Admin::AccountDeletionWorker.perform_async(account_id, {
+                'reserve_username' => false,
+                'reserve_email' => false
+              })
+              Rails.logger.info "[CommunityCleanupWorker] Enqueued deletion for account ##{account_id} associated with community ##{community_id}."
+            else
+              Rails.logger.warn "[CommunityCleanupWorker] Account ##{account_id} not found for community ##{community_id}. Skipping deletion."
+            end
+          end
+          sleep(0.05)
           end
         end
       rescue => e
