@@ -32,7 +32,6 @@ class CommunityCleanupWorker
             end
           end
           sleep(0.05)
-          end
         end
       rescue => e
         Rails.logger.error "[CommunityCleanupWorker] Error deleting community #{community.id}: #{e.message}"
