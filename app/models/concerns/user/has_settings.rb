@@ -104,6 +104,10 @@ module User::HasSettings
   end
 
   def setting_default_privacy
+    # Default visibility setting
+    community_privacy = Community.default_privacy(self)
+    return community_privacy if community_privacy.present?
+
     settings['default_privacy'] || (account.locked? ? 'private' : 'public')
   end
 
