@@ -3,7 +3,7 @@ class CommunityCleanupWorker
 
   def perform
     communities = Community.where.not(deleted_at: nil)
-                           .where('deleted_at <= ?', 15.minutes.ago)
+                           .where('deleted_at <= ?', 30.days.ago)
 
     if communities.empty?
       Rails.logger.info "[CommunityCleanupWorker] No communities to clean up."
