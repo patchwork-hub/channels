@@ -60,6 +60,7 @@ class User < ApplicationRecord
   include User::LdapAuthenticable
   include User::Omniauthable
   include User::PamAuthenticable
+  include ChannelHelper
 
   # The home and list feeds will be stored in Redis for this amount
   # of time, and status fan-out to followers will include only people
@@ -419,7 +420,7 @@ class User < ApplicationRecord
   end
 
   def render_and_send_devise_message(notification, *args, **kwargs)
-    # devise_mailer.send(notification, self, *args, **kwargs).deliver_later
+    devise_mailer.send(notification, self, *args, **kwargs).deliver_later unless main_channel?
   end
 
   def set_approved
