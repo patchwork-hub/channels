@@ -17,7 +17,7 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/posts
-  revision: 59147221b1719bfa21be5fff60c6ea62cc919ce2
+  revision: 522aef8ac7e2ed69a23040d89c9cfe50dbae2d98
   branch: main
   specs:
     posts (0.1.0)
