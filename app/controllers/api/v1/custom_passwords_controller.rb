@@ -90,19 +90,21 @@ class Api::V1::CustomPasswordsController < Api::BaseController
     return render_password_error(message: 'Invalid email format.') unless new_email.match?(email_regex)
 
     if new_email != @user.email
-      @user.update!(
-        unconfirmed_email: new_email,
-        confirmation_sent_at: Time.now.utc,
-        otp_secret: generate_otp_token,
-        confirmed_at: nil
-      )
+      ActiveRecord::Base.transaction do
+        @user.update!(
+          unconfirmed_email: new_email,
+          confirmation_sent_at: Time.now.utc,
+          otp_secret: generate_otp_token,
+          confirmed_at: nil
+        )
+        update_bot_email(new_email: new_email)
+        log_action :change_email, @user
 
-      log_action :change_email, @user
-
-      # Revoke all access tokens and destroy sessions
-      @user.revoke_access!
-      Devise.sign_out_all_scopes ? sign_out : sign_out(@user)
-      CustomPasswordsMailer.with(user: @user).reset_password_confirmation.deliver_later
+        # Revoke all access tokens and destroy sessions
+        @user.revoke_access!
+        Devise.sign_out_all_scopes ? sign_out : sign_out(@user)
+        CustomPasswordsMailer.with(user: @user).reset_password_confirmation.deliver_later
+      end
     end
 
     render json: { message: generate_access_token }, status: 200
@@ -203,5 +205,15 @@ class Api::V1::CustomPasswordsController < Api::BaseController
 
   def create_useage_wait_list(waitlist_entry)
     waitlist_entry.update!(used: true, account_id: @user.account.id, confirmed_at: Time.zone.now) if waitlist_entry.present?
+  end
+
+  def update_bot_email(new_email: nil)
+    if defined?(CommunityAdmin) && CommunityAdmin&.respond_to?(:find_by)
+      community_admin = CommunityAdmin.find_by(account_id: @user&.account&.id)
+
+      if community_admin
+        community_admin.update!(email: new_email)
+      end
+    end
   end
 end
