@@ -25,7 +25,7 @@ class Auth::SessionsController < Devise::SessionsController
     self.resource = warden.authenticate!(auth_options)
 
     if main_channel?
-      if login_blocked_for?(resource) 
+      if login_blocked_for?(resource) # rubocop:disable Style/SoleNestedConditional
         handle_invalid_user_login(resource)
         return
       end
