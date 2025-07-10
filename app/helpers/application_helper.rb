@@ -21,6 +21,15 @@ module ApplicationHelper
 
     number_to_human(number, **options)
   end
+  
+  def domain_brand_name
+    if request.host == 'channel.org' || request.host == 'www.channel.org'
+      "Channel.org"
+    else
+      # Extract subdomain and capitalize it (for rangoon.channel.org → "Rangoon")
+      request.host.split('.').first.capitalize
+    end
+  end
 
   def open_registrations?
     Setting.registrations_mode == 'open'

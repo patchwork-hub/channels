@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 class UpdateAccountService < BaseService
+  include ChannelHelper
+
   def call(account, params, raise_error: false)
     was_locked    = account.locked
     update_method = raise_error ? :update! : :update
 
-    validate_account!(account)
+    validate_account!(account) if main_channel?
 
     account.send(update_method, params).tap do |ret|
       next unless ret
@@ -43,4 +45,5 @@ class UpdateAccountService < BaseService
     community_admin = CommunityAdmin.find_by(account_id: account.id, is_boost_bot: true, account_status: CommunityAdmin.account_statuses["active"])
     raise Mastodon::NotPermittedError if community_admin && (community_admin.role != 'UserAdmin')
   end
+
 end

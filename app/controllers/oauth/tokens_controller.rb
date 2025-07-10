@@ -2,7 +2,7 @@
 
 class Oauth::TokensController < Doorkeeper::TokensController
   def create
-    if ENV.fetch('MAIN_CHANNEL', nil) != nil  && ENV.fetch('MAIN_CHANNEL', nil) != 'false'
+    if main_channel?
       error_message = is_web_login? ? handle_web_login : handle_app_login
 
       if error_message.nil?
