@@ -50,11 +50,16 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'yarn'
+          node-version: '20'
+          
+      - name: Enable Corepack and setup Yarn
+        run: |
+          corepack enable
+          corepack prepare yarn@4.6.0 --activate
+          yarn --version
           
       - name: Install JavaScript dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
         
       - name: Run linting and type checking
         run: |
