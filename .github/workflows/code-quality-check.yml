@@ -1,22 +1,89 @@
-name: Build and Analyze with SonarQube
+name: Code Quality Analysis with SonarQube
 
 on:
-    push:
-        branches:
-          - sonar
-    pull_request:
-        types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - main
+      - develop
+      - sonar
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+  pull-requests: read
 
 jobs:
-    build:
-        name: SonarQube Scan
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-              with:
-                  fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
-            - uses: sonarsource/sonarqube-scan-action@master
-              env:
-                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-                  SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-                  BRANCH: ${{ github.ref }}
+  sonarqube:
+    name: SonarQube Code Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for better analysis
+          
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+          
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'yarn'
+          
+      - name: Install JavaScript dependencies
+        run: yarn install --frozen-lockfile
+        
+      - name: Run linting and type checking
+        run: |
+          yarn lint:js
+          yarn lint:css
+          yarn typecheck
+          
+      - name: Run JavaScript tests with coverage
+        run: yarn jest --coverage --watchAll=false
+        
+      - name: Install Ruby dependencies
+        run: bundle install
+        
+      - name: Run RSpec tests with coverage (if available)
+        run: |
+          if bundle list | grep -q simplecov; then
+            bundle exec rspec --format progress
+          else
+            echo "SimpleCov not found, skipping Ruby test coverage"
+          fi
+        continue-on-error: true
+        
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v3
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.projectKey=patchwork-hub_channels_25ae8051-d51a-4d07-a6c0-4a568396d4fa
+            -Dsonar.sources=app/javascript,app/controllers,app/models,app/services,app/helpers,app/mailers,app/views
+            -Dsonar.tests=spec,app/javascript/**/__tests__
+            -Dsonar.exclusions=**/node_modules/**,**/vendor/**,**/public/**,**/tmp/**,**/log/**,db/migrate/**
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.pullrequest.key=${{ github.event.number }}
+            -Dsonar.pullrequest.branch=${{ github.head_ref }}
+            -Dsonar.pullrequest.base=${{ github.base_ref }}
+            
+      - name: SonarQube Quality Gate check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
