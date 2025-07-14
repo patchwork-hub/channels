@@ -28,6 +28,19 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for better analysis
           
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libidn11-dev \
+            libicu-dev \
+            libprotobuf-dev \
+            protobuf-compiler \
+            libvips-dev \
+            libreadline-dev \
+            libpq-dev \
+            pkg-config
+          
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -53,7 +66,10 @@ jobs:
         run: yarn jest --coverage --watchAll=false
         
       - name: Install Ruby dependencies
-        run: bundle install
+        run: |
+          bundle config set --local deployment 'false'
+          bundle config set --local path 'vendor/bundle'
+          bundle install --jobs 4 --retry 3
         
       - name: Run RSpec tests with coverage (if available)
         run: |
