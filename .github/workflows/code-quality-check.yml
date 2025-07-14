@@ -3,8 +3,7 @@ name: Build and Analyze with SonarQube
 on:
     push:
         branches:
-            - staging
-            - master
+          - sonar
     pull_request:
         types: [opened, synchronize, reopened]
 
