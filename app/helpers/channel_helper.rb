@@ -2,6 +2,8 @@
 
 module ChannelHelper
   def main_channel?
+    return false if Rails.env.local? || Rails.env.test?
+
     ENV.fetch('MAIN_CHANNEL', nil) != nil && ENV.fetch('MAIN_CHANNEL', nil) != 'false'
   end
 end

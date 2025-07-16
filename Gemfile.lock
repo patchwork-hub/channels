@@ -17,10 +17,11 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/posts
-  revision: b06b4f07b40e214dadae8a85eb201e2646ccc481
+  revision: 522aef8ac7e2ed69a23040d89c9cfe50dbae2d98
   branch: main
   specs:
     posts (0.1.0)
+      annotaterb
       byebug
       rails (~> 8.0)
 

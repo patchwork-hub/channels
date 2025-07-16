@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Oauth::TokensController < Doorkeeper::TokensController
+  include ChannelHelper
+
   def create
     if main_channel?
       error_message = is_web_login? ? handle_web_login : handle_app_login
@@ -74,14 +76,6 @@ class Oauth::TokensController < Doorkeeper::TokensController
         (community_admin&.role.eql?('OrganisationAdmin') && user.role&.name.eql?('OrganisationAdmin')) ||
         (community_admin&.role.eql?('UserAdmin') && user.role&.name.eql?('UserAdmin')) ||
         (community_admin&.role.eql?('HubAdmin') && user.role&.name.eql?('HubAdmin'))
-      )
-  end
-
-  def valid_app_permissions?(community_admin, user)
-    belong_any_channel?(community_admin) &&
-      (
-        (community_admin&.role.eql?('OrganisationAdmin') && user.role&.name.eql?('OrganisationAdmin')) ||
-        (community_admin&.role.eql?('UserAdmin') && user.role&.name.eql?('UserAdmin'))
       )
   end
 
