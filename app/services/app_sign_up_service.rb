@@ -86,7 +86,7 @@ class AppSignUpService < BaseService
   end
 
   def registration_allowed?(waitlist_entry)
-    return true if skip_waitlist?
+    return true if skip_waitlist? || invitation_code_params[:invitation_code].blank?
 
     waitlist_entry.present?
   end
