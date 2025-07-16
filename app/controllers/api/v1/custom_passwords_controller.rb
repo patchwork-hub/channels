@@ -85,7 +85,7 @@ class Api::V1::CustomPasswordsController < Api::BaseController
     new_email = params[:email]
 
     return render_password_error(message: 'Email has already been taken.') if User.exists?(email: new_email)
-      
+
     email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
     return render_password_error(message: 'Invalid email format.') unless new_email.match?(email_regex)
 
@@ -208,12 +208,10 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   end
 
   def update_bot_email(new_email: nil)
-    if defined?(CommunityAdmin) && CommunityAdmin&.respond_to?(:find_by)
+    if defined?(CommunityAdmin) && CommunityAdmin.respond_to?(:find_by)
       community_admin = CommunityAdmin.find_by(account_id: @user&.account&.id)
 
-      if community_admin
-        community_admin.update!(email: new_email)
-      end
+      community_admin&.update!(email: new_email)
     end
   end
 end
