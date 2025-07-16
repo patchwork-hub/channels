@@ -163,7 +163,9 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   end
 
   def registration_allowed?(waitlist_entry)
-    return true if reset_password? || change_email? || skip_waitlist?
+    return true if reset_password? || change_email?
+
+    return true if skip_waitlist? || params[:invitation_code].blank?
 
     waitlist_entry.present?
   end
@@ -200,6 +202,8 @@ class Api::V1::CustomPasswordsController < Api::BaseController
   end
 
   def find_waitlist_entry
+    return nil if skip_waitlist? || params[:invitation_code].blank?
+
     WaitList.find_by(invitation_code: params[:invitation_code], used: false)
   end
 
