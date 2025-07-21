@@ -18,12 +18,9 @@ class ReblogChannelsService < BaseService
 
   def process_custom_channels(community_admin_account_ids)
     status_follower_admin_account_ids = @status.account.followers.local.channel_admins(community_admin_account_ids).pluck(:id)
-    # Rails.logger.info "*****STATUS_FOLLOWER_ADMIN_ACCOUNT #{status_follower_admin_account_ids}*****"
 
     tag_ids = @status.tags.ids
-    # Rails.logger.info "*****STATUS_OF_TAGS #{@status.tags.inspect}*****"
     tag_follower_admin_account_ids = TagFollow.where(tag_id: tag_ids).pluck(:account_id)
-    # Rails.logger.info "*****TAG_FOLLOWER_ADMIN_ACCOUNT #{tag_follower_admin_account_ids}*****"
 
     unique_admin_account_ids = (status_follower_admin_account_ids + tag_follower_admin_account_ids).uniq
 
@@ -49,13 +46,15 @@ class ReblogChannelsService < BaseService
         next
       end
 
-      next unless valid_post_type?(community, admin_account) && status_has_keyword?(@status.id, community.id, 'filter_in') && !status_has_keyword?(@status.id, community.id, 'filter_out')
+      next unless valid_post_type?(community) && status_has_keyword?(@status.id, community.id, 'filter_in') && !status_has_keyword?(@status.id, community.id, 'filter_out')
 
       ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
     end
   end
 
   def process_group_channels(community_admin_account_ids)
+    return if @status.reply? || @status.reblog?
+
     community_admins = Account.where(id: community_admin_account_ids)
 
     group_channel_admins = community_admins.select do |admin_account|
@@ -74,24 +73,16 @@ class ReblogChannelsService < BaseService
     end
   end
 
-  def valid_post_type?(community, admin_account)
-
+  def valid_post_type?(community)
     community_post_type = fetch_community_post_type(community)
 
-    unless community_post_type
-      return false
-    end
+    return false unless community_post_type
 
     Rails.logger.info "Fetched community post type: #{community_post_type}"
 
-    if all_post_types_excluded?(community_post_type)
-      return false
-    end
+    return false if all_post_types_excluded?(community_post_type)
 
-    if post_type_accepted?(community_post_type)
-      return true
-    end
-
+    true if post_type_accepted?(community_post_type)
   end
 
   def fetch_community_post_type(community)
