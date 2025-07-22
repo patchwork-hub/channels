@@ -103,8 +103,8 @@ class Api::V1::CustomPasswordsController < Api::BaseController
         # Revoke all access tokens and destroy sessions
         @user.revoke_access!
         Devise.sign_out_all_scopes ? sign_out : sign_out(@user)
-        CustomPasswordsMailer.with(user: @user).reset_password_confirmation.deliver_later
       end
+      CustomPasswordsMailer.with(user: @user.reload).reset_password_confirmation.deliver_later
     end
 
     render json: { message: generate_access_token }, status: 200
