@@ -210,19 +210,13 @@ class Auth::SessionsController < Devise::SessionsController
   end
 
   def login_blocked_for?(user)
-    invalid_organisation_login?(user) || invalid_admin_login?(user)
+    invalid_admin_login?(user)
   end
 
   def invalid_admin_login?(user)
-    return false unless has_special_role?(user, %w[UserAdmin HubAdmin])
+    return false unless has_special_role?(user, %w[UserAdmin HubAdmin OrganisationAdmin NewsmastAdmin])
 
-    !has_valid_community_admin?(user, roles: %w[UserAdmin HubAdmin], boost_bot: true)
-  end
-
-  def invalid_organisation_login?(user)
-    return false unless has_special_role?(user, %w[OrganisationAdmin])
-    
-    !has_valid_community_admin?(user, roles: %w[OrganisationAdmin], boost_bot: true)
+    !has_valid_community_admin?(user, roles: %w[UserAdmin HubAdmin OrganisationAdmin NewsmastAdmin], boost_bot: true)
   end
 
   def has_special_role?(user, role_names)
