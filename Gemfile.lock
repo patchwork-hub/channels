@@ -9,8 +9,8 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: 7a8a3af4b18d345462cc334f228a8ee642f1e3d0
-  branch: fitler_refactor
+  revision: 51f8f0be27de042b363f66f7aba0721dfd050d06
+  branch: main
   specs:
     content_filters (0.1.0)
       rails (>= 7.1.1)
@@ -305,6 +305,11 @@ GEM
       faraday (>= 1.0, < 3.a)
     google-logging-utils (0.1.0)
     google-protobuf (3.25.5)
+    google-protobuf (3.25.5-aarch64-linux)
+    google-protobuf (3.25.5-arm64-darwin)
+    google-protobuf (3.25.5-x86-linux)
+    google-protobuf (3.25.5-x86_64-darwin)
+    google-protobuf (3.25.5-x86_64-linux)
     googleapis-common-protos-types (1.15.0)
       google-protobuf (>= 3.18, < 5.a)
     googleauth (1.13.1)

@@ -46,6 +46,8 @@ class ReblogChannelsService < BaseService
         next
       end
 
+      next if newsmast_global_filter?(@status.id, community.id, 'filter_out')
+
       next unless valid_post_type?(community) && status_has_keyword?(@status.id, community.id, 'filter_in') && !status_has_keyword?(@status.id, community.id, 'filter_out')
 
       ReblogChannelsWorker.perform_async(@status.id, admin_account.id)
@@ -113,5 +115,9 @@ class ReblogChannelsService < BaseService
 
   def status_has_keyword?(status_id, community_id, filter_type)
     ContentFilters::BanStatusService.new.keyword_matches_in_status?(status_id, community_id, filter_type)
+  end
+
+  def newsmast_global_filter?(status_id, community_id, filter_type = 'filter_out')
+    ContentFilters::BanStatusService.new.global_keyword_matches_in_status?(status_id, community_id, filter_type)
   end
 end
