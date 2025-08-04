@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_30_100001) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_04_100001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -1409,6 +1409,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_30_100001) do
     t.float "max_score"
     t.datetime "max_score_at", precision: nil
     t.string "display_name"
+    t.boolean "is_banned", default: false
     t.index "lower((name)::text) text_pattern_ops", name: "index_tags_on_name_lower_btree", unique: true
   end
 
