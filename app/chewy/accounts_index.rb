@@ -55,7 +55,7 @@ class AccountsIndex < Chewy::Index
     },
   }
 
-  index_scope ::Account.searchable.includes(:account_stat)
+  index_scope ::Account.searchable.without_banned.includes(:account_stat)
 
   root date_detection: false do
     field(:id, type: 'long')

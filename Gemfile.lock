@@ -9,8 +9,8 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: ddaee979d75197ba74ba64752b3e7dcd8a8a4d36
-  branch: fix/tags-banned
+  revision: a06b9de126af5f4ac8299c64d34f76cc25372dc6
+  branch: feat-status-banned
   specs:
     content_filters (0.1.0)
       rails (>= 7.1.1)

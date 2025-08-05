@@ -147,9 +147,9 @@ class Tag < ApplicationRecord
       names = Array(name_or_names).map { |name| arel_table.lower(normalize(name)) }
 
       if names.size == 1
-        where(arel_table[:name].lower.eq(names.first)).where(arel_table[:is_banned].eq(false))
+        where(arel_table[:name].lower.eq(names.first))
       else
-        where(arel_table[:name].lower.in(names)).where(arel_table[:is_banned].eq(false))
+        where(arel_table[:name].lower.in(names))
       end
     end
 

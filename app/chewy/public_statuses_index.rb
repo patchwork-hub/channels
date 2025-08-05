@@ -55,7 +55,6 @@ class PublicStatusesIndex < Chewy::Index
   index_scope ::Status.unscoped
                       .kept
                       .indexable
-                      .without_banned
                       .includes(:media_attachments, :preloadable_poll, :tags, preview_cards_status: :preview_card)
 
   root date_detection: false do
