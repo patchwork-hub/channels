@@ -17,12 +17,13 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/posts
-  revision: 522aef8ac7e2ed69a23040d89c9cfe50dbae2d98
+  revision: f1317a0eaef8538d7eb73b35b17b186ae03ed6ee
   branch: main
   specs:
     posts (0.1.0)
       annotaterb
       byebug
+      link_thumbnailer
       rails (~> 8.0)
 
 GEM
@@ -109,6 +110,7 @@ GEM
     aes_key_wrap (1.1.0)
     android_key_attestation (0.3.0)
     annotaterb (4.13.0)
+    ansi (1.5.0)
     ast (2.4.2)
     attr_required (1.0.2)
     aws-eventstream (1.3.0)
@@ -249,6 +251,8 @@ GEM
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
+    ethon (0.16.0)
+      ffi (>= 1.15.0)
     eventmachine (1.2.7)
     excon (0.112.0)
     fabrication (2.31.0)
@@ -371,6 +375,11 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       terminal-table (>= 1.5.1)
     idn-ruby (0.1.5)
+    image_info (1.2.2)
+      addressable (~> 2.0)
+      image_size (~> 2.0)
+      typhoeus (~> 1.0)
+    image_size (2.1.2)
     inline_svg (1.10.0)
       activesupport (>= 3.0)
       nokogiri (>= 1.6)
@@ -379,6 +388,7 @@ GEM
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
+    iso8601 (0.13.0)
     jd-paperclip-azure (3.0.0)
       addressable (~> 2.5)
       azure-blob (~> 0.5.2)
@@ -438,6 +448,14 @@ GEM
       railties (>= 6.1)
       rexml
     link_header (0.0.8)
+    link_thumbnailer (3.4.0)
+      activesupport (>= 3.0)
+      image_info (~> 1.0, >= 1.2.0)
+      json (>= 1.7.7)
+      net-http-persistent (>= 2.9)
+      nokogiri (>= 1.6)
+      rake (>= 0.9)
+      video_info (>= 2.6)
     llhttp-ffi (0.5.0)
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
@@ -474,6 +492,8 @@ GEM
     mutex_m (0.3.0)
     net-http (0.6.0)
       uri
+    net-http-persistent (4.0.6)
+      connection_pool (~> 2.2, >= 2.2.4)
     net-imap (0.5.5)
       date
       net-protocol
@@ -484,6 +504,7 @@ GEM
       timeout
     net-smtp (0.5.0)
       net-protocol
+    net_http_timeout_errors (1.0.0)
     nio4r (2.7.4)
     nokogiri (1.18.2)
       mini_portile2 (~> 2.8.2)
@@ -504,6 +525,9 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.2-x86_64-linux-musl)
       racc (~> 1.4)
+    oga (3.4)
+      ast
+      ruby-ll (~> 2.1)
     oj (3.16.9)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
@@ -818,6 +842,9 @@ GEM
     rubocop-rspec_rails (2.30.0)
       rubocop (~> 1.61)
       rubocop-rspec (~> 3, >= 3.0.1)
+    ruby-ll (2.1.3)
+      ansi
+      ast
     ruby-prof (1.7.1)
     ruby-progressbar (1.13.0)
     ruby-saml (1.17.0)
@@ -917,6 +944,8 @@ GEM
     twitter-text (3.1.0)
       idn-ruby
       unf (~> 0.1.0)
+    typhoeus (1.4.1)
+      ethon (>= 0.9.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2025.1)
@@ -933,6 +962,10 @@ GEM
     validate_url (1.0.15)
       activemodel (>= 3.0.0)
       public_suffix
+    video_info (4.2.0)
+      iso8601 (~> 0.13.0)
+      net_http_timeout_errors (~> 1.0.0)
+      oga (~> 3.4)
     warden (1.2.9)
       rack (>= 2.0.9)
     webauthn (3.2.2)
