@@ -235,8 +235,11 @@ gem 'mail', '~> 2.8'
 
 gem 'googleauth'
 
-gem 'content_filters', git: 'https://github.com/patchwork-hub/content_filters', branch: 'main'
+gem 'content_filters', git: 'https://github.com/patchwork-hub/content_filters', branch: 'feat-status-banned'
 gem 'posts', git: 'https://github.com/patchwork-hub/posts', branch: 'main'
+
+# Connect with local path of content_filters
+# gem 'content_filters', path: '/Users/macbookpro/workplace/patchwork/content_filters'
 
 gem 'em-http-request', '~> 1.1', '>= 1.1.7'
 gem 'eventmachine', '~> 1.2', '>= 1.2.7'

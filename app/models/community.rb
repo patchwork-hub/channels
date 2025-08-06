@@ -5,6 +5,7 @@
 # Table name: patchwork_communities
 #
 #  id                          :bigint(8)        not null, primary key
+#  about                       :string
 #  admin_following_count       :integer          default(0)
 #  avatar_image_content_type   :string
 #  avatar_image_file_name      :string
@@ -15,6 +16,7 @@
 #  banner_image_file_size      :bigint(8)
 #  banner_image_updated_at     :datetime
 #  channel_type                :string           default("channel"), not null
+#  deleted_at                  :datetime
 #  description                 :string
 #  did_value                   :string
 #  guides                      :jsonb
@@ -27,13 +29,14 @@
 #  name                        :string           not null
 #  participants_count          :integer          default(0)
 #  position                    :integer          default(0)
+#  post_visibility             :integer          default("followers_only"), not null
 #  registration_mode           :string           default("none")
 #  slug                        :string           not null
 #  visibility                  :integer
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  ip_address_id               :bigint(8)
-#  patchwork_collection_id     :bigint(8)        not null
+#  patchwork_collection_id     :bigint(8)
 #  patchwork_community_type_id :bigint(8)
 #
 class Community < ApplicationRecord

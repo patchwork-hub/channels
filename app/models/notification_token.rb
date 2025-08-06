@@ -5,6 +5,7 @@
 # Table name: patchwork_notification_tokens
 #
 #  id                 :bigint(8)        not null, primary key
+#  mute               :boolean          default(FALSE), not null
 #  notification_token :string
 #  platform_type      :string
 #  created_at         :datetime         not null

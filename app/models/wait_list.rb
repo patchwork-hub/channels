@@ -5,6 +5,7 @@
 # Table name: patchwork_wait_lists
 #
 #  id              :bigint(8)        not null, primary key
+#  channel_type    :integer          default("channel"), not null
 #  confirmed_at    :datetime
 #  description     :text
 #  email           :text
