@@ -55,6 +55,7 @@ class AccountsIndex < Chewy::Index
     },
   }
 
+  # CUSTOMIZED CODE < Adding index_scope to without_banned >
   index_scope ::Account.searchable.without_banned.includes(:account_stat)
 
   root date_detection: false do
