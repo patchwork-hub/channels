@@ -10,7 +10,7 @@ GIT
 GIT
   remote: https://github.com/patchwork-hub/content_filters
   revision: a06b9de126af5f4ac8299c64d34f76cc25372dc6
-  branch: feat-status-banned
+  branch: main
   specs:
     content_filters (0.1.0)
       rails (>= 7.1.1)

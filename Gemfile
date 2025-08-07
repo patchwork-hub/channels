@@ -235,7 +235,7 @@ gem 'mail', '~> 2.8'
 
 gem 'googleauth'
 
-gem 'content_filters', git: 'https://github.com/patchwork-hub/content_filters', branch: 'feat-status-banned'
+gem 'content_filters', git: 'https://github.com/patchwork-hub/content_filters', branch: 'main'
 gem 'posts', git: 'https://github.com/patchwork-hub/posts', branch: 'main'
 
 # Connect with local path of content_filters
