@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: 56da011d83fb9e474101defb87f64312543e44e7
+  revision: e340ac6ad10819a2d1f30a4c62531ee84ece9e04
   branch: main
   specs:
     content_filters (0.1.0)
