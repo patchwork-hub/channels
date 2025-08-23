@@ -6,7 +6,6 @@
 #
 #  id                  :bigint(8)        not null, primary key
 #  display_name        :string
-#  is_banned           :boolean          default(FALSE)
 #  last_status_at      :datetime
 #  listable            :boolean
 #  max_score           :float

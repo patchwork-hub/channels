@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: e340ac6ad10819a2d1f30a4c62531ee84ece9e04
+  revision: 5afd394a19a228506b3e65eb8a3c1ed5c16087ad
   branch: main
   specs:
     content_filters (0.1.0)
@@ -251,7 +251,7 @@ GEM
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
-    ethon (0.16.0)
+    ethon (0.17.0)
       ffi (>= 1.15.0)
     eventmachine (1.2.7)
     excon (0.112.0)
@@ -266,9 +266,11 @@ GEM
       httpclient (>= 2.2)
     faraday-net_http (3.4.0)
       net-http (>= 0.5.0)
+    faraday-typhoeus (1.1.0)
+      faraday (~> 2.0)
+      typhoeus (~> 1.4)
     fast_blank (1.0.1)
     fastimage (2.4.0)
-    ffi (1.17.1)
     ffi (1.17.1-aarch64-linux-gnu)
     ffi (1.17.1-aarch64-linux-musl)
     ffi (1.17.1-arm-linux-gnu)
@@ -1026,55 +1028,56 @@ DEPENDENCIES
   blurhash (~> 0.1)
   bootsnap (~> 1.18.0)
   brakeman (~> 7.0)
-  browser
+  browser (~> 6.2)
   bundler-audit (~> 0.9)
-  byebug
+  byebug (~> 11.1)
   capybara (~> 3.39)
   charlock_holmes (~> 0.7.7)
   chewy (~> 7.3)
-  climate_control
+  climate_control (~> 1.2)
   cocoon (~> 1.2)
   color_diff (~> 0.1)
-  concurrent-ruby
-  connection_pool
+  concurrent-ruby (~> 1.3)
+  connection_pool (~> 2.5)
   content_filters!
   csv (~> 3.2)
-  database_cleaner-active_record
+  database_cleaner-active_record (~> 2.2)
   debug (~> 1.8)
   devise (~> 4.9)
-  devise-two-factor
+  devise-two-factor (~> 6.1)
   devise_pam_authenticatable2 (~> 9.2)
   discard (~> 1.2)
   doorkeeper (~> 5.6)
-  dotenv
+  dotenv (~> 3.1)
   em-http-request (~> 1.1, >= 1.1.7)
-  email_spec
+  email_spec (~> 2.3)
   eventmachine (~> 1.2, >= 1.2.7)
   fabrication (~> 2.30)
   faker (~> 3.2)
-  faraday-httpclient
+  faraday-httpclient (~> 2.0)
+  faraday-typhoeus (~> 1.1)
   fast_blank (~> 1.0)
-  fastimage
-  flatware-rspec
+  fastimage (~> 2.4)
+  flatware-rspec (~> 2.3)
   fog-core (<= 2.6.0)
   fog-openstack (~> 1.0)
-  googleauth
+  googleauth (~> 1.13)
   haml-rails (~> 2.0)
-  haml_lint
+  haml_lint (~> 0.59)
   hcaptcha (~> 7.1)
   hiredis (~> 0.6)
   htmlentities (~> 4.3)
   http (~> 5.2.0)
   http_accept_language (~> 2.1)
-  httparty
+  httparty (~> 0.22)
   httplog (~> 1.7.0)
-  i18n
+  i18n (~> 1.14)
   i18n-tasks (~> 1.0)
-  idn-ruby
-  inline_svg
+  idn-ruby (~> 0.1)
+  inline_svg (~> 1.10)
   irb (~> 1.8)
   jd-paperclip-azure (~> 3.0)
-  json-ld
+  json-ld (~> 3.3)
   json-ld-preloaded (~> 3.2)
   json-schema (~> 5.0)
   kaminari (~> 1.2)
@@ -1085,9 +1088,9 @@ DEPENDENCIES
   lograge (~> 0.12)
   mail (~> 2.8)
   mario-redis-lock (~> 1.2)
-  memory_profiler
+  memory_profiler (~> 1.1)
   mime-types (~> 3.6.0)
-  mutex_m
+  mutex_m (~> 0.3)
   net-http (~> 0.6.0)
   net-ldap (~> 0.18)
   nokogiri (~> 1.15)
@@ -1114,13 +1117,13 @@ DEPENDENCIES
   opentelemetry-instrumentation-sidekiq (~> 0.26.0)
   opentelemetry-sdk (~> 1.4)
   ox (~> 2.14)
-  parslet
+  parslet (~> 2.0)
   pg (~> 1.5)
-  pghero
+  pghero (~> 3.6)
   posts!
-  premailer-rails
+  premailer-rails (~> 1.12)
   prometheus_exporter (~> 2.2)
-  propshaft
+  propshaft (~> 1.1)
   public_suffix (~> 6.0)
   puma (~> 6.3)
   pundit (~> 2.3)
@@ -1139,20 +1142,20 @@ DEPENDENCIES
   rspec-github (~> 3.0)
   rspec-rails (~> 7.0)
   rspec-sidekiq (~> 5.0)
-  rubocop
+  rubocop (~> 1.71)
   rubocop-capybara
   rubocop-performance
   rubocop-rails
   rubocop-rspec
   rubocop-rspec_rails
-  ruby-prof
+  ruby-prof (~> 1.7)
   ruby-progressbar (~> 1.13)
   ruby-vips (~> 2.2)
   rubyzip (~> 2.3)
   sanitize (~> 7.0)
   scenic (~> 1.7)
-  selenium-webdriver
-  shoulda-matchers
+  selenium-webdriver (~> 4.28)
+  shoulda-matchers (~> 6.4)
   sidekiq (~> 6.5)
   sidekiq-bulk (~> 0.2.0)
   sidekiq-scheduler (~> 5.0)
@@ -1161,10 +1164,10 @@ DEPENDENCIES
   simple_form (~> 5.2)
   simplecov (~> 0.22)
   simplecov-lcov (~> 0.8)
-  stackprof
+  stackprof (~> 0.2)
   stoplight (~> 4.1)
-  strong_migrations
-  test-prof
+  strong_migrations (~> 2.1)
+  test-prof (~> 1.4)
   thor (~> 1.2)
   tty-prompt (~> 0.23)
   twitter-text (~> 3.1.0)
