@@ -34,7 +34,7 @@ class TagsIndex < Chewy::Index
     },
   }
 
-  index_scope ::Tag.listable.without_banned
+  index_scope ::Tag.listable
 
   crutch :time_period do
     7.days.ago.to_date..0.days.ago.to_date
@@ -45,6 +45,5 @@ class TagsIndex < Chewy::Index
     field(:reviewed, type: 'boolean', value: ->(tag) { tag.reviewed? })
     field(:usage, type: 'long', value: ->(tag, crutches) { tag.history.aggregate(crutches.time_period).accounts })
     field(:last_status_at, type: 'date', value: ->(tag) { clamp_date(tag.last_status_at || tag.created_at) })
-    field(:is_banned, type: 'boolean', value: ->(tag) { tag.is_banned? })
   end
 end
