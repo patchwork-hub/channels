@@ -31,15 +31,9 @@ class ActivityPub::FetchFeaturedCollectionService < BaseService
 
   def fetch_collection(collection_or_uri)
     return collection_or_uri if collection_or_uri.is_a?(Hash)
+    return if non_matching_uri_hosts?(@account.uri, collection_or_uri)
 
-    # Defensive URI extraction similar to ProcessAccountService
-    uri = normalize_collection_uri(collection_or_uri)
-    return if uri.blank? || non_matching_uri_hosts?(@account.uri, uri)
-
-    fetch_resource_without_id_validation(uri, local_follower, true)
-  rescue Addressable::URI::InvalidURIError => e
-    Rails.logger.debug { "Invalid URI in collection: #{e.message}" }
-    nil
+    fetch_resource_without_id_validation(collection_or_uri, local_follower, true)
   end
 
   def process_items(items)
