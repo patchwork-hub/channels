@@ -239,12 +239,11 @@ gem 'content_filters', git: 'https://github.com/patchwork-hub/content_filters', 
 gem 'posts', git: 'https://github.com/patchwork-hub/posts', branch: 'main'
 
 # *** Add this alongside Post Gems ***
-gem 'faraday-typhoeus', '~> 1.1' 
+gem 'faraday-typhoeus', '~> 1.1'
 
 # Connect with local path of content_filters
 # gem 'content_filters', path: '/Users/macbookpro/workplace/patchwork/content_filters'
 # gem 'posts', path: '/Users/macbookpro/workplace/patchwork/posts'
-
 
 gem 'em-http-request', '~> 1.1', '>= 1.1.7'
 gem 'eventmachine', '~> 1.2', '>= 1.2.7'
