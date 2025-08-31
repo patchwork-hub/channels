@@ -280,7 +280,14 @@ GEM
       typhoeus (~> 1.4)
     fast_blank (1.0.1)
     fastimage (2.4.0)
+    ffi (1.17.2-aarch64-linux-gnu)
+    ffi (1.17.2-aarch64-linux-musl)
+    ffi (1.17.2-arm-linux-gnu)
+    ffi (1.17.2-arm-linux-musl)
+    ffi (1.17.2-arm64-darwin)
     ffi (1.17.2-x86_64-darwin)
+    ffi (1.17.2-x86_64-linux-gnu)
+    ffi (1.17.2-x86_64-linux-musl)
     ffi-compiler (1.3.2)
       ffi (>= 1.15.5)
       rake
@@ -312,7 +319,25 @@ GEM
       base64 (~> 0.2)
       faraday (>= 1.0, < 3.a)
     google-logging-utils (0.2.0)
+    google-protobuf (4.32.0)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.32.0-aarch64-linux-gnu)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.32.0-aarch64-linux-musl)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.32.0-arm64-darwin)
+      bigdecimal
+      rake (>= 13)
     google-protobuf (4.32.0-x86_64-darwin)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.32.0-x86_64-linux-gnu)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.32.0-x86_64-linux-musl)
       bigdecimal
       rake (>= 13)
     googleapis-common-protos-types (1.20.0)
@@ -519,7 +544,21 @@ GEM
       net-protocol
     net_http_timeout_errors (1.0.0)
     nio4r (2.7.4)
+    nokogiri (1.18.9-aarch64-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.18.9-aarch64-linux-musl)
+      racc (~> 1.4)
+    nokogiri (1.18.9-arm-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.18.9-arm-linux-musl)
+      racc (~> 1.4)
+    nokogiri (1.18.9-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.18.9-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.18.9-x86_64-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.18.9-x86_64-linux-musl)
       racc (~> 1.4)
     oga (3.4)
       ast
@@ -664,7 +703,13 @@ GEM
     parslet (2.0.0)
     pastel (0.8.0)
       tty-color (~> 0.5)
+    pg (1.6.1)
+    pg (1.6.1-aarch64-linux)
+    pg (1.6.1-aarch64-linux-musl)
+    pg (1.6.1-arm64-darwin)
     pg (1.6.1-x86_64-darwin)
+    pg (1.6.1-x86_64-linux)
+    pg (1.6.1-x86_64-linux-musl)
     pghero (3.7.0)
       activerecord (>= 7.1)
     pp (0.6.2)
@@ -1016,7 +1061,16 @@ GEM
     zeitwerk (2.7.3)
 
 PLATFORMS
-  x86_64-darwin-23
+  aarch64-linux
+  aarch64-linux-gnu
+  aarch64-linux-musl
+  arm-linux-gnu
+  arm-linux-musl
+  arm64-darwin
+  x86_64-darwin
+  x86_64-linux
+  x86_64-linux-gnu
+  x86_64-linux-musl
 
 DEPENDENCIES
   active_model_serializers (~> 0.10)
