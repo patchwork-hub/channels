@@ -75,6 +75,3 @@ config/fcm_acc_service.json
 
 # Ignore local-only rspec configuration
 .rspec-local
-
-# Content filters installation marker
-.content_filters_installed
