@@ -9,21 +9,21 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: e0393da7708ac8afafb7e8197e4afb9c8be20a4d
+  revision: cff6a5b765c112e90fb7824496235cc5dcf46d67
   branch: main
   specs:
     content_filters (0.1.0)
-      rails (>= 7.1.1)
+      rails (~> 8.0)
 
 GIT
   remote: https://github.com/patchwork-hub/posts
-  revision: fa171462f33045adb0d660615bd78ab92f8350ea
+  revision: e79cb3a71dbb9172f52ea78ffe4f972eb9da0882
   branch: main
   specs:
     posts (0.1.0)
-      annotaterb
-      byebug
-      link_thumbnailer
+      annotaterb (~> 4.13)
+      byebug (~> 11.1)
+      link_thumbnailer (~> 3.4)
       rails (~> 8.0)
 
 GEM
