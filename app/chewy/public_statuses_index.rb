@@ -52,7 +52,7 @@ class PublicStatusesIndex < Chewy::Index
     },
   }
 
-  # CUSTOMIZED CODE < Adding index_scope to without_banned >
+  # CUSTOMIZED CODE < Adding index_scope to without_banned from content_filters gem >
   index_scope ::Status.unscoped
                       .kept
                       .indexable
