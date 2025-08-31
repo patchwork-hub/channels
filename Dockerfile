@@ -237,8 +237,6 @@ COPY --from=bundler /usr/local/bundle/ /usr/local/bundle/
 COPY --from=libvips /usr/local/libvips/bin /usr/local/bin
 COPY --from=libvips /usr/local/libvips/lib /usr/local/lib
 
-RUN bundle exec rake content_filters:install
-
 #precompile and remove tmp 
 RUN ldconfig && \
   SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile && \
