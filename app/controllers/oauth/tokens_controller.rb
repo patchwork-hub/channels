@@ -52,7 +52,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
     return nil if client_credentials?
 
     user = grant_password? ? fetch_user_credentials : fetch_access_token_grant
-    return 'You don\'t have access to login.' if user.nil? || user&.confirmed_at.nil?
+    return 'You don\'t have access to login.' if user.nil? # || user&.confirmed_at.nil?
 
     community_admin = fetch_channel_credentials(user)
     return 'Invalid credentials. Please make sure you\'ve created a channel.' if community_admin.nil?

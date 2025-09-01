@@ -9,21 +9,21 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: 633301f124d0a54e8e107fbaa60678e7061a7675
+  revision: 6ca9cb322b0a41895763951cf142db92a87c54be
   branch: main
   specs:
     content_filters (0.1.0)
-      rails (>= 7.1.1)
+      rails (~> 8.0)
 
 GIT
   remote: https://github.com/patchwork-hub/posts
-  revision: f1317a0eaef8538d7eb73b35b17b186ae03ed6ee
+  revision: e79cb3a71dbb9172f52ea78ffe4f972eb9da0882
   branch: main
   specs:
     posts (0.1.0)
-      annotaterb
-      byebug
-      link_thumbnailer
+      annotaterb (~> 4.13)
+      byebug (~> 11.1)
+      link_thumbnailer (~> 3.4)
       rails (~> 8.0)
 
 GEM
@@ -310,7 +310,33 @@ GEM
     google-cloud-env (2.2.1)
       faraday (>= 1.0, < 3.a)
     google-logging-utils (0.1.0)
-    google-protobuf (3.25.5)
+    google-protobuf (4.32.0)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.32.0-aarch64-linux-gnu)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.32.0-aarch64-linux-musl)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.32.0-arm64-darwin)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.32.0-x86-linux-gnu)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.32.0-x86-linux-musl)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.32.0-x86_64-darwin)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.32.0-x86_64-linux-gnu)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.32.0-x86_64-linux-musl)
+      bigdecimal
+      rake (>= 13)
     googleapis-common-protos-types (1.15.0)
       google-protobuf (>= 3.18, < 5.a)
     googleauth (1.13.1)

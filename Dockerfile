@@ -238,7 +238,6 @@ COPY --from=libvips /usr/local/libvips/bin /usr/local/bin
 COPY --from=libvips /usr/local/libvips/lib /usr/local/lib
 
 #precompile and remove tmp 
-
 RUN ldconfig && \
   SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile && \
   rm -fr /opt/mastodon/tmp
