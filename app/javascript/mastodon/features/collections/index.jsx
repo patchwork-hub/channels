@@ -1,12 +1,15 @@
+import { useEffect, useState, useCallback } from 'react';
+
+import { Helmet } from 'react-helmet';
+
+import { useDispatch, useSelector } from 'react-redux';
 
 import { fetchChannels, fetchSearchedChannels, fetchNewsmastChannels, fetchChannelFeeds} from 'mastodon/actions/channel_banner';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import ChannelSearch from '../channel_search';
-import { Helmet } from 'react-helmet';
 import ChannelCard from 'mastodon/components/channel_card';
 import CollectionCard from 'mastodon/components/collection_card';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
+
+import ChannelSearch from '../channel_search';
 
 const Collections = () => {
 
@@ -32,18 +35,18 @@ const Collections = () => {
   };
 
   const channels = searchTerm 
-  ? searchChannels 
-  : [
-    channel_feeds?.size > 0 ? channel_feeds.get(0) : null,
-    newsmast_channels?.size > 0 ? newsmast_channels.get(0) : null,
-    collections?.size > 0 ? collections.get(0) : null,
+    ? searchChannels 
+    : [
+      channel_feeds?.size > 0 ? channel_feeds.get(0) : null,
+      newsmast_channels?.size > 0 ? newsmast_channels.get(0) : null,
+      collections?.size > 0 ? collections.get(0) : null,
     ].filter(item => item !== null);
 
   const isLoading = searchTerm ? searchChannelsLoading : collectionsLoading;
 
 
   const collectionsTiles = collections?.size > 0
-  ? {
+    ? {
       tiles: [
         collections.get(1)?.attributes?.avatar_image_url.startsWith('https')
           ? collections.get(1)?.attributes?.avatar_image_url
@@ -62,11 +65,11 @@ const Collections = () => {
       channel: false,
       newsmast: false,
     }
-  : { tiles: [], collection: true, channel: false, newsmast: false, };
+    : { tiles: [], collection: true, channel: false, newsmast: false, };
 
 
   const channelsTiles = channel_feeds?.size > 0
-  ? {
+    ? {
       tiles: [
         channel_feeds.get(1)?.attributes?.avatar_image_url.startsWith('https')
           ? channel_feeds.get(1)?.attributes?.avatar_image_url
@@ -85,11 +88,11 @@ const Collections = () => {
       channel: true,
       newsmast: false,
     }
-  : { tiles: [], collection: false, channel: true, newsmast: false, };
+    : { tiles: [], collection: false, channel: true, newsmast: false, };
 
 
   const newsmastTiles = newsmast_channels?.size > 0
-  ? {
+    ? {
       tiles: [
         newsmast_channels.get(1)?.attributes?.avatar_image_url.startsWith('https')
           ? newsmast_channels.get(1)?.attributes?.avatar_image_url
@@ -108,11 +111,9 @@ const Collections = () => {
       channel: false,
       newsmast: true,
     }
-  : { tiles: [], collection: false, channel: false, newsmast: true, };
+    : { tiles: [], collection: false, channel: false, newsmast: true, };
 
-
-
-  const handleSearch = (term) => {
+  const handleSearch = useCallback((term) => {
     setSearchTerm(term);
     if (term.trim()) {
       dispatch(fetchSearchedChannels(term));
@@ -121,8 +122,27 @@ const Collections = () => {
       dispatch(fetchNewsmastChannels());
       dispatch(fetchChannelFeeds());
     }
-  };
-  console.log(searchChannelsLoading, collectionsLoading)
+  }, [dispatch]);
+
+  const renderChannelCard = useCallback((channel, index) => {
+    if (channel.type === 'channel') {
+      return <ChannelCard key={index} channel={channel} isFourTiles />;
+    } else {
+      return (
+        <CollectionCard 
+          key={index} 
+          channel={channel} 
+          type='all' 
+          from='community' 
+          isFourTiles 
+          collections={collectionsTiles} 
+          channel_feeds={channelsTiles} 
+          newsmast_channels={newsmastTiles}
+        />
+      );
+    }
+  }, [collectionsTiles, channelsTiles, newsmastTiles]);
+
   useEffect(() => {
     if (!searchTerm &&( collections.size === 0 ||  newsmast_channels.size === 0 ||  channel_feeds.size === 0 )&& !collectionsLoading) {
       dispatch(fetchChannels());
@@ -134,36 +154,30 @@ const Collections = () => {
 
   return (
     <div className='channels'>
-       <Helmet>
+      <Helmet>
         <title>Explore channels</title>
       </Helmet>
       <div className='channels__header'>
         <h2 className='title'>Explore channels </h2>
-        <ChannelSearch  onSearch={handleSearch} isLoading={searchChannelsLoading}/>
+        <ChannelSearch  onSearch={handleSearch} isLoading={searchChannelsLoading} />
       </div>
       {searchChannelsLoading || isLoading ? (
-            <div className='channels__loading'>
-              <LoadingIndicator />
-            </div>
-          ) : !searchTerm && channels.length === 0 ? (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-              <p style={{ fontSize: '20px' }}>No channels found</p>
-            </div>
-          ) : channels.length === 0 ? (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-              <p style={{ fontSize: '20px' }}>No channels found</p>
-            </div>
-          ) : (
-            <div className='channels__list'>
-              {channels.map((channel, index) => (
-                channel.type === 'channel' ? (
-                  <ChannelCard key={index} channel={channel} isFourTiles/>
-                ) : (
-                  <CollectionCard key={index} channel={channel} type="all" from="community" isFourTiles collections={collectionsTiles} channel_feeds={channelsTiles} newsmast_channels={newsmastTiles}/>
-                )
-              ))}
-            </div>
-          )}
+        <div className='channels__loading'>
+          <LoadingIndicator />
+        </div>
+      ) : !searchTerm && channels.length === 0 ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+          <p style={{ fontSize: '20px' }}>No channels found</p>
+        </div>
+      ) : channels.length === 0 ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+          <p style={{ fontSize: '20px' }}>No channels found</p>
+        </div>
+      ) : (
+        <div className='channels__list'>
+          {channels.map(renderChannelCard)}
+        </div>
+      )}
     </div>
   );
 };
