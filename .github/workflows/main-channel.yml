@@ -68,9 +68,17 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/amd64 \
-            --no-cache \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max \
+            --push \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             .
+
+      # Temp fix for build cache
+      - name: Move Cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   deploy-channel-web:
     name: Deploy to Main Channel Web Container
