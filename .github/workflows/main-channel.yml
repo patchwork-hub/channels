@@ -6,31 +6,30 @@ on:
     branches:
       - main-channel
 env:
-  SIDEKIQ_DEFINITION:
-    .aws/main-channel-sidekiq.json
+  SIDEKIQ_DEFINITION: .aws/main-channel-sidekiq.json
 
 permissions:
   contents: read
-  id-token: write  # Added for OIDC token support
+  id-token: write # Added for OIDC token support
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true  # Changed to true for more efficient queue management
+  cancel-in-progress: true # Changed to true for more efficient queue management
 
 jobs:
   build-and-push:
     name: Build and Push Image
     runs-on: ubuntu-latest
-    timeout-minutes: 30  # Added timeout to prevent runaway builds
+    timeout-minutes: 30 # Added timeout to prevent runaway builds
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4  # Updated to latest version
+        uses: actions/checkout@v4 # Updated to latest version
         with:
-          fetch-depth: 1  # Shallow clone for faster checkout
+          fetch-depth: 1 # Shallow clone for faster checkout
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4  # Updated to latest version
+        uses: aws-actions/configure-aws-credentials@v4 # Updated to latest version
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -38,10 +37,10 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2  # Updated to latest version
+        uses: aws-actions/amazon-ecr-login@v2 # Updated to latest version
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3  # Updated to latest version
+        uses: docker/setup-buildx-action@v3 # Updated to latest version
         with:
           version: latest
           driver-opts: |
@@ -49,7 +48,7 @@ jobs:
             network=host
 
       - name: Cache Docker Layers
-        uses: actions/cache@v4  # Updated to latest version
+        uses: actions/cache@v4 # Updated to latest version
         with:
           path: |
             /tmp/.buildx-cache
@@ -69,18 +68,10 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/amd64 \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max \
-            --push \
+            --no-cache \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             .
 
-      # Temp fix for build cache 
-      - name: Move Cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-      
   deploy-channel-web:
     name: Deploy to Main Channel Web Container
     runs-on: ubuntu-latest
@@ -112,10 +103,10 @@ jobs:
     needs: build-and-push
     steps:
       - name: Checkout
-        uses: actions/checkout@v4  # Updated to latest version
+        uses: actions/checkout@v4 # Updated to latest version
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4  # Updated to latest version
+        uses: aws-actions/configure-aws-credentials@v4 # Updated to latest version
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -123,13 +114,13 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2  # Updated to latest version
+        uses: aws-actions/amazon-ecr-login@v2 # Updated to latest version
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3  # Updated to latest version
+        uses: docker/setup-buildx-action@v3 # Updated to latest version
 
       - name: Cache Docker Layers
-        uses: actions/cache@v4  # Updated to latest version
+        uses: actions/cache@v4 # Updated to latest version
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -151,5 +142,3 @@ jobs:
           service: ${{ secrets.MAIN_CHANNEL_SERVICE }}
           cluster: ${{ secrets.MAIN_CHANNEL_CLUSTER }}
           wait-for-service-stability: false
-
-  
