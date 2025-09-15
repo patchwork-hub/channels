@@ -5,7 +5,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
 
   def create
     if main_channel?
-      error_message = is_web_login? ? handle_web_login : handle_app_login
+      error_message = web_login? ? handle_web_login : handle_app_login
 
       if error_message.nil?
         super
@@ -34,7 +34,12 @@ class Oauth::TokensController < Doorkeeper::TokensController
   end
 
   def fetch_channel_credentials(user)
-    CommunityAdmin.find_by(account_id: user.account_id, is_boost_bot: true, account_status: CommunityAdmin.account_statuses["active"])
+    CommunityAdmin.joins(:community).find_by(
+      account_id: user.account_id,
+      is_boost_bot: true,
+      account_status: CommunityAdmin.account_statuses['active'],
+      community: { deleted_at: nil }
+    )
   end
 
   def handle_web_login
@@ -43,7 +48,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
     user = fetch_user_credentials
     return 'You don\'t have access to login.' if user.nil? || user&.confirmed_at.nil?
 
-    return "#{user.role&.name.underscore.humanize} isn\'t allowed to access login." unless user.role&.name.eql?('UserAdmin') ||  user.role&.name.eql?('HubAdmin')
+    return "#{user.role&.name&.underscore&.humanize} isn't allowed to access login." unless user.role&.name.eql?('UserAdmin') || user.role&.name.eql?('HubAdmin')
 
     nil
   end
@@ -65,8 +70,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
   end
 
   # This is a solution to allow the creation of a Channel feed and Hub
-  def is_web_login?
-    puts "Received is_web_login: #{params[:is_web_login].inspect}"
+  def web_login?
     truthy_param?(params[:is_web_login])
   end
 
@@ -81,7 +85,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
 
   def belong_any_channel?(community_admin)
     return false unless community_admin&.patchwork_community_id.present?
-  
+
     Community.exists?(
       id: community_admin.patchwork_community_id,
       visibility: Community.visibilities.keys
