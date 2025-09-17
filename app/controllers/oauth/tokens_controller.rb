@@ -6,7 +6,6 @@ class Oauth::TokensController < Doorkeeper::TokensController
   def create
     if main_channel?
       error_message = web_login? ? handle_web_login : handle_app_login
-
       if error_message.nil?
         super
       else
@@ -42,6 +41,15 @@ class Oauth::TokensController < Doorkeeper::TokensController
     )
   end
 
+  def channel_active?(user)
+    community_admin = CommunityAdmin.find_by(account_id: user.account_id, is_boost_bot: true)
+    return true if community_admin.nil? || community_admin&.account_status == CommunityAdmin.account_statuses['active']
+
+    return true if community_admin&.community&.deleted_at.nil?
+
+    false
+  end
+
   def handle_web_login
     return nil if client_credentials?
 
@@ -49,6 +57,8 @@ class Oauth::TokensController < Doorkeeper::TokensController
     return 'You don\'t have access to login.' if user.nil? || user&.confirmed_at.nil?
 
     return "#{user.role&.name&.underscore&.humanize} isn't allowed to access login." unless user.role&.name.eql?('UserAdmin') || user.role&.name.eql?('HubAdmin')
+
+    return 'Your channel is not active. Please contact support.' unless channel_active?(user)
 
     nil
   end
