@@ -9,10 +9,11 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: ebb1d14fbae164399c327b421c7e6683d11c2bac
+  revision: 4307cf796593ec9b298b2a97c962d44b1ac401b6
   branch: main
   specs:
     content_filters (0.1.0)
+      httparty (~> 0.23.1)
       rails (~> 8.0)
 
 GIT
@@ -382,7 +383,7 @@ GEM
     http-form_data (2.3.0)
     http_accept_language (2.1.1)
     http_parser.rb (0.8.0)
-    httparty (0.22.0)
+    httparty (0.23.1)
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
