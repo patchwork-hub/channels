@@ -241,7 +241,7 @@ gem 'posts', git: 'https://github.com/patchwork-hub/posts', branch: 'main'
 # *** Add this alongside Post Gems ***
 gem 'faraday-typhoeus', '~> 1.1'
 
-# Connect with local path of content_filters
+# Connect with local path of content_filters 
 # gem 'content_filters', path: '/Users/macbookpro/workplace/patchwork/content_filters'
 # gem 'posts', path: '/Users/macbookpro/workplace/patchwork/posts'
 
