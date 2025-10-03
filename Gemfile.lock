@@ -9,10 +9,11 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: 6ca9cb322b0a41895763951cf142db92a87c54be
+  revision: bde1838d9fefaa916634ef9546386a131f0a0b24
   branch: main
   specs:
     content_filters (0.1.0)
+      httparty (~> 0.23.1)
       rails (~> 8.0)
 
 GIT
