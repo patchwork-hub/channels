@@ -158,7 +158,6 @@ class Account < ApplicationRecord
   scope :with_domain, ->(value) { where arel_table[:domain].lower.eq(value&.to_s&.downcase) }
   scope :without_memorial, -> { where(memorial: false) }
   scope :duplicate_uris, -> { select(:uri, Arel.star.count).group(:uri).having(Arel.star.count.gt(1)) }
-  scope :channel_admins, ->(value) { where(id: value) }
 
   after_update_commit :trigger_update_webhooks
 
@@ -451,10 +450,6 @@ class Account < ApplicationRecord
 
     generate_keys
     save!
-  end
-
-  def follow_account?(target_account_id)
-    Follow.exists?(account_id: self&.id, target_account_id: target_account_id)
   end
 
   private
