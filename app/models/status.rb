@@ -392,10 +392,6 @@ class Status < ApplicationRecord
     end
   end
 
-  def mentioned_account?(account)
-    mentions.any? { |mention| mention.account_id == account.id }
-  end
-
   private
 
   def update_status_stat!(attrs)
