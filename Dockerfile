@@ -171,11 +171,11 @@ RUN \
 # Build ffmpeg
 FROM build AS ffmpeg
 ARG FFMPEG_VERSION=7.1
-ARG FFMPEG_URL=https://ffmpeg.org/releases
+ARG FFMPEG_URL=https://github.com/FFmpeg/FFmpeg/archive/refs/tags
 
 WORKDIR /usr/local/ffmpeg/src
-ADD ${FFMPEG_URL}/ffmpeg-${FFMPEG_VERSION}.tar.xz /usr/local/ffmpeg/src/
-RUN tar xf ffmpeg-${FFMPEG_VERSION}.tar.xz;
+ADD ${FFMPEG_URL}/n${FFMPEG_VERSION}.tar.gz /usr/local/ffmpeg/src/
+RUN tar xf n${FFMPEG_VERSION}.tar.gz && mv FFmpeg-n${FFMPEG_VERSION} ffmpeg-${FFMPEG_VERSION};
 
 WORKDIR /usr/local/ffmpeg/src/ffmpeg-${FFMPEG_VERSION}
 RUN \
