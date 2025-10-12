@@ -9,12 +9,21 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: bde1838d9fefaa916634ef9546386a131f0a0b24
+  revision: 1cfd9e33639b1ec7ad1e1e576ddd6b5aa3c690a6
   branch: main
   specs:
     content_filters (0.1.0)
       httparty (~> 0.23.1)
+      httparty (~> 0.23.1)
       rails (~> 8.0)
+
+GIT
+  remote: https://github.com/patchwork-hub/custom_feeds
+  revision: f16a2c1d7778c8aa4a9babcd9b0288f091d6ec67
+  branch: main
+  specs:
+    custom_feeds (0.1.0)
+      rails (>= 8.0.2.1)
 
 GIT
   remote: https://github.com/patchwork-hub/posts
@@ -1096,6 +1105,7 @@ DEPENDENCIES
   connection_pool (~> 2.5)
   content_filters!
   csv (~> 3.2)
+  custom_feeds!
   database_cleaner-active_record (~> 2.2)
   debug (~> 1.8)
   devise (~> 4.9)

@@ -236,6 +236,7 @@ gem 'mail', '~> 2.8'
 gem 'googleauth', '~> 1.13'
 
 gem 'content_filters', git: 'https://github.com/patchwork-hub/content_filters', branch: 'main'
+gem 'custom_feeds', git: 'https://github.com/patchwork-hub/custom_feeds', branch: 'main'
 gem 'posts', git: 'https://github.com/patchwork-hub/posts', branch: 'main'
 
 # *** Add this alongside Post Gems ***
@@ -244,6 +245,7 @@ gem 'faraday-typhoeus', '~> 1.1'
 # Connect with local path of content_filters
 # gem 'content_filters', path: '/Users/macbookpro/workplace/patchwork/content_filters'
 # gem 'posts', path: '/Users/macbookpro/workplace/patchwork/posts'
+# gem 'custom_feeds', path: '/Users/macbookpro/workplace/patchwork/custom_feeds'
 
 gem 'em-http-request', '~> 1.1', '>= 1.1.7'
 gem 'eventmachine', '~> 1.2', '>= 1.2.7'
