@@ -14,12 +14,11 @@ GIT
   specs:
     content_filters (0.1.0)
       httparty (~> 0.23.1)
-      httparty (~> 0.23.1)
       rails (~> 8.0)
 
 GIT
   remote: https://github.com/patchwork-hub/custom_feeds
-  revision: f16a2c1d7778c8aa4a9babcd9b0288f091d6ec67
+  revision: ffa4e5307497d35497a06df6b39693d9eb8aeba1
   branch: main
   specs:
     custom_feeds (0.1.0)
