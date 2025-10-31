@@ -3,6 +3,9 @@
 class AppSignUpService < BaseService
   include RegistrationHelper
 
+  USER_ADMIN_ROLE_NAME = 'UserAdmin'
+  HUB_ADMIN_ROLE_NAME  = 'HubAdmin'
+
   def call(app, remote_ip, params)
     @app       = app
     @remote_ip = remote_ip
@@ -10,7 +13,7 @@ class AppSignUpService < BaseService
 
     waitlist_entry = find_waitlist_entry
     raise Mastodon::NotPermittedError unless allowed_registration?(remote_ip, invite)
-    raise Mastodon::NotPermittedError unless registration_allowed(waitlist_entry)
+    raise Mastodon::NotPermittedError unless registration_allowed?(waitlist_entry)
 
     ApplicationRecord.transaction do
       create_user!(waitlist_entry)
@@ -23,7 +26,7 @@ class AppSignUpService < BaseService
   private
 
   def create_user!(waitlist_entry)
-    user_role = find_user_role(waitlist_entry)
+    user_role = determine_user_role(waitlist_entry)
     @user = User.create!(
       user_params.merge(
         role_id: user_role&.id,
@@ -46,10 +49,20 @@ class AppSignUpService < BaseService
     )
   end
 
-  def find_user_role(waitlist_entry)
-    channel_type = waitlist_entry&.channel_type.to_s
-    role_name = channel_type.eql?('channel') ? 'UserAdmin' : 'HubAdmin'
-    UserRole.find_by(name: role_name)
+  def determine_user_role(waitlist_entry)
+    role_name = USER_ADMIN_ROLE_NAME # Default role
+
+    if invitation_code_params[:invitation_code].present? && waitlist_entry
+      case waitlist_entry.channel_type.to_s
+      when 'channel' then role_name = USER_ADMIN_ROLE_NAME
+      when 'hub'     then role_name = HUB_ADMIN_ROLE_NAME
+      end
+    end
+
+    UserRole.find_by!(name: role_name)
+  rescue ActiveRecord::RecordNotFound
+    Rails.logger.error("UserRole '#{role_name}' not found. Please ensure all required UserRoles are present in the database.")
+    raise "Critical: Missing UserRole '#{role_name}'"
   end
 
   def invite
@@ -72,13 +85,10 @@ class AppSignUpService < BaseService
     { text: @params[:reason] }
   end
 
-  def registration_allowed(waitlist_entry)
-    return true if skip_waitlist?
-    
-    WaitList.exists?(
-      invitation_code: invitation_code_params[:invitation_code],
-      used: false
-    )
+  def registration_allowed?(waitlist_entry)
+    return true if skip_waitlist? || invitation_code_params[:invitation_code].blank?
+
+    waitlist_entry.present?
   end
 
   def skip_waitlist?
@@ -90,6 +100,8 @@ class AppSignUpService < BaseService
   end
 
   def find_waitlist_entry
+    return nil if skip_waitlist? || invitation_code_params[:invitation_code].blank?
+
     WaitList.find_by(invitation_code: invitation_code_params[:invitation_code], used: false)
   end
 end

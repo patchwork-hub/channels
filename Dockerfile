@@ -171,11 +171,11 @@ RUN \
 # Build ffmpeg
 FROM build AS ffmpeg
 ARG FFMPEG_VERSION=7.1
-ARG FFMPEG_URL=https://ffmpeg.org/releases
+ARG FFMPEG_URL=https://github.com/FFmpeg/FFmpeg/archive/refs/tags
 
 WORKDIR /usr/local/ffmpeg/src
-ADD ${FFMPEG_URL}/ffmpeg-${FFMPEG_VERSION}.tar.xz /usr/local/ffmpeg/src/
-RUN tar xf ffmpeg-${FFMPEG_VERSION}.tar.xz;
+ADD ${FFMPEG_URL}/n${FFMPEG_VERSION}.tar.gz /usr/local/ffmpeg/src/
+RUN tar xf n${FFMPEG_VERSION}.tar.gz && mv FFmpeg-n${FFMPEG_VERSION} ffmpeg-${FFMPEG_VERSION};
 
 WORKDIR /usr/local/ffmpeg/src/ffmpeg-${FFMPEG_VERSION}
 RUN \
@@ -238,7 +238,6 @@ COPY --from=libvips /usr/local/libvips/bin /usr/local/bin
 COPY --from=libvips /usr/local/libvips/lib /usr/local/lib
 
 #precompile and remove tmp 
-
 RUN ldconfig && \
   SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile && \
   rm -fr /opt/mastodon/tmp

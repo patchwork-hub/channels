@@ -102,4 +102,12 @@ class ActivityPub::FetchFeaturedCollectionService < BaseService
 
     @local_follower = @account.followers.local.without_suspended.first
   end
+
+  def normalize_collection_uri(uri)
+    uri = uri.first if uri.is_a?(Array)
+    uri = uri['id'] if uri.is_a?(Hash)
+    return '' unless uri.is_a?(String)
+
+    uri
+  end
 end

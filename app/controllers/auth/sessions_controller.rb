@@ -25,7 +25,7 @@ class Auth::SessionsController < Devise::SessionsController
     self.resource = warden.authenticate!(auth_options)
 
     if main_channel?
-      if user_admin_login_invalid?(resource)
+      if login_blocked_for?(resource) # rubocop:disable Style/SoleNestedConditional
         handle_invalid_user_login(resource)
         return
       end
@@ -90,9 +90,9 @@ class Auth::SessionsController < Devise::SessionsController
     last_url = stored_location_for(:user)
 
     if home_paths(resource).include?(last_url)
-      root_path
+      home_path
     else
-      last_url || root_path
+      last_url || home_path
     end
   end
 
@@ -209,21 +209,33 @@ class Auth::SessionsController < Devise::SessionsController
     end
   end
 
-  def user_admin_login_invalid?(user)
-    user.role&.name.in?(%w[UserAdmin HubAdmin]) || user.role.id == -99 || user.role.id.nil? ? !handle_user_login(user) : false
+  def login_blocked_for?(user)
+    invalid_admin_login?(user)
   end
 
-  def handle_user_login(user)
-    return false unless user&.account_id
+  def invalid_admin_login?(user)
+    return false unless has_special_role?(user, %w[UserAdmin HubAdmin OrganisationAdmin NewsmastAdmin])
 
-    Community.joins(:community_admins).exists?(
-      community_admins: {
-      account_id: user.account_id,
-      role: ['UserAdmin', 'HubAdmin'],
-      is_boost_bot: true,
-      account_status: CommunityAdmin.account_statuses["active"]
-      }
-    )
+    !has_valid_community_admin?(user, roles: %w[UserAdmin HubAdmin OrganisationAdmin NewsmastAdmin], boost_bot: true)
+  end
+
+  def has_special_role?(user, role_names)
+    return false unless user.present? && user.role.present?
+
+    user.role.id == -99 || user.role.id.nil? || role_names.include?(user.role.name)
+  end
+
+  def has_valid_community_admin?(user, roles:, boost_bot:)
+    return false unless user.account_id.present?
+
+    Community.joins(:community_admins)
+             .where(community_admins: {
+               account_id: user.account_id,
+               role: roles,
+               is_boost_bot: boost_bot,
+               account_status: CommunityAdmin.account_statuses["active"]
+             })
+             .exists?
   end
   
   def handle_invalid_user_login(user)

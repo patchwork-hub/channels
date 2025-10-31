@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
+
 import { FormattedMessage } from 'react-intl';
+
 import { openModal } from 'mastodon/actions/modal';
 import { registrationsOpen, sso_redirect, singleUserMode, is_newuser_with_approval, is_main_channel } from 'mastodon/initial_state';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
@@ -11,11 +13,6 @@ const SignInBanner = () => {
     () => dispatch(openModal({ modalType: 'CLOSED_REGISTRATIONS' })),
     [dispatch],
   );
-
-  console.log("singleUserMode",singleUserMode)
-  console.log("is_newuser_with_approval",is_newuser_with_approval)
-  console.log("is_main_channel",is_main_channel)
-  console.log("registrationsOpen",registrationsOpen)
   
   const registrationState = useAppSelector((state) => {
     const defaultUrl = state.getIn(['server', 'server', 'registrations', 'url'], null) || 'https://newsmast.social/auth/sign_up';
