@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: 1cfd9e33639b1ec7ad1e1e576ddd6b5aa3c690a6
+  revision: 4e769377cf7a17e22f4c8acd98c471a5c8711c5c
   branch: main
   specs:
     content_filters (0.1.0)
@@ -18,7 +18,7 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/custom_feeds
-  revision: ffa4e5307497d35497a06df6b39693d9eb8aeba1
+  revision: 020febe8a933855e968c262d5a9b8ece0ad92c05
   branch: main
   specs:
     custom_feeds (0.1.0)
@@ -26,7 +26,7 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/posts
-  revision: fe2f5006bb5795dae3175bcd1c1ec98b78682cdd
+  revision: 0a93b2ef6395ee9ad6b473d0ab1793909ea47b7b
   branch: main
   specs:
     posts (0.1.0)
@@ -908,7 +908,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
       rubocop-rspec (~> 3.5)
-    ruby-ll (2.1.3)
+    ruby-ll (2.1.4)
       ansi
       ast
     ruby-prof (1.7.2)
