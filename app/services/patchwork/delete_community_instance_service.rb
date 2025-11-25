@@ -1,6 +1,6 @@
 require 'httparty'
 
-class DeleteCommunityInstanceService < BaseService
+class Patchwork::DeleteCommunityInstanceService < BaseService
   LAMBDA_URL = ENV.fetch('DELETE_COMMUNITY_LAMBDA_URL', nil)
   LAMBDA_API_KEY = ENV.fetch('DELETE_COMMUNITY_LAMBDA_API_KEY', nil)
 
