@@ -4,18 +4,18 @@ class Patchwork::DeleteCommunityInstanceService < BaseService
   LAMBDA_URL = ENV.fetch('DELETE_COMMUNITY_LAMBDA_URL', nil)
   LAMBDA_API_KEY = ENV.fetch('DELETE_COMMUNITY_LAMBDA_API_KEY', nil)
 
-  def call(community_id)
+  def call(community)
     return false if LAMBDA_URL.nil? || LAMBDA_API_KEY.nil?
 
     return false if community.ip_address_id.nil?
 
-    ip_address = IpAddress.find(com.ip_address_id)
+    ip_address = IpAddress.find(community.ip_address_id)
     return false if ip_address.nil?
 
     ip = ip_address&.private_ip
 
     @payload = {
-      client: "#{community_id}_#{community.slug}",
+      client: "#{community.id}_#{community.slug}",
       ip_address: ip,
     }
     response = invoke_lambda
