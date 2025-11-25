@@ -17,7 +17,7 @@ class Patchwork::DeleteCommunityInstanceService < BaseService
     @payload = {
       client: "#{community.id}_#{community.slug}",
       ip_address: ip,
-    }
+    }.to_json
     response = invoke_lambda
     if response.success?
       ip_address.decrement_use_count
