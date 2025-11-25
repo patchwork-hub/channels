@@ -20,7 +20,7 @@ class Patchwork::DeleteCommunityInstanceService < BaseService
     }
     response = invoke_lambda
     if response.success?
-      decrement_use_count(ip_address)
+      ip_address.decrement_use_count
       true
     else
       log_failed_response(response)
@@ -43,13 +43,6 @@ class Patchwork::DeleteCommunityInstanceService < BaseService
         'x-api-key' => LAMBDA_API_KEY,
       }
     )
-  end
-
-  def decrement_use_count(ip_address)
-    ip_address.update!(use_count: ip_address.use_count - 1)
-  rescue => e
-    Rails.logger.error "[DeleteCommunityInstanceService] Error decrementing use_count: #{e.message}"
-    raise
   end
 
   def log_failed_response(response)
