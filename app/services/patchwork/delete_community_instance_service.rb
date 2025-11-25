@@ -12,7 +12,7 @@ class Patchwork::DeleteCommunityInstanceService < BaseService
     ip_address = IpAddress.find(com.ip_address_id)
     return false if ip_address.nil?
 
-    ip = ip_address&.ip
+    ip = ip_address&.private_ip
 
     @payload = {
       client: "#{community_id}_#{community.slug}",
