@@ -19,7 +19,7 @@ class CommunityCleanupWorker
 
           Rails.logger.info "[CommunityCleanupWorker] Deleting community ##{community.id}..."
 
-          response = Patchwork::DeleteCommunityInstanceService.new.call(community.id)
+          response = Patchwork::DeleteCommunityInstanceService.new.call(community)
 
           if response
             Rails.logger.info "[CommunityCleanupWorker] Successfully called DeleteCommunityInstanceService for community ##{community.id}."
