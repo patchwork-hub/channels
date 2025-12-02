@@ -18,7 +18,7 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/custom_feeds
-  revision: 020febe8a933855e968c262d5a9b8ece0ad92c05
+  revision: 3348b23404da64d5b4cc6b267100faa9e6f47741
   branch: main
   specs:
     custom_feeds (0.1.0)
