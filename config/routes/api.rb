@@ -76,7 +76,7 @@ namespace :api, format: false do
         end
       end
 
-      resources :relays, only: [:create, :destroy]
+      # resources :relays, only: [:create, :destroy]
 
       resources :email_settings, only: [:index] do
         collection do
