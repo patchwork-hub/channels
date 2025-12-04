@@ -56,7 +56,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
     user = fetch_user_credentials
     return 'You don\'t have access to login.' if user.nil? || user&.confirmed_at.nil?
 
-    return "#{user.role&.name&.underscore&.humanize} isn't allowed to access login." unless user.role&.name.eql?('UserAdmin') || user.role&.name.eql?('HubAdmin')
+    return "#{user.role&.name&.underscore&.humanize} isn't allowed to access login." unless user.role&.name.eql?('UserAdmin') || user.role&.name.eql?('HubAdmin') || user.role&.name.eql?('MasterAdmin')
 
     return 'Your channel is not active. Please contact support.' unless channel_active?(user)
 
@@ -94,7 +94,7 @@ class Oauth::TokensController < Doorkeeper::TokensController
   end
 
   def belong_any_channel?(community_admin)
-    return false unless community_admin&.patchwork_community_id.present?
+    return false if community_admin&.patchwork_community_id.blank?
 
     Community.exists?(
       id: community_admin.patchwork_community_id,
