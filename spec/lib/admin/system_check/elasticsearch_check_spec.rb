@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Admin::SystemCheck::ElasticsearchCheck do
+RSpec.describe Admin::SystemCheck::ElasticsearchCheck do
   subject(:check) { described_class.new(user) }
 
   let(:user) { Fabricate(:user) }
@@ -29,6 +29,9 @@ describe Admin::SystemCheck::ElasticsearchCheck do
             },
           },
         })
+        [AccountsIndex, StatusesIndex, PublicStatusesIndex, InstancesIndex, TagsIndex].each do |index|
+          allow(index).to receive(:specification).and_return(instance_double(Chewy::Index::Specification, changed?: false))
+        end
       end
 
       context 'when running version is present and high enough' do

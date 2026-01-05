@@ -1,6 +1,8 @@
 import { browserHistory } from 'mastodon/components/router';
+import { debounceWithDispatchAndArguments } from 'mastodon/utils/debounce';
 
 import api, { getLinks } from '../api';
+import { me } from '../initial_state';
 
 import {
   followAccountSuccess, unfollowAccountSuccess,
@@ -11,6 +13,7 @@ import {
   blockAccountSuccess, unblockAccountSuccess,
   pinAccountSuccess, unpinAccountSuccess,
   fetchRelationshipsSuccess,
+  fetchEndorsedAccounts,
 } from './accounts_typed';
 import { importFetchedAccount, importFetchedAccounts } from './importer';
 
@@ -141,6 +144,13 @@ export function fetchAccountFail(id, error) {
   };
 }
 
+/**
+ * @param {string} id
+ * @param {Object} options
+ * @param {boolean} [options.reblogs]
+ * @param {boolean} [options.notify]
+ * @returns {function(): void}
+ */
 export function followAccount(id, options = { reblogs: true }) {
   return (dispatch, getState) => {
     const alreadyFollowing = getState().getIn(['relationships', id, 'following']);
@@ -449,6 +459,20 @@ export function expandFollowingFail(id, error) {
   };
 }
 
+const debouncedFetchRelationships = debounceWithDispatchAndArguments((dispatch, ...newAccountIds) => {
+  if (newAccountIds.length === 0) {
+    return;
+  }
+
+  dispatch(fetchRelationshipsRequest(newAccountIds));
+
+  api().get(`/api/v1/accounts/relationships?with_suspended=true&${newAccountIds.map(id => `id[]=${id}`).join('&')}`).then(response => {
+    dispatch(fetchRelationshipsSuccess({ relationships: response.data }));
+  }).catch(error => {
+    dispatch(fetchRelationshipsFail(error));
+  });
+}, { delay: 500 });
+
 export function fetchRelationships(accountIds) {
   return (dispatch, getState) => {
     const state = getState();
@@ -460,13 +484,7 @@ export function fetchRelationships(accountIds) {
       return;
     }
 
-    dispatch(fetchRelationshipsRequest(newAccountIds));
-
-    api().get(`/api/v1/accounts/relationships?with_suspended=true&${newAccountIds.map(id => `id[]=${id}`).join('&')}`).then(response => {
-      dispatch(fetchRelationshipsSuccess({ relationships: response.data }));
-    }).catch(error => {
-      dispatch(fetchRelationshipsFail(error));
-    });
+    debouncedFetchRelationships(dispatch, ...newAccountIds);
   };
 }
 
@@ -618,6 +636,7 @@ export function pinAccount(id) {
 
     api().post(`/api/v1/accounts/${id}/pin`).then(response => {
       dispatch(pinAccountSuccess({ relationship: response.data }));
+      dispatch(fetchEndorsedAccounts({ accountId: me }));
     }).catch(error => {
       dispatch(pinAccountFail(error));
     });
@@ -630,6 +649,7 @@ export function unpinAccount(id) {
 
     api().post(`/api/v1/accounts/${id}/unpin`).then(response => {
       dispatch(unpinAccountSuccess({ relationship: response.data }));
+      dispatch(fetchEndorsedAccounts({ accountId: me }));
     }).catch(error => {
       dispatch(unpinAccountFail(error));
     });

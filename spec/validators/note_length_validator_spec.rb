@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe NoteLengthValidator do
+RSpec.describe NoteLengthValidator do
   subject { described_class.new(attributes: { note: true }, maximum: 500) }
 
   describe '#validate' do
@@ -28,6 +28,22 @@ describe NoteLengthValidator do
 
       subject.validate_each(account, 'note', text)
       expect(account.errors).to have_received(:add)
+    end
+
+    it 'counts multi byte emoji as single character' do
+      text = '✨' * 500
+      account = instance_double(Account, note: text, errors: activemodel_errors)
+
+      subject.validate_each(account, 'note', text)
+      expect(account.errors).to_not have_received(:add)
+    end
+
+    it 'counts ZWJ sequence emoji as single character' do
+      text = '🏳️‍⚧️' * 500
+      account = instance_double(Account, note: text, errors: activemodel_errors)
+
+      subject.validate_each(account, 'note', text)
+      expect(account.errors).to_not have_received(:add)
     end
 
     private

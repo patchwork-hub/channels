@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Routes under accounts/' do
+RSpec.describe 'Routes under accounts/' do
   context 'with local username' do
     let(:username) { 'alice' }
 
@@ -49,6 +49,7 @@ describe 'Routes under accounts/' do
 
   context 'with local username encoded at' do
     include RSpec::Rails::RequestExampleGroup
+
     let(:username) { 'alice' }
 
     it 'routes /%40:username' do
@@ -140,6 +141,7 @@ describe 'Routes under accounts/' do
 
   context 'with remote username encoded at' do
     include RSpec::Rails::RequestExampleGroup
+
     let(:username) { 'alice%40example.com' }
     let(:username_decoded) { 'alice@example.com' }
 

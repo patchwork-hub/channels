@@ -2,10 +2,10 @@
 
 require 'rails_helper'
 
-describe 'blocking domains through the moderation interface' do
+RSpec.describe 'blocking domains through the moderation interface' do
   before do
     allow(DomainBlockWorker).to receive(:perform_async).and_return(true)
-    sign_in Fabricate(:user, role: UserRole.find_by(name: 'Admin')), scope: :user
+    sign_in Fabricate(:admin_user), scope: :user
   end
 
   context 'when silencing a new domain' do
@@ -57,6 +57,30 @@ describe 'blocking domains through the moderation interface' do
     end
   end
 
+  context 'when suspending an already suspended domain and using a lower severity' do
+    before { Fabricate :domain_block, domain: 'example.com', severity: 'silence' }
+
+    it 'warns about downgrade and does not update' do
+      visit new_admin_domain_block_path
+
+      submit_domain_block('example.com', 'noop')
+
+      expect(page)
+        .to have_content(/You have already imposed stricter limits on example.com/)
+    end
+  end
+
+  context 'when failing to provide a domain value' do
+    it 'provides an error about the missing value' do
+      visit new_admin_domain_block_path
+
+      submit_domain_block('', 'noop')
+
+      expect(page)
+        .to have_content(/review the error below/)
+    end
+  end
+
   context 'when suspending a subdomain of an already-silenced domain' do
     it 'presents a confirmation screen before suspending the domain' do
       domain_block = Fabricate(:domain_block, domain: 'example.com', severity: 'silence')
@@ -91,7 +115,7 @@ describe 'blocking domains through the moderation interface' do
       visit edit_admin_domain_block_path(domain_block)
 
       select I18n.t('admin.domain_blocks.new.severity.suspend'), from: 'domain_block_severity'
-      click_on I18n.t('generic.save_changes')
+      click_on submit_button
 
       # It doesn't immediately block but presents a confirmation screen
       expect(page).to have_title(I18n.t('admin.domain_blocks.confirm_suspension.title', domain: 'example.com'))

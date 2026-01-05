@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Suggestions API' do
+RSpec.describe 'Suggestions API' do
   let(:user)    { Fabricate(:user) }
   let(:token)   { Fabricate(:accessible_access_token, resource_owner_id: user.id, scopes: scopes) }
   let(:scopes)  { 'read' }
@@ -21,8 +21,10 @@ describe 'Suggestions API' do
       get '/api/v2/suggestions', headers: headers
 
       expect(response).to have_http_status(200)
+      expect(response.content_type)
+        .to start_with('application/json')
 
-      expect(body_as_json).to match_array(
+      expect(response.parsed_body).to match_array(
         [bob, jeff].map do |account|
           hash_including({
             source: 'staff',
@@ -31,6 +33,15 @@ describe 'Suggestions API' do
           })
         end
       )
+    end
+
+    context 'when `follow_recommendation` FASP is enabled', feature: :fasp do
+      it 'enqueues a retrieval job and adds a header to inform the client' do
+        get '/api/v2/suggestions', headers: headers
+
+        expect(Fasp::FollowRecommendationWorker).to have_enqueued_sidekiq_job
+        expect(response.headers['Mastodon-Async-Refresh']).to be_present
+      end
     end
   end
 end

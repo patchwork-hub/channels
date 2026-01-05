@@ -9,6 +9,7 @@ namespace :settings do
 
   namespace :preferences do
     resource :appearance, only: [:show, :update], controller: :appearance
+    resource :posting_defaults, only: [:show, :update], controller: :posting_defaults
     resource :notifications, only: [:show, :update]
     resource :other, only: [:show, :update], controller: :other
   end
@@ -60,7 +61,7 @@ namespace :settings do
 
   resource :delete, only: [:show, :destroy]
   resource :migration, only: [:show, :create]
-  resource :verification, only: :show
+  resource :verification, only: [:show, :update]
   resource :privacy, only: [:show, :update], controller: 'privacy'
 
   namespace :migration do

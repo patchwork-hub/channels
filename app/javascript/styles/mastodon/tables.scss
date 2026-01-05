@@ -1,3 +1,6 @@
+@use 'variables' as *;
+@use 'functions' as *;
+
 .table {
   width: 100%;
   max-width: 100%;
@@ -137,14 +140,10 @@ a.table-action-link {
   padding: 0 10px;
   color: $darker-text-color;
   font-weight: 500;
+  white-space: nowrap;
 
   &:hover {
     color: $highlight-text-color;
-  }
-
-  i.fa {
-    font-weight: 400;
-    margin-inline-end: 5px;
   }
 
   &:first-child {
@@ -153,6 +152,14 @@ a.table-action-link {
 }
 
 .batch-table {
+  &--no-toolbar {
+    .batch-table__toolbar {
+      position: static;
+      height: 4px;
+      border-bottom: none;
+    }
+  }
+
   &__toolbar,
   &__row {
     display: flex;
@@ -188,7 +195,7 @@ a.table-action-link {
   &__toolbar {
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 200;
     border: 1px solid var(--background-border-color);
     background: var(--background-color);
     border-radius: 4px 4px 0 0;
@@ -198,6 +205,10 @@ a.table-action-link {
     &__actions {
       text-align: end;
       padding-inline-end: 16px - 5px;
+
+      .table-action-link {
+        padding: 0;
+      }
     }
   }
 
@@ -273,8 +284,8 @@ a.table-action-link {
       }
     }
 
-    &:nth-child(even) {
-      background: var(--background-color);
+    &:last-child {
+      border-radius: 0 0 4px 4px;
     }
 
     &__content {
@@ -343,16 +354,12 @@ a.table-action-link {
     }
   }
 
-  .status__content {
-    padding-top: 0;
-
-    summary {
-      display: list-item;
-    }
-
-    strong {
-      font-weight: 700;
-    }
+  // Reset the status card to not have borders, background or padding when
+  // inline in the table of statuses
+  .batch-table__row__content > .status__card {
+    border: none;
+    background: none;
+    padding: 0;
   }
 
   .nothing-here {
@@ -362,6 +369,10 @@ a.table-action-link {
     background: var(--background-color);
 
     @media screen and (max-width: $no-gap-breakpoint) {
+      border-top: 1px solid var(--background-border-color);
+    }
+
+    &--no-toolbar {
       border-top: 1px solid var(--background-border-color);
     }
   }

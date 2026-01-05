@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe REST::InstanceSerializer do
+RSpec.describe REST::InstanceSerializer do
   let(:serialization) { serialized_record_json(record, described_class) }
   let(:record) { InstancePresenter.new }
 
@@ -15,7 +15,7 @@ describe REST::InstanceSerializer do
   describe 'configuration' do
     it 'returns the VAPID public key' do
       expect(serialization['configuration']['vapid']).to eq({
-        'public_key' => Rails.configuration.x.vapid_public_key,
+        'public_key' => Rails.configuration.x.vapid.public_key,
       })
     end
 

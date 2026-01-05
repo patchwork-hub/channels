@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'email confirmation flow when captcha is enabled' do
+RSpec.describe 'email confirmation flow when captcha is enabled' do
   let(:user)        { Fabricate(:user, confirmed_at: nil, confirmation_token: 'foobar', created_by_application: client_app) }
   let(:client_app)  { nil }
 
@@ -31,7 +31,7 @@ describe 'email confirmation flow when captcha is enabled' do
 
       # It presents a page with a link to the app callback
       expect(page)
-        .to have_content(I18n.t('auth.confirmations.registration_complete', domain: 'cb6e6126.ngrok.io'))
+        .to have_content(I18n.t('auth.confirmations.registration_complete', domain: local_domain_uri.host))
         .and have_link(I18n.t('auth.confirmations.clicking_this_link'), href: client_app.confirmation_redirect_uri)
     end
   end

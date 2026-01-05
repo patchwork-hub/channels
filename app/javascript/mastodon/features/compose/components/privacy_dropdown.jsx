@@ -11,15 +11,14 @@ import AlternateEmailIcon from '@/material-icons/400-24px/alternate_email.svg?re
 import LockIcon from '@/material-icons/400-24px/lock.svg?react';
 import PublicIcon from '@/material-icons/400-24px/public.svg?react';
 import QuietTimeIcon from '@/material-icons/400-24px/quiet_time.svg?react';
+import { DropdownSelector } from 'mastodon/components/dropdown_selector';
 import { Icon }  from 'mastodon/components/icon';
 
-import { PrivacyDropdownMenu } from './privacy_dropdown_menu';
-
-const messages = defineMessages({
+export const messages = defineMessages({
   public_short: { id: 'privacy.public.short', defaultMessage: 'Public' },
   public_long: { id: 'privacy.public.long', defaultMessage: 'Anyone on and off Mastodon' },
   unlisted_short: { id: 'privacy.unlisted.short', defaultMessage: 'Quiet public' },
-  unlisted_long: { id: 'privacy.unlisted.long', defaultMessage: 'Fewer algorithmic fanfares' },
+  unlisted_long: { id: 'privacy.unlisted.long', defaultMessage: 'Hidden from Mastodon search results, trending, and public timelines' },
   private_short: { id: 'privacy.private.short', defaultMessage: 'Followers' },
   private_long: { id: 'privacy.private.long', defaultMessage: 'Only your followers' },
   direct_short: { id: 'privacy.direct.short', defaultMessage: 'Specific people' },
@@ -31,9 +30,6 @@ const messages = defineMessages({
 class PrivacyDropdown extends PureComponent {
 
   static propTypes = {
-    isUserTouching: PropTypes.func,
-    onModalOpen: PropTypes.func,
-    onModalClose: PropTypes.func,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     noDirect: PropTypes.bool,
@@ -143,7 +139,7 @@ class PrivacyDropdown extends PureComponent {
           {({ props, placement }) => (
             <div {...props}>
               <div className={`dropdown-animation privacy-dropdown__dropdown ${placement}`}>
-                <PrivacyDropdownMenu
+                <DropdownSelector
                   items={this.options}
                   value={value}
                   onClose={this.handleClose}

@@ -4,6 +4,7 @@ import type { ApiAccountJSON } from './accounts';
 import type { ApiCustomEmojiJSON } from './custom_emoji';
 import type { ApiMediaAttachmentJSON } from './media_attachments';
 import type { ApiPollJSON } from './polls';
+import type { ApiQuoteJSON, ApiQuotePolicyJSON } from './quotes';
 
 // See app/modals/status.rb
 export type StatusVisibility =
@@ -58,6 +59,29 @@ export interface ApiPreviewCardJSON {
   authors: ApiPreviewCardAuthorJSON[];
 }
 
+export type FilterContext =
+  | 'home'
+  | 'notifications'
+  | 'public'
+  | 'thread'
+  | 'account';
+
+export interface ApiFilterJSON {
+  id: string;
+  title: string;
+  context: FilterContext;
+  expires_at: string;
+  filter_action: 'warn' | 'hide';
+  keywords?: unknown[]; // TODO: FilterKeywordSerializer
+  statuses?: unknown[]; // TODO: FilterStatusSerializer
+}
+
+export interface ApiFilterResultJSON {
+  filter: ApiFilterJSON;
+  keyword_matches: string[];
+  status_matches: string[];
+}
+
 export interface ApiStatusJSON {
   id: string;
   created_at: string;
@@ -72,6 +96,7 @@ export interface ApiStatusJSON {
   replies_count: number;
   reblogs_count: number;
   favorites_count: number;
+  quotes_count: number;
   edited_at?: string;
 
   favorited?: boolean;
@@ -80,8 +105,7 @@ export interface ApiStatusJSON {
   bookmarked?: boolean;
   pinned?: boolean;
 
-  // filtered: FilterResult[]
-  filtered: unknown; // TODO
+  filtered?: ApiFilterResultJSON[];
   content?: string;
   text?: string;
 
@@ -96,4 +120,23 @@ export interface ApiStatusJSON {
 
   card?: ApiPreviewCardJSON;
   poll?: ApiPollJSON;
+  quote?: ApiQuoteJSON;
+  quote_approval?: ApiQuotePolicyJSON;
+}
+
+export interface ApiContextJSON {
+  ancestors: ApiStatusJSON[];
+  descendants: ApiStatusJSON[];
+}
+
+export interface ApiStatusSourceJSON {
+  id: string;
+  text: string;
+  spoiler_text: string;
+}
+
+export function isStatusVisibility(
+  visibility: string,
+): visibility is StatusVisibility {
+  return ['public', 'unlisted', 'private', 'direct'].includes(visibility);
 }

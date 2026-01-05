@@ -2,6 +2,7 @@ import { FormattedMessage, useIntl, defineMessages } from 'react-intl';
 
 import classNames from 'classnames';
 
+import { DisplayName } from '@/mastodon/components/display_name';
 import FlagIcon from '@/material-icons/400-24px/flag-fill.svg?react';
 import { Icon } from 'mastodon/components/icon';
 import { RelativeTimestamp } from 'mastodon/components/relative_timestamp';
@@ -43,18 +44,8 @@ export const NotificationAdminReport: React.FC<{
   if (!account || !targetAccount) return null;
 
   const values = {
-    name: (
-      <bdi
-        dangerouslySetInnerHTML={{ __html: account.get('display_name_html') }}
-      />
-    ),
-    target: (
-      <bdi
-        dangerouslySetInnerHTML={{
-          __html: targetAccount.get('display_name_html'),
-        }}
-      />
-    ),
+    name: <DisplayName account={account} variant='simple' />,
+    target: <DisplayName account={targetAccount} variant='simple' />,
     category: intl.formatMessage(messages[report.category]),
     count: report.status_ids.length,
   };

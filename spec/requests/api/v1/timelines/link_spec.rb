@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Link' do
+RSpec.describe 'Link' do
   let(:user)    { Fabricate(:user) }
   let(:scopes)  { 'read:statuses' }
   let(:token)   { Fabricate(:accessible_access_token, resource_owner_id: user.id, scopes: scopes) }
@@ -13,7 +13,9 @@ describe 'Link' do
       subject
 
       expect(response).to have_http_status(200)
-      expect(body_as_json.pluck(:id)).to match_array(expected_statuses.map { |status| status.id.to_s })
+      expect(response.content_type)
+        .to start_with('application/json')
+      expect(response.parsed_body.pluck(:id)).to match_array(expected_statuses.map { |status| status.id.to_s })
     end
   end
 
@@ -50,6 +52,8 @@ describe 'Link' do
         subject
 
         expect(response).to have_http_status(404)
+        expect(response.content_type)
+          .to start_with('application/json')
       end
     end
 
@@ -62,6 +66,8 @@ describe 'Link' do
         subject
 
         expect(response).to have_http_status(404)
+        expect(response.content_type)
+          .to start_with('application/json')
       end
     end
 
@@ -74,12 +80,14 @@ describe 'Link' do
         subject
 
         expect(response).to have_http_status(404)
+        expect(response.content_type)
+          .to start_with('application/json')
       end
     end
 
     context 'when the instance does not allow public preview' do
       before do
-        Form::AdminSettings.new(timeline_preview: false).save
+        Form::AdminSettings.new(local_topic_feed_access: 'authenticated', remote_topic_feed_access: 'authenticated').save
       end
 
       it_behaves_like 'forbidden for wrong scope', 'profile'
@@ -91,6 +99,8 @@ describe 'Link' do
           subject
 
           expect(response).to have_http_status(422)
+          expect(response.content_type)
+            .to start_with('application/json')
         end
       end
 
@@ -101,6 +111,8 @@ describe 'Link' do
           subject
 
           expect(response).to have_http_status(422)
+          expect(response.content_type)
+            .to start_with('application/json')
         end
       end
 
@@ -123,15 +135,13 @@ describe 'Link' do
       context 'with limit param' do
         let(:params) { { limit: 1, url: url } }
 
-        it 'returns only the requested number of statuses', :aggregate_failures do
+        it 'returns only the requested number of statuses with pagination headers', :aggregate_failures do
           subject
 
           expect(response).to have_http_status(200)
-          expect(body_as_json.size).to eq(params[:limit])
-        end
-
-        it 'sets the correct pagination headers', :aggregate_failures do
-          subject
+          expect(response.content_type)
+            .to start_with('application/json')
+          expect(response.parsed_body.size).to eq(params[:limit])
 
           expect(response)
             .to include_pagination_headers(

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Extractor do
+RSpec.describe Extractor do
   describe 'extract_mentions_or_lists_with_indices' do
     it 'returns an empty array if the given string does not have at signs' do
       text = 'a string without at signs'
@@ -35,10 +35,22 @@ describe Extractor do
   end
 
   describe 'extract_hashtags_with_indices' do
-    it 'returns an empty array if it does not have #' do
+    it 'returns an empty array if it does not have # or ＃' do
       text = 'a string without hash sign'
       extracted = described_class.extract_hashtags_with_indices(text)
       expect(extracted).to eq []
+    end
+
+    it 'returns hashtags preceded by an ASCII hash' do
+      text = 'hello #world'
+      extracted = described_class.extract_hashtags_with_indices(text)
+      expect(extracted).to eq [{ hashtag: 'world', indices: [6, 12] }]
+    end
+
+    it 'returns hashtags preceded by a full-width hash' do
+      text = 'hello ＃world'
+      extracted = described_class.extract_hashtags_with_indices(text)
+      expect(extracted).to eq [{ hashtag: 'world', indices: [6, 12] }]
     end
 
     it 'does not exclude normal hash text before ://' do
