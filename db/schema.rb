@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_23_210145) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_27_024820) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -200,6 +200,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_23_210145) do
     t.string "attribution_domains", default: [], array: true
     t.string "following_url", default: "", null: false
     t.integer "id_scheme", default: 1
+    t.boolean "is_banned", default: false
     t.index "(((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\")))", name: "search_index", using: :gin
     t.index "lower((username)::text), COALESCE(lower((domain)::text), ''::text)", name: "index_accounts_on_username_and_domain_lower", unique: true
     t.index ["domain", "id"], name: "index_accounts_on_domain_and_id"
@@ -694,7 +695,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_23_210145) do
     t.integer "thumbnail_file_size"
     t.datetime "thumbnail_updated_at", precision: nil
     t.string "thumbnail_remote_url"
+    t.bigint "patchwork_drafted_status_id"
     t.index ["account_id", "status_id"], name: "index_media_attachments_on_account_id_and_status_id", order: { status_id: :desc }
+    t.index ["patchwork_drafted_status_id"], name: "index_media_attachments_on_patchwork_drafted_status_id", where: "(patchwork_drafted_status_id IS NOT NULL)"
     t.index ["scheduled_status_id"], name: "index_media_attachments_on_scheduled_status_id", where: "(scheduled_status_id IS NOT NULL)"
     t.index ["shortcode"], name: "index_media_attachments_on_shortcode", unique: true, opclass: :text_pattern_ops, where: "(shortcode IS NOT NULL)"
     t.index ["status_id"], name: "index_media_attachments_on_status_id"
@@ -818,6 +821,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_23_210145) do
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["superapp"], name: "index_oauth_applications_on_superapp", where: "(superapp = true)"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
+  end
+
+  create_table "patchwork_drafted_statuses", force: :cascade do |t|
+    t.bigint "account_id"
+    t.jsonb "params"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_patchwork_drafted_statuses_on_account_id"
+  end
+
+  create_table "patchwork_notification_tokens", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "notification_token"
+    t.string "platform_type"
+    t.boolean "mute", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_patchwork_notification_tokens_on_account_id"
   end
 
   create_table "pghero_space_stats", force: :cascade do |t|
@@ -1014,6 +1035,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_23_210145) do
     t.index ["scheduled_at"], name: "index_scheduled_statuses_on_scheduled_at"
   end
 
+  create_table "server_settings", force: :cascade do |t|
+    t.string "name"
+    t.string "optional_value"
+    t.boolean "value"
+    t.integer "position"
+    t.bigint "parent_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "session_activations", force: :cascade do |t|
     t.string "session_id", null: false
     t.datetime "created_at", precision: nil, null: false
@@ -1148,6 +1180,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_23_210145) do
     t.bigint "ordered_media_attachment_ids", array: true
     t.datetime "fetched_replies_at"
     t.integer "quote_approval_policy", default: 0, null: false
+    t.boolean "is_banned", default: false
     t.index ["account_id", "id", "visibility", "updated_at"], name: "index_statuses_20190820", order: { id: :desc }, where: "(deleted_at IS NULL)"
     t.index ["account_id"], name: "index_statuses_on_account_id"
     t.index ["conversation_id"], name: "index_statuses_on_conversation_id"
@@ -1293,6 +1326,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_23_210145) do
     t.string "otp_secret"
     t.datetime "age_verified_at"
     t.boolean "require_tos_interstitial", default: false, null: false
+    t.boolean "alttext_enabled", default: false, null: false
     t.index ["account_id"], name: "index_users_on_account_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_by_application_id"], name: "index_users_on_created_by_application_id", where: "(created_by_application_id IS NOT NULL)"
@@ -1421,6 +1455,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_23_210145) do
   add_foreign_key "login_activities", "users", on_delete: :cascade
   add_foreign_key "markers", "users", on_delete: :cascade
   add_foreign_key "media_attachments", "accounts", name: "fk_96dd81e81b", on_delete: :nullify
+  add_foreign_key "media_attachments", "patchwork_drafted_statuses", on_delete: :nullify
   add_foreign_key "media_attachments", "scheduled_statuses", on_delete: :nullify
   add_foreign_key "media_attachments", "statuses", on_delete: :nullify
   add_foreign_key "mentions", "accounts", name: "fk_970d43f9d1", on_delete: :cascade
@@ -1440,6 +1475,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_23_210145) do
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id", name: "fk_f5fc4c1ee3", on_delete: :cascade
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id", name: "fk_e84df68546", on_delete: :cascade
   add_foreign_key "oauth_applications", "users", column: "owner_id", name: "fk_b0988c7c0a", on_delete: :cascade
+  add_foreign_key "patchwork_drafted_statuses", "accounts", on_delete: :cascade
+  add_foreign_key "patchwork_notification_tokens", "accounts", on_delete: :cascade
   add_foreign_key "poll_votes", "accounts", on_delete: :cascade
   add_foreign_key "poll_votes", "polls", on_delete: :cascade
   add_foreign_key "polls", "accounts", on_delete: :cascade
