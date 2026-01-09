@@ -11,8 +11,9 @@ import { useAppHistory } from 'mastodon/components/router';
 import ServerBanner from 'mastodon/components/server_banner';
 import { Search } from 'mastodon/features/compose/components/search';
 import ComposeFormContainer from 'mastodon/features/compose/containers/compose_form_container';
-import { LinkFooter } from 'mastodon/features/ui/components/link_footer';
+import ChannelBanner from '@/mastodon/components/channel_banner';
 import { useIdentity } from 'mastodon/identity_context';
+import { SignInBanner } from '../../navigation_panel/components/sign_in_banner';
 
 export const ComposePanel: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -39,19 +40,14 @@ export const ComposePanel: React.FC = () => {
 
   return (
     <div className='compose-panel' onFocus={handleFocus}>
-      <Search singleColumn={singleColumn} />
-
-      {!signedIn && (
-        <>
-          <ServerBanner />
-          <div className='flex-spacer' />
-        </>
-      )}
 
       {signedIn && !hideComposer && <ComposeFormContainer singleColumn />}
       {signedIn && hideComposer && <div className='compose-form' />}
-
-      <LinkFooter multiColumn={!singleColumn} />
+      <ChannelBanner />
+      {!signedIn && (
+        <SignInBanner />
+      )}
+      
     </div>
   );
 };

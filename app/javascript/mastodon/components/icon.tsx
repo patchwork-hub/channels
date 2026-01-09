@@ -11,8 +11,8 @@ export type IconProp = React.FC<SVGPropsWithTitle>;
 
 interface Props extends React.SVGProps<SVGSVGElement> {
   children?: never;
-  id: string;
-  icon: IconProp;
+  id: string | undefined;
+  icon: IconProp | undefined;
 }
 
 export const Icon: React.FC<Props> = ({

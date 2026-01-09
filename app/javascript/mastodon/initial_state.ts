@@ -47,6 +47,9 @@ interface InitialStateMeta {
   status_page_url: string;
   terms_of_service_enabled: boolean;
   emoji_style?: string;
+  // channels
+  is_newuser_with_approval?: boolean;
+  is_main_channel?: boolean;
 }
 
 interface Role {
@@ -67,6 +70,7 @@ export interface InitialState {
   custom_links?: Record<string, unknown> | string;
   logo_image?: string;
   channel_display_name?: string;
+  header_image?: string;
 }
 
 const element = document.getElementById('initial-state');
@@ -131,6 +135,9 @@ export const criticalUpdatesPending = initialState?.critical_updates_pending;
 export const statusPageUrl = getMeta('status_page_url');
 export const sso_redirect = getMeta('sso_redirect');
 export const termsOfServiceEnabled = getMeta('terms_of_service_enabled');
+// channles
+export const is_newuser_with_approval = getMeta('is_newuser_with_approval');
+export const is_main_channel = getMeta('is_main_channel');
 
 const displayNames =
   // Intl.DisplayNames can be undefined in old browsers
@@ -151,9 +158,11 @@ export const languages = initialState?.languages.map((lang) => {
   ];
 });
 
+// Custom instance settings
+export const header_image = initialState?.header_image;
 export const custom_links = initialState?.custom_links;
-export const logo_image = initialState?.logo_image;
 export const channel_display_name = initialState?.channel_display_name;
+export const logo_image = initialState?.logo_image;
 
 export function getAccessToken(): string | undefined {
   return getMeta('access_token');

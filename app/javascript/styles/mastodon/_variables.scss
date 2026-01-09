@@ -20,6 +20,8 @@ $gold-star: #ca8f04 !default; // Dark Goldenrod
 
 $red-bookmark: $warning-red;
 
+$channel-red: #e63946;
+
 // Values from the classic Mastodon UI
 $classic-base-color: hsl(240deg, 16%, 19%);
 $classic-primary-color: hsl(240deg, 29%, 70%);
@@ -108,6 +110,8 @@ $no-columns-breakpoint: 600px;
 $font-sans-serif: 'mastodon-font-sans-serif' !default;
 $font-display: 'mastodon-font-display' !default;
 $font-monospace: 'mastodon-font-monospace' !default;
+$font-ibm-plex-sans: 'mastodon-font-ibm-plex-sans' !default;
+$font-source-sans-pro: 'mastodon-font-source-sans-pro' !default;
 
 $emojis-requiring-inversion: 'back' 'copyright' 'curly_loop' 'currency_exchange'
   'end' 'heavy_check_mark' 'heavy_division_sign' 'heavy_dollar_sign'
