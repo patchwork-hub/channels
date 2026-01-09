@@ -165,3 +165,15 @@
     font-weight: 700;
   }
 }
+
+// Form button overrides
+.simple_form .btn {
+  background: var(--color-brand-mastodon);
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: var(--color-brand-mastodon);
+    filter: brightness(1.1);
+  }
+}
