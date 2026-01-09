@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import classNames from 'classnames';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import type { Map as ImmutableMap } from 'immutable';
 
@@ -30,7 +30,6 @@ import { fetchFollowRequests } from 'mastodon/actions/accounts';
 import { openNavigation, closeNavigation } from 'mastodon/actions/navigation';
 import { Account } from 'mastodon/components/account';
 import { IconWithBadge } from 'mastodon/components/icon_with_badge';
-import { WordmarkLogo } from 'mastodon/components/logo';
 import { Search } from 'mastodon/features/compose/components/search';
 import { ColumnLink } from 'mastodon/features/ui/components/column_link';
 import { useBreakpoint } from 'mastodon/features/ui/hooks/useBreakpoint';
@@ -40,11 +39,17 @@ import {
   remoteLiveFeedAccess,
   trendsEnabled,
   me,
+  custom_links,
+  version,
 } from 'mastodon/initial_state';
 import { transientSingleColumn } from 'mastodon/is_mobile';
 import { canViewFeed } from 'mastodon/permissions';
 import { selectUnreadNotificationGroupsCount } from 'mastodon/selectors/notifications';
 import { useAppSelector, useAppDispatch } from 'mastodon/store';
+
+import { Logo } from '../ui/components/logo';
+import { icons } from '../ui/components/navIcons';
+import { ServerInformation } from '../ui/components/server_information';
 
 import { DisabledAccountBanner } from './components/disabled_account_banner';
 import { FollowedTagsPanel } from './components/followed_tags_panel';
@@ -97,6 +102,7 @@ const messages = defineMessages({
   },
   logout: { id: 'navigation_bar.logout', defaultMessage: 'Logout' },
   compose: { id: 'tabs_bar.publish', defaultMessage: 'New Post' },
+  feed: { id: 'feed.title', defaultMessage: 'Feed' },
 });
 
 const NotificationsLink = () => {
@@ -135,8 +141,8 @@ const FollowRequestsLink: React.FC = () => {
     (state) =>
       (
         state.user_lists.getIn(['follow_requests', 'items']) as
-          | ImmutableMap<string, unknown>
-          | undefined
+        | ImmutableMap<string, unknown>
+        | undefined
       )?.size ?? 0,
   );
   const dispatch = useAppDispatch();
@@ -202,6 +208,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
   const { signedIn, permissions, disabledAccountId } = useIdentity();
   const location = useLocation();
   const showSearch = useBreakpoint('full') && !multiColumn;
+  const navItems = custom_links && typeof custom_links === 'string' ? JSON.parse(custom_links) : (custom_links as any || {});
 
   let banner: React.ReactNode;
 
@@ -221,15 +228,11 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
 
   return (
     <div className='navigation-panel'>
-      <div className='navigation-panel__logo'>
-        <Link to='/' className='column-link column-link--logo'>
-          <WordmarkLogo />
-        </Link>
-      </div>
+      <Logo />
 
       {showSearch && <Search singleColumn />}
 
-      {!multiColumn && <ProfileCard />}
+      {!multiColumn && signedIn && <ProfileCard />}
 
       {banner && <div className='navigation-panel__banner'>{banner}</div>}
 
@@ -257,6 +260,28 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
           </>
         )}
 
+        <ColumnLink
+          transparent
+          to='/public'
+          icon='feed'
+          iconComponent={PublicIcon}
+          activeIconComponent={PublicIcon}
+          text={intl.formatMessage(messages.feed)}
+        />
+
+        {Object.values(navItems).map((it: any, index: number) => (
+          <ColumnLink
+            key={index}
+            transparent
+            href={it.url}
+            icon={it.icon}
+            target='_blank'
+            iconComponent={icons[it.icon]}
+            activeIconComponent={icons[it.icon]}
+            text={it.name}
+          />
+        ))}
+
         {trendsEnabled && (
           <ColumnLink
             transparent
@@ -269,24 +294,24 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
 
         {(canViewFeed(signedIn, permissions, localLiveFeedAccess) ||
           canViewFeed(signedIn, permissions, remoteLiveFeedAccess)) && (
-          <ColumnLink
-            transparent
-            to={
-              canViewFeed(signedIn, permissions, localLiveFeedAccess)
-                ? '/public/local'
-                : '/public/remote'
-            }
-            icon='globe'
-            iconComponent={PublicIcon}
-            isActive={isFirehoseActive}
-            text={intl.formatMessage(
-              canViewFeed(signedIn, permissions, localLiveFeedAccess) &&
-                canViewFeed(signedIn, permissions, remoteLiveFeedAccess)
-                ? messages.firehose
-                : messages.firehose_singular,
-            )}
-          />
-        )}
+            <ColumnLink
+              transparent
+              to={
+                canViewFeed(signedIn, permissions, localLiveFeedAccess)
+                  ? '/public/local'
+                  : '/public/remote'
+              }
+              icon='globe'
+              iconComponent={PublicIcon}
+              isActive={isFirehoseActive}
+              text={intl.formatMessage(
+                canViewFeed(signedIn, permissions, localLiveFeedAccess) &&
+                  canViewFeed(signedIn, permissions, remoteLiveFeedAccess)
+                  ? messages.firehose
+                  : messages.firehose_singular,
+              )}
+            />
+          )}
 
         {signedIn && (
           <>
@@ -338,7 +363,60 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
           </>
         )}
 
+        <ServerInformation style={{ paddingBlock: 40, paddingInline: 18 }} />
+
         <div className='navigation-panel__legal'>
+          <ul
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1rem',
+              marginBottom: '1rem',
+              flexWrap: 'wrap',
+              listStyle: 'none',
+              padding: 0,
+            }}
+          >
+            <li>
+              <a
+                href='https://www.newsmastfoundation.org/terms-conditions/'
+                target='_blank'
+                className='footer-link'
+                rel='noopener'
+                style={{ fontSize: '12px', opacity: 0.7 }}
+              >
+                Terms & Conditions
+              </a>
+            </li>
+            <li>
+              <a
+                href='https://channel.org/privacy-policy/'
+                target='_blank'
+                className='footer-link'
+                rel='noopener'
+                style={{ fontSize: '12px', opacity: 0.7 }}
+              >
+                Privacy Policy
+              </a>
+            </li>
+          </ul>
+          <p style={{ marginBottom: '0.5rem' }}>
+            <a
+              href='https://github.com/patchwork-hub/channels/'
+              className='link underline'
+              target='_blank'
+              rel='noopener'
+              style={{ fontSize: '12px', opacity: 0.7 }}
+            >
+              View source code
+            </a>
+          </p>
+          {version && (
+            <p style={{ fontSize: '11px', opacity: 0.5 }}>Channels {version}</p>
+          )}
+
+          <hr />
+
           <ColumnLink
             transparent
             to='/about'
