@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet';
 import { NavLink } from 'react-router-dom';
 
 import { useIdentity } from '@/mastodon/identity_context';
-import PublicIcon from '@/material-icons/400-24px/public.svg?react';
-import { addColumn } from 'mastodon/actions/columns';
-import { changeSetting } from 'mastodon/actions/settings';
 import { connectPublicStream, connectCommunityStream } from 'mastodon/actions/streaming';
 import { expandPublicTimeline, expandCommunityTimeline } from 'mastodon/actions/timelines';
 import { DismissableBanner } from 'mastodon/components/dismissable_banner';
@@ -18,45 +15,13 @@ import { canViewFeed } from 'mastodon/permissions';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
 import Column from '../../components/column';
-import ColumnHeader from '../../components/column_header';
-import SettingToggle from '../notifications/components/setting_toggle';
 import StatusListContainer from '../ui/containers/status_list_container';
+import ChannelTopBanner from 'mastodon/components/channel_top_banner';
 
 const messages = defineMessages({
   title: { id: 'column.firehose', defaultMessage: 'Live feeds' },
-  title_local: {
-    id: 'column.firehose_local',
-    defaultMessage: 'Live feed for this server',
-  },
-  title_singular: {
-    id: 'column.firehose_singular',
-    defaultMessage: 'Live feed',
-  },
 });
 
-const ColumnSettings = () => {
-  const dispatch = useAppDispatch();
-  const settings = useAppSelector((state) => state.getIn(['settings', 'firehose']));
-  const onChange = useCallback(
-    (key, checked) => dispatch(changeSetting(['firehose', ...key], checked)),
-    [dispatch],
-  );
-
-  return (
-    <div className='column-settings'>
-      <section>
-        <div className='column-settings__row'>
-          <SettingToggle
-            settings={settings}
-            settingPath={['onlyMedia']}
-            onChange={onChange}
-            label={<FormattedMessage id='community.column_settings.media_only' defaultMessage='Media only' />}
-          />
-        </div>
-      </section>
-    </div>
-  );
-};
 
 const Firehose = ({ feedType, multiColumn }) => {
   const dispatch = useAppDispatch();
@@ -65,66 +30,48 @@ const Firehose = ({ feedType, multiColumn }) => {
   const columnRef = useRef(null);
 
   const onlyMedia = useAppSelector((state) => state.getIn(['settings', 'firehose', 'onlyMedia'], false));
-  const hasUnread = useAppSelector((state) => state.getIn(['timelines', `${feedType}${onlyMedia ? ':media' : ''}`, 'unread'], 0) > 0);
 
-  const handlePin = useCallback(
-    () => {
-      switch(feedType) {
-      case 'community':
-        dispatch(addColumn('COMMUNITY', { other: { onlyMedia } }));
-        break;
-      case 'public':
-        dispatch(addColumn('PUBLIC', { other: { onlyMedia } }));
-        break;
-      case 'public:remote':
-        dispatch(addColumn('REMOTE', { other: { onlyMedia, onlyRemote: true } }));
-        break;
-      }
-    },
-    [dispatch, onlyMedia, feedType],
-  );
 
   const handleLoadMore = useCallback(
     (maxId) => {
-      switch(feedType) {
-      case 'community':
-        dispatch(expandCommunityTimeline({ maxId, onlyMedia }));
-        break;
-      case 'public':
-        dispatch(expandPublicTimeline({ maxId, onlyMedia }));
-        break;
-      case 'public:remote':
-        dispatch(expandPublicTimeline({ maxId, onlyMedia, onlyRemote: true }));
-        break;
+      switch (feedType) {
+        case 'community':
+          dispatch(expandCommunityTimeline({ maxId, onlyMedia }));
+          break;
+        case 'public':
+          dispatch(expandPublicTimeline({ maxId, onlyMedia }));
+          break;
+        case 'public:remote':
+          dispatch(expandPublicTimeline({ maxId, onlyMedia, onlyRemote: true }));
+          break;
       }
     },
     [dispatch, onlyMedia, feedType],
   );
 
-  const handleHeaderClick = useCallback(() => columnRef.current?.scrollTop(), []);
 
   useEffect(() => {
     let disconnect;
 
-    switch(feedType) {
-    case 'community':
-      dispatch(expandCommunityTimeline({ onlyMedia }));
-      if (signedIn) {
-        disconnect = dispatch(connectCommunityStream({ onlyMedia }));
-      }
-      break;
-    case 'public':
-      dispatch(expandPublicTimeline({ onlyMedia }));
-      if (signedIn) {
-        disconnect = dispatch(connectPublicStream({ onlyMedia }));
-      }
-      break;
-    case 'public:remote':
-      dispatch(expandPublicTimeline({ onlyMedia, onlyRemote: true }));
-      if (signedIn) {
-        disconnect = dispatch(connectPublicStream({ onlyMedia, onlyRemote: true }));
-      }
-      break;
+    switch (feedType) {
+      case 'community':
+        dispatch(expandCommunityTimeline({ onlyMedia }));
+        if (signedIn) {
+          disconnect = dispatch(connectCommunityStream({ onlyMedia }));
+        }
+        break;
+      case 'public':
+        dispatch(expandPublicTimeline({ onlyMedia }));
+        if (signedIn) {
+          disconnect = dispatch(connectPublicStream({ onlyMedia }));
+        }
+        break;
+      case 'public:remote':
+        dispatch(expandPublicTimeline({ onlyMedia, onlyRemote: true }));
+        if (signedIn) {
+          disconnect = dispatch(connectPublicStream({ onlyMedia, onlyRemote: true }));
+        }
+        break;
     }
 
     return () => disconnect?.();
@@ -169,45 +116,18 @@ const Firehose = ({ feedType, multiColumn }) => {
     />
   );
 
-  let title;
-
-  if (canViewFeed(signedIn, permissions, localLiveFeedAccess) && canViewFeed(signedIn, permissions, remoteLiveFeedAccess)) {
-    title = messages.title;
-  } else if (canViewFeed(signedIn, permissions, localLiveFeedAccess)) {
-    title = messages.title_local;
-  } else {
-    title = messages.title_singular;
-  }
 
   return (
     <Column bindToDocument={!multiColumn} ref={columnRef} label={intl.formatMessage(messages.title)}>
-      <ColumnHeader
-        icon='globe'
-        iconComponent={PublicIcon}
-        active={hasUnread}
-        title={intl.formatMessage(title)}
-        onPin={handlePin}
-        onClick={handleHeaderClick}
-        multiColumn={multiColumn}
-      >
-        <ColumnSettings />
-      </ColumnHeader>
-
-      {(canViewFeed(signedIn, permissions, localLiveFeedAccess) && canViewFeed(signedIn, permissions, remoteLiveFeedAccess)) && (
-        <div className='account__section-headline'>
-          <NavLink exact to='/public/local'>
-            <FormattedMessage tagName='div' id='firehose.local' defaultMessage='This server' />
-          </NavLink>
-
-          <NavLink exact to='/public/remote'>
-            <FormattedMessage tagName='div' id='firehose.remote' defaultMessage='Other servers' />
-          </NavLink>
-
-          <NavLink exact to='/public'>
-            <FormattedMessage tagName='div' id='firehose.all' defaultMessage='All' />
-          </NavLink>
-        </div>
-      )}
+      <ChannelTopBanner />
+      <div className='account__section-headline'>
+        <NavLink exact to='/public'>
+          <FormattedMessage tagName='div' defaultMessage='Posts' />
+        </NavLink>
+        <NavLink exact to='/about'>
+          <FormattedMessage tagName='div' defaultMessage='About' />
+        </NavLink>
+      </div>
 
       <StatusListContainer
         prepend={prependBanner}

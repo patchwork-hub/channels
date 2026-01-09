@@ -4,19 +4,20 @@ import { PureComponent } from 'react';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 
 import { Helmet } from 'react-helmet';
+import { NavLink } from 'react-router-dom';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 
-import { fetchServer, fetchExtendedDescription, fetchDomainBlocks  } from 'mastodon/actions/server';
+import { fetchServer, fetchExtendedDescription, fetchDomainBlocks } from 'mastodon/actions/server';
 import { Account } from 'mastodon/components/account';
 import Column from 'mastodon/components/column';
-import { ServerHeroImage } from 'mastodon/components/server_hero_image';
 import { Skeleton } from 'mastodon/components/skeleton';
-import { LinkFooter} from 'mastodon/features/ui/components/link_footer';
+import { LinkFooter } from 'mastodon/features/ui/components/link_footer';
 
 import { Section } from './components/section';
 import { RulesSection } from './components/rules';
+import ChannelTopBanner from 'mastodon/components/channel_top_banner';
 
 const messages = defineMessages({
   title: { id: 'column.about', defaultMessage: 'About' },
@@ -41,7 +42,6 @@ const severityMessages = {
 
 const mapStateToProps = state => ({
   server: state.getIn(['server', 'server']),
-  locale: state.getIn(['meta', 'locale']),
   extendedDescription: state.getIn(['server', 'extendedDescription']),
   domainBlocks: state.getIn(['server', 'domainBlocks']),
 });
@@ -50,7 +50,6 @@ class About extends PureComponent {
 
   static propTypes = {
     server: ImmutablePropTypes.map,
-    locale: ImmutablePropTypes.string,
     extendedDescription: ImmutablePropTypes.map,
     domainBlocks: ImmutablePropTypes.contains({
       isLoading: PropTypes.bool,
@@ -62,7 +61,7 @@ class About extends PureComponent {
     multiColumn: PropTypes.bool,
   };
 
-  componentDidMount () {
+  componentDidMount() {
     const { dispatch } = this.props;
     dispatch(fetchServer());
     dispatch(fetchExtendedDescription());
@@ -73,15 +72,23 @@ class About extends PureComponent {
     dispatch(fetchDomainBlocks());
   };
 
-  render () {
-    const { multiColumn, intl, server, extendedDescription, domainBlocks, locale } = this.props;
+  render() {
+    const { multiColumn, intl, server, extendedDescription, domainBlocks } = this.props;
     const isLoading = server.get('isLoading');
 
     return (
       <Column bindToDocument={!multiColumn} label={intl.formatMessage(messages.title)}>
+        <ChannelTopBanner />
+        <div className='account__section-headline'>
+          <NavLink exact to='/public'>
+            <FormattedMessage tagName='div' defaultMessage='Posts' />
+          </NavLink>
+          <NavLink exact to='/about'>
+            <FormattedMessage tagName='div' defaultMessage='About' />
+          </NavLink>
+        </div>
         <div className='scrollable about'>
           <div className='about__header'>
-            <ServerHeroImage blurhash={server.getIn(['thumbnail', 'blurhash'])} src={server.getIn(['thumbnail', 'url'])} srcSet={server.getIn(['thumbnail', 'versions'])?.map((value, key) => `${value} ${key.replace('@', '')}`).join(', ')} className='about__header__hero' />
             <h1>{isLoading ? <Skeleton width='10ch' /> : server.get('domain')}</h1>
             <p><FormattedMessage id='about.powered_by' defaultMessage='Decentralized social media powered by {mastodon}' values={{ mastodon: <a href='https://joinmastodon.org' className='about__mail' target='_blank' rel='noopener'>Mastodon</a> }} /></p>
           </div>
