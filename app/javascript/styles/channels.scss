@@ -2,6 +2,26 @@
 // This file contains custom styles for the Channels feature
 // These styles are designed to be easily patchable into a Mastodon project
 
+// Brand color overrides - override Mastodon's default brand colors
+// Using :root ensures these override the mastodon-bird-ui variables
+:root {
+  // Primary brand color
+  --color-brand-mastodon: #ff3c26;
+  --color-brand-mastodon-links: #ff3c26;
+
+  // Derived brand colors (adjust these if needed for proper contrast)
+  --color-brand-mastodon-bg: #1e2028;
+  --color-brand-mastodon-dim: #717c9b;
+  --color-brand-mastodon-mud: rgb(39 44 64 / 50%);
+  --color-brand-mastodon-dark: #232543;
+  --color-brand-mastodon-threaded-line: #434264;
+  --color-brand-mastodon-text-light: #8493a7;
+
+  // Update accent colors to use the new brand color
+  --color-accent: #ff3c26;
+  --color-accent-dark: #ff3c26;
+}
+
 .navigation-panel__sidebar {
   display: flex;
   flex-direction: column;
