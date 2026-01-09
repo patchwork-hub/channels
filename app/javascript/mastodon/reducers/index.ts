@@ -40,6 +40,10 @@ import { followedTagsReducer } from './tags';
 import timelines from './timelines';
 import trends from './trends';
 import user_lists from './user_lists';
+// channels
+import channelsReducer from './channel_banner';
+import channelFeedsReducer from './channel_feeds';
+import newsmastChannelsReducer from './newsmast_channels';
 
 const reducers = {
   announcements,
@@ -80,6 +84,10 @@ const reducers = {
   notificationPolicy: notificationPolicyReducer,
   notificationRequests: notificationRequestsReducer,
   navigation: navigationReducer,
+  // channels
+  recommended_channels: channelsReducer,
+  channel_feeds: channelFeedsReducer,
+  newsmast_channels: newsmastChannelsReducer,
 };
 
 // We want the root state to be an ImmutableRecord, which is an object with a defined list of keys,

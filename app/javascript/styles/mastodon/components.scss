@@ -11651,3 +11651,83 @@ noscript {
     }
   }
 }
+
+.compose-panel {
+  box-sizing: border-box;
+  padding-top: 15px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: auto;
+}
+
+.channel-banner {
+  margin: 0.5rem 0;
+}
+
+/* Sidebar styles */
+.nav-header,
+.right-banner-logo {
+  background: white;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: 27px;
+  line-height: 32px;
+  font-weight: 700;
+  padding-bottom: 0;
+  text-decoration: none;
+  font-family: 'ibm-plex-sans', sans-serif;
+}
+
+.nav-links {
+  padding-bottom: 20px;
+  font-family: 'source-sans-pro', sans-serif;
+}
+
+.nav-links {
+  padding-bottom: 20px;
+  font-family: 'source-sans-pro', sans-serif;
+}
+
+.column-link__badge {
+  position: absolute;
+  display: inline-block;
+  border-radius: 10px;
+  font-weight: 500;
+  background: $channel-red;
+  padding: 5px 5px;
+  top: -8px;
+  left: -75px;
+  border: 1px solid $black;
+  &::before {
+    background-color: transparent !important;
+  }
+}
+
+// Define as a mixin for reuse
+@mixin see-all-button($border-color: white, $text-color: white, $hover-bg: white, $hover-color: black) {
+  background-color: transparent;
+  border: 1px solid $border-color;
+  color: $text-color;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: $hover-bg;
+    color: $hover-color;
+  }
+
+  &:focus {
+    border-radius: 8px;
+    outline: 2px solid rgba($border-color, 0.5);
+    outline-offset: 2px;
+  }
+}
+
+.see-all {
+  @include see-all-button();
+}
