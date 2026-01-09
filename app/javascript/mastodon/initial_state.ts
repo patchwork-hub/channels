@@ -64,6 +64,9 @@ export interface InitialState {
   meta: InitialStateMeta;
   role?: Role;
   features: string[];
+  custom_links?: Record<string, unknown> | string;
+  logo_image?: string;
+  channel_display_name?: string;
 }
 
 const element = document.getElementById('initial-state');
@@ -147,6 +150,10 @@ export const languages = initialState?.languages.map((lang) => {
     lang[2],
   ];
 });
+
+export const custom_links = initialState?.custom_links;
+export const logo_image = initialState?.logo_image;
+export const channel_display_name = initialState?.channel_display_name;
 
 export function getAccessToken(): string | undefined {
   return getMeta('access_token');

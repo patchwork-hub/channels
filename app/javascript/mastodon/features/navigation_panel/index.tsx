@@ -33,6 +33,8 @@ import { IconWithBadge } from 'mastodon/components/icon_with_badge';
 import { WordmarkLogo } from 'mastodon/components/logo';
 import { Search } from 'mastodon/features/compose/components/search';
 import { ColumnLink } from 'mastodon/features/ui/components/column_link';
+import { Logo } from 'mastodon/features/ui/components/logo';
+import { icons } from 'mastodon/features/ui/components/navIcons';
 import { useBreakpoint } from 'mastodon/features/ui/hooks/useBreakpoint';
 import { useIdentity } from 'mastodon/identity_context';
 import {
@@ -40,17 +42,20 @@ import {
   remoteLiveFeedAccess,
   trendsEnabled,
   me,
+  custom_links,
+  logo_image,
 } from 'mastodon/initial_state';
 import { transientSingleColumn } from 'mastodon/is_mobile';
 import { canViewFeed } from 'mastodon/permissions';
 import { selectUnreadNotificationGroupsCount } from 'mastodon/selectors/notifications';
 import { useAppSelector, useAppDispatch } from 'mastodon/store';
 
-import { DisabledAccountBanner } from './components/disabled_account_banner';
+import { ServerInformation } from '../ui/components/server_information';
+
 import { FollowedTagsPanel } from './components/followed_tags_panel';
+import { LegalLinks } from './components/legal_links';
 import { ListPanel } from './components/list_panel';
 import { MoreLink } from './components/more_link';
-import { SignInBanner } from './components/sign_in_banner';
 import { Trends } from './components/trends';
 
 const messages = defineMessages({
@@ -135,8 +140,8 @@ const FollowRequestsLink: React.FC = () => {
     (state) =>
       (
         state.user_lists.getIn(['follow_requests', 'items']) as
-          | ImmutableMap<string, unknown>
-          | undefined
+        | ImmutableMap<string, unknown>
+        | undefined
       )?.size ?? 0,
   );
   const dispatch = useAppDispatch();
@@ -199,7 +204,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
   multiColumn = false,
 }) => {
   const intl = useIntl();
-  const { signedIn, permissions, disabledAccountId } = useIdentity();
+  const { signedIn, permissions } = useIdentity();
   const location = useLocation();
   const showSearch = useBreakpoint('full') && !multiColumn;
 
@@ -221,11 +226,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
 
   return (
     <div className='navigation-panel'>
-      <div className='navigation-panel__logo'>
-        <Link to='/' className='column-link column-link--logo'>
-          <WordmarkLogo />
-        </Link>
-      </div>
+      <Logo />
 
       {showSearch && <Search singleColumn />}
 
@@ -269,24 +270,52 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
 
         {(canViewFeed(signedIn, permissions, localLiveFeedAccess) ||
           canViewFeed(signedIn, permissions, remoteLiveFeedAccess)) && (
-          <ColumnLink
-            transparent
-            to={
-              canViewFeed(signedIn, permissions, localLiveFeedAccess)
-                ? '/public/local'
-                : '/public/remote'
-            }
-            icon='globe'
-            iconComponent={PublicIcon}
-            isActive={isFirehoseActive}
-            text={intl.formatMessage(
-              canViewFeed(signedIn, permissions, localLiveFeedAccess) &&
-                canViewFeed(signedIn, permissions, remoteLiveFeedAccess)
-                ? messages.firehose
-                : messages.firehose_singular,
-            )}
-          />
-        )}
+            <ColumnLink
+              transparent
+              to={
+                canViewFeed(signedIn, permissions, localLiveFeedAccess)
+                  ? '/public/local'
+                  : '/public/remote'
+              }
+              icon='globe'
+              iconComponent={PublicIcon}
+              isActive={isFirehoseActive}
+              text={intl.formatMessage(
+                canViewFeed(signedIn, permissions, localLiveFeedAccess) &&
+                  canViewFeed(signedIn, permissions, remoteLiveFeedAccess)
+                  ? messages.firehose
+                  : messages.firehose_singular,
+              )}
+            />
+          )}
+
+        {/* Dynamic navigation items from custom_links */}
+        {custom_links &&
+          Object.values(
+            typeof custom_links === 'string'
+              ? (JSON.parse(custom_links) as Record<
+                string,
+                { name: string; url: string; icon: string }
+              >)
+              : (custom_links as Record<
+                string,
+                { name: string; url: string; icon: string }
+              >),
+          ).map((item, index) => {
+            const navItem = item as { name: string; url: string; icon: string };
+            const IconComponent = icons[navItem.icon];
+            return (
+              <ColumnLink
+                key={index}
+                transparent
+                href={navItem.url}
+                icon={navItem.icon}
+                iconComponent={IconComponent}
+                activeIconComponent={IconComponent}
+                text={navItem.name}
+              />
+            );
+          })}
 
         {signedIn && (
           <>
@@ -348,18 +377,22 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
           />
         </div>
 
-        {!signedIn && (
-          <div className='navigation-panel__sign-in-banner'>
-            <hr />
+        <ServerInformation
+          className='navigation-panel__server-information'
+          style={{ order: 1111, paddingBlock: 40, paddingInlineStart: 18 }}
+        />
 
-            {disabledAccountId ? <DisabledAccountBanner /> : <SignInBanner />}
-          </div>
-        )}
+        <Trends />
       </div>
 
       <div className='flex-spacer' />
 
-      <Trends />
+      {!signedIn && (
+        <div style={{ order: 9999, flexShrink: 0 }}>
+          <hr />
+          <LegalLinks />
+        </div>
+      )}
     </div>
   );
 };
