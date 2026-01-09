@@ -71,7 +71,7 @@
   .nav-links {
     flex: 1;
     overflow-y: auto;
-    font-family: 'source-sans-pro';
+    font-family: 'source-sans-pro', sans-serif;
   }
 
   .footer {
@@ -143,7 +143,7 @@
   line-height: 32px;
   font-weight: 700;
   text-decoration: none;
-  font-family: 'ibm-plex-sans';
+  font-family: 'ibm-plex-sans', sans-serif;
   display: inline-block;
 }
 
@@ -179,7 +179,7 @@
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-family: 'ibm-plex-sans';
+    font-family: 'ibm-plex-sans', sans-serif;
     font-size: 30px;
     font-weight: 700;
     display: inline-block;
@@ -197,5 +197,72 @@
   &:active {
     background: var(--color-brand-mastodon);
     filter: brightness(1.1);
+  }
+}
+
+// Feed icon override - bird-ui doesn't have a background image for this
+// We ensure the SVG path is visible and matches channels-old behavior
+.layout-single-column .column-link .icon-feed {
+  background-image: none !important;
+
+  path {
+    display: block !important;
+  }
+}
+
+// Active navigation link styles - brand color for icons and badges
+.column-link.active {
+
+  .column-link__icon,
+  .active-icon {
+    color: var(--color-brand-mastodon) !important;
+    background-image: none !important;
+
+    path {
+      display: block !important;
+      fill: currentColor;
+    }
+  }
+
+  .column-link__badge {
+    background-color: var(--color-brand-mastodon) !important;
+  }
+}
+
+// Ensure notification badges also use the brand color
+.icon-with-badge__badge {
+  background-color: var(--color-brand-mastodon) !important;
+}
+
+// Styling for the active navigation badge (red dot)
+.column-link {
+  position: relative;
+
+  &__badge {
+    display: none; // Hidden by default
+
+    &::before {
+      display: none !important;
+      content: none !important;
+    }
+
+    &.active {
+      display: block !important;
+      position: absolute !important;
+      top: 11px !important;
+      left: 31px !important;
+      width: 7px !important;
+      height: 7px !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      font-size: 0 !important;
+      line-height: 0 !important;
+      background-color: var(--color-brand-mastodon) !important;
+      border-radius: 50% !important;
+      z-index: 10 !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
   }
 }
