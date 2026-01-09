@@ -226,15 +226,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
 
   return (
     <div className='navigation-panel'>
-      <div className='navigation-panel__logo'>
-        {logo_image && logo_image !== '/logo_images/original/missing.png' ? (
-          <Logo />
-        ) : (
-          <Link to='/' className='column-link column-link--logo'>
-            <WordmarkLogo />
-          </Link>
-        )}
-      </div>
+      <Logo />
 
       {showSearch && <Search singleColumn />}
 
