@@ -53,6 +53,7 @@ import { useAppSelector, useAppDispatch } from 'mastodon/store';
 import { ServerInformation } from '../ui/components/server_information';
 
 import { FollowedTagsPanel } from './components/followed_tags_panel';
+import { LegalLinks } from './components/legal_links';
 import { ListPanel } from './components/list_panel';
 import { MoreLink } from './components/more_link';
 import { Trends } from './components/trends';
@@ -139,8 +140,8 @@ const FollowRequestsLink: React.FC = () => {
     (state) =>
       (
         state.user_lists.getIn(['follow_requests', 'items']) as
-          | ImmutableMap<string, unknown>
-          | undefined
+        | ImmutableMap<string, unknown>
+        | undefined
       )?.size ?? 0,
   );
   const dispatch = useAppDispatch();
@@ -277,37 +278,37 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
 
         {(canViewFeed(signedIn, permissions, localLiveFeedAccess) ||
           canViewFeed(signedIn, permissions, remoteLiveFeedAccess)) && (
-          <ColumnLink
-            transparent
-            to={
-              canViewFeed(signedIn, permissions, localLiveFeedAccess)
-                ? '/public/local'
-                : '/public/remote'
-            }
-            icon='globe'
-            iconComponent={PublicIcon}
-            isActive={isFirehoseActive}
-            text={intl.formatMessage(
-              canViewFeed(signedIn, permissions, localLiveFeedAccess) &&
-                canViewFeed(signedIn, permissions, remoteLiveFeedAccess)
-                ? messages.firehose
-                : messages.firehose_singular,
-            )}
-          />
-        )}
+            <ColumnLink
+              transparent
+              to={
+                canViewFeed(signedIn, permissions, localLiveFeedAccess)
+                  ? '/public/local'
+                  : '/public/remote'
+              }
+              icon='globe'
+              iconComponent={PublicIcon}
+              isActive={isFirehoseActive}
+              text={intl.formatMessage(
+                canViewFeed(signedIn, permissions, localLiveFeedAccess) &&
+                  canViewFeed(signedIn, permissions, remoteLiveFeedAccess)
+                  ? messages.firehose
+                  : messages.firehose_singular,
+              )}
+            />
+          )}
 
         {/* Dynamic navigation items from custom_links */}
         {custom_links &&
           Object.values(
             typeof custom_links === 'string'
               ? (JSON.parse(custom_links) as Record<
-                  string,
-                  { name: string; url: string; icon: string }
-                >)
+                string,
+                { name: string; url: string; icon: string }
+              >)
               : (custom_links as Record<
-                  string,
-                  { name: string; url: string; icon: string }
-                >),
+                string,
+                { name: string; url: string; icon: string }
+              >),
           ).map((item, index) => {
             const navItem = item as { name: string; url: string; icon: string };
             const IconComponent = icons[navItem.icon];
@@ -388,11 +389,18 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
           className='navigation-panel__server-information'
           style={{ order: 1111, paddingBlock: 40, paddingInlineStart: 18 }}
         />
+
+        <Trends />
       </div>
 
       <div className='flex-spacer' />
 
-      <Trends />
+      {!signedIn && (
+        <div style={{ order: 9999, flexShrink: 0 }}>
+          <hr />
+          <LegalLinks />
+        </div>
+      )}
     </div>
   );
 };

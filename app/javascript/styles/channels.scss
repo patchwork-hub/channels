@@ -22,6 +22,44 @@
   --color-accent-dark: #ff3c26;
 }
 
+// Sidepanel / Navigation Panel bottom section
+.navigation-panel__sidebar__bottom {
+  padding: 16px;
+  font-size: 13px;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-link {
+    color: var(--text-color-secondary);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .link {
+    color: var(--text-color-secondary);
+    text-decoration: none;
+
+    &.label {
+      font-weight: 500;
+    }
+
+    &.underline {
+      text-decoration: underline;
+    }
+  }
+
+  p {
+    margin: 0 0 8px;
+  }
+}
+
 .navigation-panel__sidebar {
   display: flex;
   flex-direction: column;
@@ -34,43 +72,6 @@
 
   .footer {
     padding: 16px;
-  }
-
-  &__bottom {
-    padding: 16px;
-    font-size: 13px;
-
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .footer-link {
-      color: var(--text-color-secondary);
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    .link {
-      color: var(--text-color-secondary);
-      text-decoration: none;
-
-      &.label {
-        font-weight: 500;
-      }
-
-      &.underline {
-        text-decoration: underline;
-      }
-    }
-
-    p {
-      margin: 0 0 8px;
-    }
   }
 }
 
