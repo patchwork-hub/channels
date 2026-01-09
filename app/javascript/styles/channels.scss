@@ -2,6 +2,9 @@
 // This file contains custom styles for the Channels feature
 // These styles are designed to be easily patchable into a Mastodon project
 
+@use 'fonts/ibm-plex-sans';
+@use 'fonts/source-sans-pro';
+
 // Brand color overrides - override Mastodon's default brand colors
 // Using :root ensures these override the mastodon-bird-ui variables
 :root {
@@ -68,6 +71,7 @@
   .nav-links {
     flex: 1;
     overflow-y: auto;
+    font-family: 'source-sans-pro';
   }
 
   .footer {
@@ -127,6 +131,21 @@
       background: rgba(255, 255, 255, 10%);
     }
   }
+}
+
+// Navigation Header Logo styles
+.nav-header {
+  background: white;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: 27px;
+  line-height: 32px;
+  font-weight: 700;
+  padding-bottom: 0;
+  text-decoration: none;
+  font-family: 'ibm-plex-sans';
+  display: inline-block;
 }
 
 // Login Page branding styles
