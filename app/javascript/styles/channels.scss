@@ -73,3 +73,57 @@
     }
   }
 }
+
+// Server Information / Powered by section styles
+.server-information {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .powered-by {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 70%);
+    margin: 0;
+  }
+
+  img {
+    max-width: 165px;
+    height: auto;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__description {
+    font-size: 11px;
+    color: #fff;
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  &__learn-more {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 11px;
+    color: #fff;
+    font-weight: 700;
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
+    border: 1px solid #fff;
+    border-radius: 3px;
+    padding-block: 10px;
+    text-decoration: none;
+
+    &:hover {
+      background: rgba(255, 255, 255, 10%);
+    }
+  }
+}

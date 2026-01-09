@@ -48,6 +48,8 @@ import { ModalPlaceholder } from './modal_placeholder';
 import VideoModal from './video_modal';
 import { VisibilityModal } from './visibility_modal';
 import { PrivateQuoteNotify } from './confirmation_modals/private_quote_notify';
+import { SignInModal } from './signin_modal';
+import { SignInWithMastodonModal } from './signin_with_mastodon_modal';
 
 export const MODAL_COMPONENTS = {
   'MEDIA': () => Promise.resolve({ default: MediaModal }),
@@ -86,6 +88,8 @@ export const MODAL_COMPONENTS = {
   'IGNORE_NOTIFICATIONS': IgnoreNotificationsModal,
   'ANNUAL_REPORT': AnnualReportModal,
   'COMPOSE_PRIVACY': () => Promise.resolve({ default: VisibilityModal }),
+  'SIGNIN': () => Promise.resolve({ default: SignInModal }),
+  'SIGNIN_WITH_MASTODON': () => Promise.resolve({ default: SignInWithMastodonModal }),
 };
 
 export default class ModalRoot extends PureComponent {
@@ -127,7 +131,7 @@ export default class ModalRoot extends PureComponent {
     this._modal = c;
   };
 
-  render () {
+  render() {
     const { type, props, ignoreFocus } = this.props;
     const { backgroundColor } = this.state;
     const visible = !!type;

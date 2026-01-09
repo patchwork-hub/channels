@@ -50,6 +50,8 @@ import { canViewFeed } from 'mastodon/permissions';
 import { selectUnreadNotificationGroupsCount } from 'mastodon/selectors/notifications';
 import { useAppSelector, useAppDispatch } from 'mastodon/store';
 
+import { ServerInformation } from '../ui/components/server_information';
+
 import { DisabledAccountBanner } from './components/disabled_account_banner';
 import { FollowedTagsPanel } from './components/followed_tags_panel';
 import { ListPanel } from './components/list_panel';
@@ -391,6 +393,11 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
             {disabledAccountId ? <DisabledAccountBanner /> : <SignInBanner />}
           </div>
         )}
+
+        <ServerInformation
+          className='navigation-panel__server-information'
+          style={{ order: 1111, paddingBlock: 40, paddingInlineStart: 18 }}
+        />
       </div>
 
       <div className='flex-spacer' />
