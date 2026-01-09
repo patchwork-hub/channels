@@ -33,6 +33,8 @@ import { IconWithBadge } from 'mastodon/components/icon_with_badge';
 import { WordmarkLogo } from 'mastodon/components/logo';
 import { Search } from 'mastodon/features/compose/components/search';
 import { ColumnLink } from 'mastodon/features/ui/components/column_link';
+import { Logo } from 'mastodon/features/ui/components/logo';
+import { icons } from 'mastodon/features/ui/components/navIcons';
 import { useBreakpoint } from 'mastodon/features/ui/hooks/useBreakpoint';
 import { useIdentity } from 'mastodon/identity_context';
 import {
@@ -40,6 +42,8 @@ import {
   remoteLiveFeedAccess,
   trendsEnabled,
   me,
+  custom_links,
+  logo_image,
 } from 'mastodon/initial_state';
 import { transientSingleColumn } from 'mastodon/is_mobile';
 import { canViewFeed } from 'mastodon/permissions';
@@ -222,9 +226,13 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
   return (
     <div className='navigation-panel'>
       <div className='navigation-panel__logo'>
-        <Link to='/' className='column-link column-link--logo'>
-          <WordmarkLogo />
-        </Link>
+        {logo_image && logo_image !== '/logo_images/original/missing.png' ? (
+          <Logo />
+        ) : (
+          <Link to='/' className='column-link column-link--logo'>
+            <WordmarkLogo />
+          </Link>
+        )}
       </div>
 
       {showSearch && <Search singleColumn />}
@@ -287,6 +295,34 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
             )}
           />
         )}
+
+        {/* Dynamic navigation items from custom_links */}
+        {custom_links &&
+          Object.values(
+            typeof custom_links === 'string'
+              ? (JSON.parse(custom_links) as Record<
+                  string,
+                  { name: string; url: string; icon: string }
+                >)
+              : (custom_links as Record<
+                  string,
+                  { name: string; url: string; icon: string }
+                >),
+          ).map((item, index) => {
+            const navItem = item as { name: string; url: string; icon: string };
+            const IconComponent = icons[navItem.icon];
+            return (
+              <ColumnLink
+                key={index}
+                transparent
+                href={navItem.url}
+                icon={navItem.icon}
+                iconComponent={IconComponent}
+                activeIconComponent={IconComponent}
+                text={navItem.name}
+              />
+            );
+          })}
 
         {signedIn && (
           <>

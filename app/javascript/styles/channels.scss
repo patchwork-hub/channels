@@ -1,0 +1,55 @@
+// Channels-specific styles
+// This file contains custom styles for the Channels feature
+// These styles are designed to be easily patchable into a Mastodon project
+
+.navigation-panel__sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .nav-links {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .footer {
+    padding: 16px;
+  }
+
+  &__bottom {
+    padding: 16px;
+    font-size: 13px;
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-link {
+      color: var(--text-color-secondary);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .link {
+      color: var(--text-color-secondary);
+      text-decoration: none;
+
+      &.label {
+        font-weight: 500;
+      }
+
+      &.underline {
+        text-decoration: underline;
+      }
+    }
+
+    p {
+      margin: 0 0 8px;
+    }
+  }
+}
