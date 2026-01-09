@@ -52,11 +52,9 @@ import { useAppSelector, useAppDispatch } from 'mastodon/store';
 
 import { ServerInformation } from '../ui/components/server_information';
 
-import { DisabledAccountBanner } from './components/disabled_account_banner';
 import { FollowedTagsPanel } from './components/followed_tags_panel';
 import { ListPanel } from './components/list_panel';
 import { MoreLink } from './components/more_link';
-import { SignInBanner } from './components/sign_in_banner';
 import { Trends } from './components/trends';
 
 const messages = defineMessages({
@@ -205,7 +203,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
   multiColumn = false,
 }) => {
   const intl = useIntl();
-  const { signedIn, permissions, disabledAccountId } = useIdentity();
+  const { signedIn, permissions } = useIdentity();
   const location = useLocation();
   const showSearch = useBreakpoint('full') && !multiColumn;
 
@@ -385,14 +383,6 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
             text={intl.formatMessage(messages.about)}
           />
         </div>
-
-        {!signedIn && (
-          <div className='navigation-panel__sign-in-banner'>
-            <hr />
-
-            {disabledAccountId ? <DisabledAccountBanner /> : <SignInBanner />}
-          </div>
-        )}
 
         <ServerInformation
           className='navigation-panel__server-information'
