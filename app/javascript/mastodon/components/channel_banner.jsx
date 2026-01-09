@@ -4,8 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import ArrowRightUpRed from '@/material-icons/400-24px/arrow_right_up_red.svg?react';
 import { Icon } from 'mastodon/components/icon';
+import { fetchMyChannel } from '../actions/my_channel';
 import { fetchChannelFeeds, fetchChannels, fetchNewsmastChannels } from '../actions/channel_banner';
 import { browserHistory } from "./router";
+import { useIdentity } from 'mastodon/identity_context';
 
 const dummyImages = {
   communities: "https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/banner_images/000/000/001/original/cropped-image.jpg?1734719920",
@@ -15,20 +17,21 @@ const dummyImages = {
 
 
 const ChannelBanner = () => {
+  const { signedIn } = useIdentity();
   const channel_feeds = useSelector(state => state.channel_feeds.get("items")?.toJS() || []);
   const newsmast_channels = useSelector(state => state.newsmast_channels.get("items")?.toJS() || []);
   const channels = useSelector(state => state.recommended_channels.get("items")?.toJS() || []);
+  const channelFeed = useSelector(state => state.my_channel.get('item')?.get("channel_feed")?.toJS());
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchChannels());
     dispatch(fetchNewsmastChannels());
-    // dispatch(fetchMyChannel());
+    dispatch(fetchMyChannel());
     dispatch(fetchChannelFeeds());
   }, []);
   const navigateToDetail = (channel, basePath) => {
     const queryString = `?slug=${encodeURIComponent(channel.attributes.slug)}`;
-    console.log(`Navigating to /${basePath}/${channel.attributes.name.toLowerCase()}${queryString}`);
     browserHistory.push(`/${basePath}/${channel.attributes.name.toLowerCase()}${queryString}`);
   };
   const getImageUrl = (channel, fallbackUrl) => {
@@ -166,8 +169,7 @@ const ChannelBanner = () => {
           )}
         </div>
 
-        {/* {signedIn && channelFeed && channelFeed.id && ( */}
-        {false && (
+        {signedIn && channelFeed && channelFeed.id && (
           <a
             href='https://home.channel.org/create-channel'
             style={{
