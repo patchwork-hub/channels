@@ -11665,46 +11665,6 @@ noscript {
   margin: 0.5rem 0;
 }
 
-/* Sidebar styles */
-.nav-header,
-.right-banner-logo {
-  background: white;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-size: 27px;
-  line-height: 32px;
-  font-weight: 700;
-  padding-bottom: 0;
-  text-decoration: none;
-  font-family: 'ibm-plex-sans', sans-serif;
-}
-
-.nav-links {
-  padding-bottom: 20px;
-  font-family: 'source-sans-pro', sans-serif;
-}
-
-.nav-links {
-  padding-bottom: 20px;
-  font-family: 'source-sans-pro', sans-serif;
-}
-
-.column-link__badge {
-  position: absolute;
-  display: inline-block;
-  border-radius: 10px;
-  font-weight: 500;
-  background: $channel-red;
-  padding: 5px 5px;
-  top: -8px;
-  left: -75px;
-  border: 1px solid $black;
-  &::before {
-    background-color: transparent !important;
-  }
-}
-
 // Define as a mixin for reuse
 @mixin see-all-button($border-color: white, $text-color: white, $hover-bg: white, $hover-color: black) {
   background-color: transparent;
@@ -11733,7 +11693,7 @@ noscript {
 }
 
 .channels {
-  // font-family: 'source-sans-pro';
+  font-family: 'source-sans-pro';
   .channels__header {
     padding: 30px 20px;
     .title {
@@ -11746,7 +11706,7 @@ noscript {
       font-weight: 700;
       padding-bottom: 14px;
       text-decoration: none;
-      // font-family: 'ibm-plex-sans';
+      font-family: 'ibm-plex-sans';
     }
     .text {
       font-weight: 400;
@@ -11813,7 +11773,7 @@ noscript {
         line-height: 20px;
       }
       .title {
-        // font-family: 'ibm-plex-sans';
+        font-family: 'ibm-plex-sans';
         font-size: 16px;
         line-height: 16px;
         font-weight: 600;
@@ -11942,10 +11902,6 @@ noscript {
 
 .bg-grid {
   background-image: url('https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/001/original/cropped-image.jpg?1734719920');
-  // url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/002/original/cropped-image.jpg?1734720033"),
-  // url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/003/original/cropped-image.jpg?1734720221"),
-  // url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/004/original/cropped-image.jpg?1734766791");
-
   background-size: 100%;
   background-position: center;
   background-repeat: no-repeat;
