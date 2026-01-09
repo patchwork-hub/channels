@@ -2,15 +2,19 @@ import { header_image } from 'mastodon/initial_state';
 
 const ChannelTopBanner = () => {
   return (
+    // <div
+    //   style={{
+    //     display: 'flex',
+    //     flexDirection: 'column-reverse',
+    //     width: '100%',
+    //     aspectRatio: '1.96 !important',
+    //     background: `linear-gradient(180deg, rgba(43, 43, 43, 0.00) 0%, rgba(37, 37, 37, 0.60) 56.93%), url(${header_image}) lightgray 50% / cover no-repeat`,
+    //   }}
+    //  />
     <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column-reverse',
-        width: '100%',
-        aspectRatio: '1.96 !important',
-        background: `linear-gradient(180deg, rgba(43, 43, 43, 0.00) 0%, rgba(37, 37, 37, 0.60) 56.93%), url(${header_image}) lightgray 50% / cover no-repeat`,
-      }}
-     />
+      className='channel-header'
+      style={{ '--header-image': `url(${header_image})` }}
+    />
   );
 };
 
