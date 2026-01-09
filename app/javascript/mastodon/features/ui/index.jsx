@@ -71,6 +71,10 @@ import {
   OnboardingFollows,
   Explore,
   Search,
+  Collections,
+  ChannelsFeed,
+  CollectionDetail,
+  NewsmastChannels,
   About,
   PrivacyPolicy,
   TermsOfService,
@@ -193,6 +197,11 @@ class SwitchingColumnsArea extends PureComponent {
 
             <WrappedRoute path='/bookmarks' component={BookmarkedStatuses} content={children} />
             <WrappedRoute path='/pinned' component={PinnedStatuses} content={children} />
+
+            <WrappedRoute path='/collections' component={Collections} content={children} exact />
+            <WrappedRoute path='/collections/:name' component={CollectionDetail} content={children} exact />
+            <WrappedRoute path='/newsmasts/:name' component={NewsmastChannels} content={children} exact />
+            <WrappedRoute path='/channels/:name' component={ChannelsFeed} content={children} exact />
 
             <WrappedRoute path={['/start', '/start/profile']} exact component={OnboardingProfile} content={children} />
             <WrappedRoute path='/start/follows' component={OnboardingFollows} content={children} />

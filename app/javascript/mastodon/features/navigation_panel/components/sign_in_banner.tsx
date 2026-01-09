@@ -3,7 +3,13 @@ import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { openModal } from 'mastodon/actions/modal';
-import { registrationsOpen, sso_redirect, singleUserMode, is_newuser_with_approval, is_main_channel } from 'mastodon/initial_state';
+import {
+  registrationsOpen,
+  sso_redirect,
+  singleUserMode,
+  is_newuser_with_approval,
+  is_main_channel,
+} from 'mastodon/initial_state';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
 export const SignInBanner: React.FC = () => {
@@ -18,21 +24,27 @@ export const SignInBanner: React.FC = () => {
   );
 
   const registrationState = useAppSelector((state) => {
-    const defaultUrl = state.server.getIn(['server', 'registrations', 'url'], null) || 'https://newsmast.social/auth/sign_up';
-    
+    const defaultUrl =
+      state.server.getIn(['server', 'registrations', 'url'], null) ||
+      'https://newsmast.social/auth/sign_up';
+
     if (!is_main_channel && singleUserMode && !registrationsOpen) {
       return {
         condition: 'single_user_closed',
-        text: <FormattedMessage defaultMessage='Registration is closed here.' />,
+        text: (
+          <FormattedMessage defaultMessage='Registration is closed here.' />
+        ),
         buttons: [
           {
-            label: <FormattedMessage  defaultMessage='Create a newsmast.social account' />,
+            label: (
+              <FormattedMessage defaultMessage='Create a newsmast.social account' />
+            ),
             url: 'https://newsmast.social/auth/sign_up',
             target: '_blank',
             className: 'button button--block',
           },
           {
-            label: <FormattedMessage  defaultMessage='Sign in' />,
+            label: <FormattedMessage defaultMessage='Sign in' />,
             url: '/auth/sign_in',
             className: 'button button--block button-tertiary',
           },
@@ -42,41 +54,22 @@ export const SignInBanner: React.FC = () => {
       };
     }
 
-    
-    if (!is_main_channel && !singleUserMode && registrationsOpen && is_newuser_with_approval) {
+    if (
+      !is_main_channel &&
+      !singleUserMode &&
+      registrationsOpen &&
+      is_newuser_with_approval
+    ) {
       return {
         condition: 'open_with_approval',
-        text: <FormattedMessage  defaultMessage='Sign-ups require moderator review.' />,
-        buttons: [
-          {
-            label: <FormattedMessage  defaultMessage='Create a social web account' />,
-            url: '/auth/sign_up',
-            target: '_blank',
-            className: 'button button--block',
-          },
-          {
-            label: <FormattedMessage defaultMessage='Sign in' />,
-            url: '/auth/sign_in',
-            className: 'button button--block button-tertiary',
-          },
-        ],
-        signupUrl: 'https://newsmast.social/auth/sign_up',
-      };
-    }
-
-    
-    if (!is_main_channel && !singleUserMode && registrationsOpen && !is_newuser_with_approval) {
-      return {
-        condition: 'open_no_approval',
         text: (
-          <FormattedMessage
-           
-            defaultMessage='Follow and interact with this Channel by creating a social web account.'
-          />
+          <FormattedMessage defaultMessage='Sign-ups require moderator review.' />
         ),
         buttons: [
           {
-            label: <FormattedMessage defaultMessage='Create a social web account' />,
+            label: (
+              <FormattedMessage defaultMessage='Create a social web account' />
+            ),
             url: '/auth/sign_up',
             target: '_blank',
             className: 'button button--block',
@@ -91,11 +84,42 @@ export const SignInBanner: React.FC = () => {
       };
     }
 
-    
+    if (
+      !is_main_channel &&
+      !singleUserMode &&
+      registrationsOpen &&
+      !is_newuser_with_approval
+    ) {
+      return {
+        condition: 'open_no_approval',
+        text: (
+          <FormattedMessage defaultMessage='Follow and interact with this Channel by creating a social web account.' />
+        ),
+        buttons: [
+          {
+            label: (
+              <FormattedMessage defaultMessage='Create a social web account' />
+            ),
+            url: '/auth/sign_up',
+            target: '_blank',
+            className: 'button button--block',
+          },
+          {
+            label: <FormattedMessage defaultMessage='Sign in' />,
+            url: '/auth/sign_in',
+            className: 'button button--block button-tertiary',
+          },
+        ],
+        signupUrl: 'https://newsmast.social/auth/sign_up',
+      };
+    }
+
     if (!is_main_channel && !singleUserMode && !registrationsOpen) {
       return {
         condition: 'closed',
-        text: <FormattedMessage defaultMessage='Registration is closed here.' />,
+        text: (
+          <FormattedMessage defaultMessage='Registration is closed here.' />
+        ),
         buttons: [
           {
             label: <FormattedMessage defaultMessage='Sign in' />,
@@ -108,17 +132,16 @@ export const SignInBanner: React.FC = () => {
       };
     }
 
-    
     return {
       condition: 'default',
       text: (
-        <FormattedMessage
-          defaultMessage='Follow and interact with this channel by creating an account.'
-        />
+        <FormattedMessage defaultMessage='Follow and interact with this channel by creating an account.' />
       ),
       buttons: [
         {
-          label: <FormattedMessage defaultMessage='Create a social web account' />,
+          label: (
+            <FormattedMessage defaultMessage='Create a social web account' />
+          ),
           url: defaultUrl,
           target: '_blank',
           className: 'button button--block',
@@ -167,18 +190,27 @@ export const SignInBanner: React.FC = () => {
   return (
     <div className='sign-in-banner'>
       <p>{registrationState.text}</p>
-      {registrationState.buttons.map((button, index) => (
-        <a
-          key={index}
-          href={typeof button.url === 'string' ? button.url : '#'}
-          className={button.className}
-          target={button.target}
-          onClick={button.url ? undefined : registrationState.onClick}
-          {...(button.url ? {} : { role: 'button', tabIndex: 0 })}
-        >
-          {button.label}
-        </a>
-      ))}
+      {registrationState.buttons.map((button, index) =>
+        typeof button.url === 'string' ? (
+          <a
+            key={index}
+            href={button.url}
+            className={button.className}
+            target={button.target}
+          >
+            {button.label}
+          </a>
+        ) : (
+          <button
+            key={index}
+            type='button'
+            className={button.className}
+            onClick={registrationState.onClick}
+          >
+            {button.label}
+          </button>
+        ),
+      )}
     </div>
   );
 };

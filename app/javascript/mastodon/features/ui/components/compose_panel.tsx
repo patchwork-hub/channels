@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect } from 'react';
 
-import { useLayout } from '@/mastodon/hooks/useLayout';
+import ChannelBanner from '@/mastodon/components/channel_banner';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 import {
   changeComposing,
@@ -8,11 +8,9 @@ import {
   unmountCompose,
 } from 'mastodon/actions/compose';
 import { useAppHistory } from 'mastodon/components/router';
-import ServerBanner from 'mastodon/components/server_banner';
-import { Search } from 'mastodon/features/compose/components/search';
 import ComposeFormContainer from 'mastodon/features/compose/containers/compose_form_container';
-import ChannelBanner from '@/mastodon/components/channel_banner';
 import { useIdentity } from 'mastodon/identity_context';
+
 import { SignInBanner } from '../../navigation_panel/components/sign_in_banner';
 
 export const ComposePanel: React.FC = () => {
@@ -35,8 +33,6 @@ export const ComposePanel: React.FC = () => {
       dispatch(unmountCompose());
     };
   }, [dispatch]);
-
-  const { singleColumn } = useLayout();
 
   return (
     <div className='compose-panel' onFocus={handleFocus}>

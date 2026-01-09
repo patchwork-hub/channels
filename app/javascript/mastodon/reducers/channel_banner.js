@@ -1,4 +1,5 @@
 import { Map as ImmutableMap, List as ImmutableList } from 'immutable';
+
 import {
   CHANNELS_FETCH_REQUEST,
   CHANNELS_FETCH_SUCCESS,

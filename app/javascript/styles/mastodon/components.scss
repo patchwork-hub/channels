@@ -11731,3 +11731,231 @@ noscript {
 .see-all {
   @include see-all-button();
 }
+
+.channels {
+  // font-family: 'source-sans-pro';
+  .channels__header {
+    padding: 30px 20px;
+    .title {
+      background: white;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-size: 32px;
+      line-height: 38px;
+      font-weight: 700;
+      padding-bottom: 14px;
+      text-decoration: none;
+      // font-family: 'ibm-plex-sans';
+    }
+    .text {
+      font-weight: 400;
+      font-size: 16px;
+      color: white;
+    }
+  }
+}
+.channels__list {
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+  gap: 20px;
+  padding: 30px 20px;
+  @media screen and (min-width: 380px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media screen and (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .card {
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+
+  .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, #2b2b2b, transparent);
+    opacity: 0.6;
+    border-radius: 10px;
+  }
+
+  .info {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    &__detail {
+      display: flex;
+      flex-direction: column;
+      padding-left: 10px;
+      .subtitle {
+        font-weight: 300;
+        font-size: 13px;
+        line-height: 20px;
+      }
+      .title {
+        // font-family: 'ibm-plex-sans';
+        font-size: 16px;
+        line-height: 16px;
+        font-weight: 600;
+      }
+    }
+    .icon {
+      padding-right: 10px;
+      width: 20px;
+      height: 20px;
+      font-weight: 400;
+      color: #ff3c26;
+    }
+  }
+}
+.powered-by {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  color: #ffffffb3;
+  margin-block-end: 12px;
+}
+
+// channel search
+.channelSearchContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.searchInputContainer {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  background-color: white;
+  border-radius: 9999px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.searchIcon {
+  padding: 0.3rem 0.5rem 0 0.5rem;
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.searchInput {
+  width: 85%;
+  max-width: 888px;
+  border: none;
+  outline: 0;
+  font-size: 18px;
+  &::placeholder {
+    margin-left: 0.5rem;
+    font-weight: 400;
+    font-size: 18px;
+    color: #9ca3af;
+  }
+
+  &:focus-visible {
+    outline: 0;
+  }
+}
+
+.searchButton {
+  margin: 0.25rem;
+  min-width: fit-content;
+  border-radius: 9999px;
+  font-size: 18px;
+  background-color: #ff3c26;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: background-color 0.2s;
+  padding: 0.5rem 1.5rem;
+  &:hover {
+    background-color: #f25d4c;
+  }
+
+  &:disabled {
+    background-color: #ff3c26;
+    cursor: not-allowed;
+  }
+}
+
+.mobileSearchButton {
+  margin-top: 1rem;
+  width: 100%;
+  min-width: 201px;
+  border-radius: 9999px;
+  font-size: 18px;
+  background-color: #ff3c26;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 0.4rem 1.5rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f25d4c;
+  }
+
+  &:disabled {
+    background-color: #ff3c26;
+    cursor: not-allowed;
+  }
+}
+
+.hiddenOnMobile {
+  display: none;
+
+  @media (min-width: 768px) {
+    display: block;
+  }
+}
+
+.visibleOnMobile {
+  display: block;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.bg-grid {
+  background-image: url('https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/001/original/cropped-image.jpg?1734719920');
+  // url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/002/original/cropped-image.jpg?1734720033"),
+  // url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/003/original/cropped-image.jpg?1734720221"),
+  // url("https://s3-eu-west-2.amazonaws.com/patchwork-prod/collections/avatar_images/000/000/004/original/cropped-image.jpg?1734766791");
+
+  background-size: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hide-path {
+  & path {
+    display: none;
+  }
+}
+.nav-width-fit {
+  width: fit-content;
+}

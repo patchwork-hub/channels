@@ -237,3 +237,17 @@ export function ListEdit () {
 export function ListMembers () {
   return import('../../lists/members');
 }
+
+export function Collections() {
+  return import('../../collections');
+}
+
+export function ChannelsFeed() {
+  return import('../../channels');
+}
+export function CollectionDetail() {
+  return import('../../collection_detail');
+}
+export function NewsmastChannels() {
+  return import('../../newsmasts');
+}
