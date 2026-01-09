@@ -4509,7 +4509,8 @@ div[tabindex="-1"]+div[tabindex="-1"]>.status__wrapper>.status-reply.status--in-
     z-index: 3;
   }
 
-  .app-body:not(.layout-multiple-columns):has(.ui .ui__header__links > .button[href="/auth/sign_in"]) .tabs-bar__wrapper :is(.column-back-button, .column-header > *) {
+  .app-body:not(.layout-multiple-columns):has(.ui .ui__header__links > .button[href="/auth/sign_in"]) .tabs-bar__wrapper .column-back-button,
+  .app-body:not(.layout-multiple-columns):has(.ui .ui__header__links > .button[href="/auth/sign_in"]) .tabs-bar__wrapper .column-header>* {
     display: none;
   }
 
