@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import classNames from 'classnames';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import type { Map as ImmutableMap } from 'immutable';
 
@@ -21,16 +21,14 @@ import NotificationsActiveIcon from '@/material-icons/400-24px/notifications-fil
 import NotificationsIcon from '@/material-icons/400-24px/notifications.svg?react';
 import PersonAddActiveIcon from '@/material-icons/400-24px/person_add-fill.svg?react';
 import PersonAddIcon from '@/material-icons/400-24px/person_add.svg?react';
-import PublicIcon from '@/material-icons/400-24px/public.svg?react';
 import SettingsIcon from '@/material-icons/400-24px/settings.svg?react';
 import StarActiveIcon from '@/material-icons/400-24px/star-fill.svg?react';
 import StarIcon from '@/material-icons/400-24px/star.svg?react';
-import TrendingUpIcon from '@/material-icons/400-24px/trending_up.svg?react';
+import FeedIcon from '@/material-icons/400-24px/feed_icon.svg?react';
 import { fetchFollowRequests } from 'mastodon/actions/accounts';
 import { openNavigation, closeNavigation } from 'mastodon/actions/navigation';
 import { Account } from 'mastodon/components/account';
 import { IconWithBadge } from 'mastodon/components/icon_with_badge';
-import { WordmarkLogo } from 'mastodon/components/logo';
 import { Search } from 'mastodon/features/compose/components/search';
 import { ColumnLink } from 'mastodon/features/ui/components/column_link';
 import { Logo } from 'mastodon/features/ui/components/logo';
@@ -40,10 +38,8 @@ import { useIdentity } from 'mastodon/identity_context';
 import {
   localLiveFeedAccess,
   remoteLiveFeedAccess,
-  trendsEnabled,
   me,
   custom_links,
-  logo_image,
 } from 'mastodon/initial_state';
 import { transientSingleColumn } from 'mastodon/is_mobile';
 import { canViewFeed } from 'mastodon/permissions';
@@ -64,12 +60,7 @@ const messages = defineMessages({
     id: 'tabs_bar.notifications',
     defaultMessage: 'Notifications',
   },
-  explore: { id: 'explore.title', defaultMessage: 'Trending' },
-  firehose: { id: 'column.firehose', defaultMessage: 'Live feeds' },
-  firehose_singular: {
-    id: 'column.firehose_singular',
-    defaultMessage: 'Live feed',
-  },
+  feed: { id: 'feed.title', defaultMessage: 'Feed' },
   direct: { id: 'navigation_bar.direct', defaultMessage: 'Private mentions' },
   favourites: { id: 'navigation_bar.favourites', defaultMessage: 'Favorites' },
   bookmarks: { id: 'navigation_bar.bookmarks', defaultMessage: 'Bookmarks' },
@@ -251,6 +242,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
               transparent
               to='/home'
               icon='home'
+              badge={true}
               iconComponent={HomeIcon}
               activeIconComponent={HomeActiveIcon}
               text={intl.formatMessage(messages.home)}
@@ -258,34 +250,17 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
           </>
         )}
 
-        {trendsEnabled && (
-          <ColumnLink
-            transparent
-            to='/explore'
-            icon='explore'
-            iconComponent={TrendingUpIcon}
-            text={intl.formatMessage(messages.explore)}
-          />
-        )}
-
         {(canViewFeed(signedIn, permissions, localLiveFeedAccess) ||
           canViewFeed(signedIn, permissions, remoteLiveFeedAccess)) && (
             <ColumnLink
               transparent
-              to={
-                canViewFeed(signedIn, permissions, localLiveFeedAccess)
-                  ? '/public/local'
-                  : '/public/remote'
-              }
-              icon='globe'
-              iconComponent={PublicIcon}
+              to='/public'
+              icon='feed'
+              badge={true}
+              iconComponent={FeedIcon}
+              activeIconComponent={FeedIcon}
               isActive={isFirehoseActive}
-              text={intl.formatMessage(
-                canViewFeed(signedIn, permissions, localLiveFeedAccess) &&
-                  canViewFeed(signedIn, permissions, remoteLiveFeedAccess)
-                  ? messages.firehose
-                  : messages.firehose_singular,
-              )}
+              text={intl.formatMessage(messages.feed)}
             />
           )}
 
@@ -310,6 +285,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
                 transparent
                 href={navItem.url}
                 icon={navItem.icon}
+                badge={true}
                 iconComponent={IconComponent}
                 activeIconComponent={IconComponent}
                 text={navItem.name}
@@ -333,6 +309,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
               transparent
               to='/favourites'
               icon='star'
+              badge={true}
               iconComponent={StarIcon}
               activeIconComponent={StarActiveIcon}
               text={intl.formatMessage(messages.favourites)}
@@ -341,6 +318,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
               transparent
               to='/bookmarks'
               icon='bookmarks'
+              badge={true}
               iconComponent={BookmarksIcon}
               activeIconComponent={BookmarksActiveIcon}
               text={intl.formatMessage(messages.bookmarks)}
@@ -349,6 +327,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
               transparent
               to='/conversations'
               icon='at'
+              badge={true}
               iconComponent={AlternateEmailIcon}
               text={intl.formatMessage(messages.direct)}
             />
@@ -359,6 +338,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
               transparent
               href='/settings/preferences'
               icon='cog'
+              badge={true}
               iconComponent={SettingsIcon}
               text={intl.formatMessage(messages.preferences)}
             />
@@ -372,6 +352,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
             transparent
             to='/about'
             icon='ellipsis-h'
+            badge={true}
             iconComponent={InfoIcon}
             text={intl.formatMessage(messages.about)}
           />
