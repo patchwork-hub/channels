@@ -264,8 +264,9 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
           />
         )}
 
-        {/* Dynamic navigation items from custom_links */}
-        {custom_links &&
+        {/* Dynamic navigation items from custom_links - only show if not signed in */}
+        {!signedIn &&
+          custom_links &&
           Object.values(
             typeof custom_links === 'string'
               ? (JSON.parse(custom_links) as Record<
@@ -288,6 +289,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
                 iconComponent={IconComponent}
                 activeIconComponent={IconComponent}
                 text={navItem.name}
+                style={{ order: 6 }}
               />
             );
           })}
