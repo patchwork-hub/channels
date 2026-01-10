@@ -112,8 +112,11 @@ RUN \
   patchelf \
   procps \
   tini \
+  unzip \
   tzdata \
   wget \
+    unzip \
+
   ; \
   # Patch Ruby to use jemalloc
   patchelf --add-needed libjemalloc.so.2 /usr/local/bin/ruby; \
@@ -121,6 +124,10 @@ RUN \
   apt-get purge -y \
   patchelf \
   ;
+
+#install aws cli 
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip
+RUN ./aws/install && aws --version
 
 # Create temporary build layer from base image
 FROM ruby AS build
@@ -391,7 +398,9 @@ RUN \
   mkdir -p /opt/mastodon/public/system; \
   chown mastodon:mastodon /opt/mastodon/public/system; \
   # Set Mastodon user as owner of tmp folder
-  chown -R mastodon:mastodon /opt/mastodon/tmp;
+  chown -R mastodon:mastodon /opt/mastodon/tmp; \
+  chown -R mastodon:mastodon /opt/mastodon/config;
+
 
 # Set the running user for resulting container
 USER mastodon
