@@ -4,9 +4,16 @@ const ChannelTopBanner = () => {
   return (
     <div
       className='channel-header'
-      style={
-        { '--header-image': `url(${header_image})` } as React.CSSProperties
-      }
+      style={{
+        backgroundImage: `
+          linear-gradient(
+            180deg,
+            rgba(0,0,0,0) 0%,
+            rgba(0,0,0,0.35) 70%
+          ),
+          url(${header_image})
+        `,
+      }}
     />
   );
 };
