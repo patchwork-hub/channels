@@ -14,6 +14,7 @@ import AddIcon from '@/material-icons/400-24px/add.svg?react';
 import AlternateEmailIcon from '@/material-icons/400-24px/alternate_email.svg?react';
 import BookmarksActiveIcon from '@/material-icons/400-24px/bookmarks-fill.svg?react';
 import BookmarksIcon from '@/material-icons/400-24px/bookmarks.svg?react';
+import FeedIcon from '@/material-icons/400-24px/feed_icon.svg?react';
 import HomeActiveIcon from '@/material-icons/400-24px/home-fill.svg?react';
 import HomeIcon from '@/material-icons/400-24px/home.svg?react';
 import InfoIcon from '@/material-icons/400-24px/info.svg?react';
@@ -24,7 +25,6 @@ import PersonAddIcon from '@/material-icons/400-24px/person_add.svg?react';
 import SettingsIcon from '@/material-icons/400-24px/settings.svg?react';
 import StarActiveIcon from '@/material-icons/400-24px/star-fill.svg?react';
 import StarIcon from '@/material-icons/400-24px/star.svg?react';
-import FeedIcon from '@/material-icons/400-24px/feed_icon.svg?react';
 import { fetchFollowRequests } from 'mastodon/actions/accounts';
 import { openNavigation, closeNavigation } from 'mastodon/actions/navigation';
 import { Account } from 'mastodon/components/account';
@@ -131,8 +131,8 @@ const FollowRequestsLink: React.FC = () => {
     (state) =>
       (
         state.user_lists.getIn(['follow_requests', 'items']) as
-        | ImmutableMap<string, unknown>
-        | undefined
+          | ImmutableMap<string, unknown>
+          | undefined
       )?.size ?? 0,
   );
   const dispatch = useAppDispatch();
@@ -242,7 +242,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
               transparent
               to='/home'
               icon='home'
-              badge={true}
+              activeBadge
               iconComponent={HomeIcon}
               activeIconComponent={HomeActiveIcon}
               text={intl.formatMessage(messages.home)}
@@ -252,30 +252,31 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
 
         {(canViewFeed(signedIn, permissions, localLiveFeedAccess) ||
           canViewFeed(signedIn, permissions, remoteLiveFeedAccess)) && (
-            <ColumnLink
-              transparent
-              to='/public'
-              icon='feed'
-              badge={true}
-              iconComponent={FeedIcon}
-              activeIconComponent={FeedIcon}
-              isActive={isFirehoseActive}
-              text={intl.formatMessage(messages.feed)}
-            />
-          )}
+          <ColumnLink
+            transparent
+            to='/public'
+            icon='feed'
+            activeBadge
+            iconComponent={FeedIcon}
+            activeIconComponent={FeedIcon}
+            isActive={isFirehoseActive}
+            text={intl.formatMessage(messages.feed)}
+          />
+        )}
 
-        {/* Dynamic navigation items from custom_links */}
-        {custom_links &&
+        {/* Dynamic navigation items from custom_links - only show if not signed in */}
+        {!signedIn &&
+          custom_links &&
           Object.values(
             typeof custom_links === 'string'
               ? (JSON.parse(custom_links) as Record<
-                string,
-                { name: string; url: string; icon: string }
-              >)
+                  string,
+                  { name: string; url: string; icon: string }
+                >)
               : (custom_links as Record<
-                string,
-                { name: string; url: string; icon: string }
-              >),
+                  string,
+                  { name: string; url: string; icon: string }
+                >),
           ).map((item, index) => {
             const navItem = item as { name: string; url: string; icon: string };
             const IconComponent = icons[navItem.icon];
@@ -285,10 +286,11 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
                 transparent
                 href={navItem.url}
                 icon={navItem.icon}
-                badge={true}
+                target='_blank'
                 iconComponent={IconComponent}
                 activeIconComponent={IconComponent}
                 text={navItem.name}
+                style={{ order: 6 }}
               />
             );
           })}
@@ -309,7 +311,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
               transparent
               to='/favourites'
               icon='star'
-              badge={true}
+              activeBadge
               iconComponent={StarIcon}
               activeIconComponent={StarActiveIcon}
               text={intl.formatMessage(messages.favourites)}
@@ -318,7 +320,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
               transparent
               to='/bookmarks'
               icon='bookmarks'
-              badge={true}
+              activeBadge
               iconComponent={BookmarksIcon}
               activeIconComponent={BookmarksActiveIcon}
               text={intl.formatMessage(messages.bookmarks)}
@@ -327,7 +329,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
               transparent
               to='/conversations'
               icon='at'
-              badge={true}
+              activeBadge
               iconComponent={AlternateEmailIcon}
               text={intl.formatMessage(messages.direct)}
             />
@@ -338,7 +340,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
               transparent
               href='/settings/preferences'
               icon='cog'
-              badge={true}
+              activeBadge
               iconComponent={SettingsIcon}
               text={intl.formatMessage(messages.preferences)}
             />
@@ -352,7 +354,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
             transparent
             to='/about'
             icon='ellipsis-h'
-            badge={true}
+            activeBadge
             iconComponent={InfoIcon}
             text={intl.formatMessage(messages.about)}
           />

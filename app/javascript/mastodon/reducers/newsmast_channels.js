@@ -1,9 +1,9 @@
 import { Map as ImmutableMap, List as ImmutableList } from 'immutable';
 
 import {
-    NEWSMAST_CHANNELS_FETCH_REQUEST,
-    NEWSMAST_CHANNELS_FETCH_SUCCESS,
-    NEWSMAST_CHANNELS_FETCH_FAIL,
+  NEWSMAST_CHANNELS_FETCH_REQUEST,
+  NEWSMAST_CHANNELS_FETCH_SUCCESS,
+  NEWSMAST_CHANNELS_FETCH_FAIL,
 } from '../actions/channel_banner';
 
 const initialState = ImmutableMap({
@@ -15,12 +15,12 @@ const initialState = ImmutableMap({
 
 
 export default function newsmastChannelsReducer(state = initialState, action) {
-  switch(action.type) {
+  switch (action.type) {
     case NEWSMAST_CHANNELS_FETCH_REQUEST:
       return state.get('items').size > 0
-      ? state.set('isLoading', false).set('error', null)
-      : state.set('isLoading', true).set('items', ImmutableList()).set('error', null);
-    case NEWSMAST_CHANNELS_FETCH_SUCCESS:{
+        ? state.set('isLoading', false).set('error', null)
+        : state.set('isLoading', true).set('items', ImmutableList()).set('error', null);
+    case NEWSMAST_CHANNELS_FETCH_SUCCESS: {
       return state.set('isLoading', false).set('items', ImmutableList(action.channels));
     }
     case NEWSMAST_CHANNELS_FETCH_FAIL:
