@@ -5,7 +5,7 @@ class InitialStateSerializer < ActiveModel::Serializer
 
   attributes :meta, :compose, :accounts,
              :media_attachments, :settings,
-             :languages,:features
+             :languages,:features,
              :header_image, :custom_links, :channel_display_name, :logo_image, :is_main_channel, :is_newuser_with_approval
 
   attribute :critical_updates_pending, if: -> { object&.role&.can?(:view_devops) && SoftwareUpdate.check_enabled? }
