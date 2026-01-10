@@ -21,6 +21,7 @@ import Column from '../../components/column';
 import ColumnHeader from '../../components/column_header';
 import SettingToggle from '../notifications/components/setting_toggle';
 import StatusListContainer from '../ui/containers/status_list_container';
+import ChannelTopBanner from '../../components/channel_top_banner';
 
 const messages = defineMessages({
   title: { id: 'column.firehose', defaultMessage: 'Live feeds' },
@@ -33,6 +34,12 @@ const messages = defineMessages({
     defaultMessage: 'Live feed',
   },
 });
+
+const getTitle = () => {
+  const subdomain = window.location.host.split('.')[0];
+  const title = subdomain.charAt(0).toUpperCase() + subdomain.slice(1);
+  return title;
+};
 
 const ColumnSettings = () => {
   const dispatch = useAppDispatch();
@@ -180,31 +187,16 @@ const Firehose = ({ feedType, multiColumn }) => {
   }
 
   return (
-    <Column bindToDocument={!multiColumn} ref={columnRef} label={intl.formatMessage(messages.title)}>
-      <ColumnHeader
-        icon='globe'
-        iconComponent={PublicIcon}
-        active={hasUnread}
-        title={intl.formatMessage(title)}
-        onPin={handlePin}
-        onClick={handleHeaderClick}
-        multiColumn={multiColumn}
-      >
-        <ColumnSettings />
-      </ColumnHeader>
+    <Column bindToDocument={!multiColumn} ref={columnRef} label={getTitle()}>
+      <ChannelTopBanner />
 
       {(canViewFeed(signedIn, permissions, localLiveFeedAccess) && canViewFeed(signedIn, permissions, remoteLiveFeedAccess)) && (
         <div className='account__section-headline'>
-          <NavLink exact to='/public/local'>
-            <FormattedMessage tagName='div' id='firehose.local' defaultMessage='This server' />
-          </NavLink>
-
-          <NavLink exact to='/public/remote'>
-            <FormattedMessage tagName='div' id='firehose.remote' defaultMessage='Other servers' />
-          </NavLink>
-
           <NavLink exact to='/public'>
-            <FormattedMessage tagName='div' id='firehose.all' defaultMessage='All' />
+            <FormattedMessage tagName='div' defaultMessage='Posts' />
+          </NavLink>
+          <NavLink exact to='/about'>
+            <FormattedMessage tagName='div' defaultMessage='About' />
           </NavLink>
         </div>
       )}
@@ -220,7 +212,7 @@ const Firehose = ({ feedType, multiColumn }) => {
       />
 
       <Helmet>
-        <title>{intl.formatMessage(messages.title)}</title>
+        <title>{getTitle()}</title>
         <meta name='robots' content='noindex' />
       </Helmet>
     </Column>

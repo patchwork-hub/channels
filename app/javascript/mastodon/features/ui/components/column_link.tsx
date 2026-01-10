@@ -31,53 +31,55 @@ export const ColumnLink: React.FC<{
   transparent,
   ...other
 }) => {
-  const match = useRouteMatch(to ?? '');
-  const className = classNames('column-link', {
-    'column-link--transparent': transparent,
-  });
-  const badgeElement =
-    typeof badge !== 'undefined' ? (
-      <span className='column-link__badge'>{badge}</span>
-    ) : null;
-  const iconElement = iconComponent ? (
-    <Icon
-      id={typeof icon === 'string' ? icon : ''}
-      icon={iconComponent}
-      className='column-link__icon'
-    />
-  ) : (
-    icon
-  );
-  const activeIconElement =
-    activeIcon ??
-    (activeIconComponent ? (
+    const match = useRouteMatch(to ?? '');
+    const className = classNames('column-link', {
+      'column-link--transparent': transparent,
+    });
+    const active = !!match;
+    const badgeElement =
+      typeof badge !== 'undefined' ? (
+        <span className={classNames('column-link__badge', { active })}>
+          {badge}
+        </span>
+      ) : null;
+    const iconElement = iconComponent ? (
       <Icon
         id={typeof icon === 'string' ? icon : ''}
-        icon={activeIconComponent}
+        icon={iconComponent}
         className='column-link__icon'
       />
     ) : (
-      iconElement
-    ));
-  const active = !!match;
+      icon
+    );
+    const activeIconElement =
+      activeIcon ??
+      (activeIconComponent ? (
+        <Icon
+          id={typeof icon === 'string' ? icon : ''}
+          icon={activeIconComponent}
+          className='column-link__icon active-icon'
+        />
+      ) : (
+        iconElement
+      ));
 
-  if (href) {
-    return (
-      <a href={href} className={className} data-method={method} {...other}>
-        {active ? activeIconElement : iconElement}
-        <span>{text}</span>
-        {badgeElement}
-      </a>
-    );
-  } else if (to) {
-    return (
-      <NavLink to={to} className={className} {...other}>
-        {active ? activeIconElement : iconElement}
-        <span>{text}</span>
-        {badgeElement}
-      </NavLink>
-    );
-  } else {
-    return null;
-  }
-};
+    if (href) {
+      return (
+        <a href={href} className={className} data-method={method} {...other}>
+          {active ? activeIconElement : iconElement}
+          <span>{text}</span>
+          {badgeElement}
+        </a>
+      );
+    } else if (to) {
+      return (
+        <NavLink to={to} className={className} {...other}>
+          {active ? activeIconElement : iconElement}
+          <span>{text}</span>
+          {badgeElement}
+        </NavLink>
+      );
+    } else {
+      return null;
+    }
+  };

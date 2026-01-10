@@ -8,6 +8,8 @@ import { accountsFamiliarFollowersReducer } from './accounts_familiar_followers'
 import { accountsMapReducer } from './accounts_map';
 import { alertsReducer } from './alerts';
 import announcements from './announcements';
+import channelsReducer from './channel_banner';
+import channelFeedsReducer from './channel_feeds';
 import { composeReducer } from './compose';
 import { contextsReducer } from './contexts';
 import conversations from './conversations';
@@ -22,6 +24,7 @@ import media_attachments from './media_attachments';
 import meta from './meta';
 import { modalReducer } from './modal';
 import { navigationReducer } from './navigation';
+import newsmastChannelsReducer from './newsmast_channels';
 import { notificationGroupsReducer } from './notification_groups';
 import { notificationPolicyReducer } from './notification_policy';
 import { notificationRequestsReducer } from './notification_requests';
@@ -40,6 +43,11 @@ import { followedTagsReducer } from './tags';
 import timelines from './timelines';
 import trends from './trends';
 import user_lists from './user_lists';
+import searchChannelsReducer from './search_channels';
+import channelFeedDetailReducer from './channel_feed';
+import collectionDetailReducer from './collection_detail';
+import newsmastDetailReducer from './newsmast_detail';
+import myChannelReducer from './my_channel';
 
 const reducers = {
   announcements,
@@ -80,6 +88,15 @@ const reducers = {
   notificationPolicy: notificationPolicyReducer,
   notificationRequests: notificationRequestsReducer,
   navigation: navigationReducer,
+  // channels
+  recommended_channels: channelsReducer,
+  channel_feeds: channelFeedsReducer,
+  newsmast_channels: newsmastChannelsReducer,
+  search_channels: searchChannelsReducer,
+  channel_feed_detail: channelFeedDetailReducer,
+  collection_detail: collectionDetailReducer,
+  newsmast_detail: newsmastDetailReducer,
+  my_channel: myChannelReducer,
 };
 
 // We want the root state to be an ImmutableRecord, which is an object with a defined list of keys,

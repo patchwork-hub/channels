@@ -4,12 +4,10 @@
 - content_for :content do
   .container-alt
     .logo-container
-      %h1
-        - if within_authorization_flow?
+      %h1{style: "display: flex; align-items: center; gap: 1rem"}
+        = link_to root_path do
           = logo_as_symbol(:wordmark)
-        - else
-          = link_to root_path do
-            = logo_as_symbol(:wordmark)
+        %span= domain_brand_name
 
     .form-container
       = render 'flashes'
