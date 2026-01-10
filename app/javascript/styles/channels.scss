@@ -299,3 +299,9 @@
     }
   }
 }
+
+// Tertiary button hover overrides
+.layout-single-column .button.button-tertiary:focus,
+.layout-single-column .button.button-tertiary:hover {
+  color: var(--color-ghost-button-text) !important;
+}
