@@ -71,7 +71,7 @@
   .nav-links {
     flex: 1;
     overflow-y: auto;
-    font-family: 'source-sans-pro', sans-serif;
+    font-family: source-sans-pro, sans-serif;
   }
 
   .footer {
@@ -143,7 +143,7 @@
   line-height: 32px;
   font-weight: 700;
   text-decoration: none;
-  font-family: 'ibm-plex-sans', sans-serif;
+  font-family: ibm-plex-sans, sans-serif;
   display: inline-block;
 }
 
@@ -179,7 +179,7 @@
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-family: 'ibm-plex-sans', sans-serif;
+    font-family: ibm-plex-sans, sans-serif;
     font-size: 30px;
     font-weight: 700;
     display: inline-block;
@@ -210,9 +210,42 @@
   }
 }
 
+// Dynamic navigation icons - these are external social icons that need to show their actual SVG
+// Bird-UI uses CSS masks/background-images for icons, but dynamic icons need inline SVG rendering
+.layout-single-column .column-link,
+.layout-multiple-columns .column-link {
+  // List all dynamic icon classes from navIcons.tsx
+  .icon-blog,
+  .icon-bluesky,
+  .icon-chat,
+  .icon-facebook,
+  .icon-instagram,
+  .icon-linktree,
+  .icon-mastodon,
+  .icon-message,
+  .icon-pinterest,
+  .icon-pixelfed,
+  .icon-podcast,
+  .icon-reddit,
+  .icon-rssfeed,
+  .icon-snapchat,
+  .icon-thread,
+  .icon-tiktok,
+  .icon-video,
+  .icon-website,
+  .icon-whatsapp,
+  .icon-x {
+    background-image: none !important;
+
+    path {
+      display: block !important;
+      fill: currentColor;
+    }
+  }
+}
+
 // Active navigation link styles - brand color for icons and badges
 .column-link.active {
-
   .column-link__icon,
   .active-icon {
     color: var(--color-brand-mastodon) !important;

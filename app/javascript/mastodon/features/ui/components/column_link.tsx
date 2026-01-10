@@ -15,6 +15,7 @@ export const ColumnLink: React.FC<{
   href?: string;
   method?: string;
   badge?: React.ReactNode;
+  activeBadge?: boolean;
   transparent?: boolean;
   className?: string;
   id?: string;
@@ -28,58 +29,62 @@ export const ColumnLink: React.FC<{
   href,
   method,
   badge,
+  activeBadge,
   transparent,
   ...other
 }) => {
-    const match = useRouteMatch(to ?? '');
-    const className = classNames('column-link', {
-      'column-link--transparent': transparent,
-    });
-    const active = !!match;
-    const badgeElement =
-      typeof badge !== 'undefined' ? (
-        <span className={classNames('column-link__badge', { active })}>
-          {badge}
-        </span>
-      ) : null;
-    const iconElement = iconComponent ? (
+  const match = useRouteMatch(to ?? '');
+  const className = classNames('column-link', {
+    'column-link--transparent': transparent,
+  });
+  const active = !!match;
+  // Show badge if: badge content is provided, OR activeBadge is true and route is active
+  const badgeElement =
+    typeof badge !== 'undefined' ? (
+      <span className={classNames('column-link__badge', { active })}>
+        {badge}
+      </span>
+    ) : activeBadge && active ? (
+      <span className='column-link__badge active' />
+    ) : null;
+  const iconElement = iconComponent ? (
+    <Icon
+      id={typeof icon === 'string' ? icon : ''}
+      icon={iconComponent}
+      className='column-link__icon'
+    />
+  ) : (
+    icon
+  );
+  const activeIconElement =
+    activeIcon ??
+    (activeIconComponent ? (
       <Icon
         id={typeof icon === 'string' ? icon : ''}
-        icon={iconComponent}
-        className='column-link__icon'
+        icon={activeIconComponent}
+        className='column-link__icon active-icon'
       />
     ) : (
-      icon
-    );
-    const activeIconElement =
-      activeIcon ??
-      (activeIconComponent ? (
-        <Icon
-          id={typeof icon === 'string' ? icon : ''}
-          icon={activeIconComponent}
-          className='column-link__icon active-icon'
-        />
-      ) : (
-        iconElement
-      ));
+      iconElement
+    ));
 
-    if (href) {
-      return (
-        <a href={href} className={className} data-method={method} {...other}>
-          {active ? activeIconElement : iconElement}
-          <span>{text}</span>
-          {badgeElement}
-        </a>
-      );
-    } else if (to) {
-      return (
-        <NavLink to={to} className={className} {...other}>
-          {active ? activeIconElement : iconElement}
-          <span>{text}</span>
-          {badgeElement}
-        </NavLink>
-      );
-    } else {
-      return null;
-    }
-  };
+  if (href) {
+    return (
+      <a href={href} className={className} data-method={method} {...other}>
+        {active ? activeIconElement : iconElement}
+        <span>{text}</span>
+        {badgeElement}
+      </a>
+    );
+  } else if (to) {
+    return (
+      <NavLink to={to} className={className} {...other}>
+        {active ? activeIconElement : iconElement}
+        <span>{text}</span>
+        {badgeElement}
+      </NavLink>
+    );
+  } else {
+    return null;
+  }
+};
