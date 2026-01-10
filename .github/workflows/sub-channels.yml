@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - sub-channels
+      - sub-channels-v4.5.3
 
 permissions:
   contents: read
