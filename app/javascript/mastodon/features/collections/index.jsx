@@ -32,6 +32,12 @@ const Collections = () => {
   const collectionsLoading = useSelector((state) =>
     state.recommended_channels.get('isLoading'),
   );
+  const channelFeedsLoading = useSelector((state) =>
+    state.channel_feeds.get('isLoading'),
+  );
+  const newsmastChannelsLoading = useSelector((state) =>
+    state.newsmast_channels.get('isLoading'),
+  );
   const searchChannels = useSelector((state) =>
     state.getIn(['search_channels', 'items']).toJS(),
   );
@@ -52,96 +58,99 @@ const Collections = () => {
   const channels = searchTerm
     ? searchChannels
     : [
-        channel_feeds?.size > 0 ? channel_feeds.get(0) : null,
-        newsmast_channels?.size > 0 ? newsmast_channels.get(0) : null,
-        collections?.size > 0 ? collections.get(0) : null,
-      ].filter((item) => item !== null);
+      channel_feeds?.size > 0 ? channel_feeds.get(0) : null,
+      newsmast_channels?.size > 0 ? newsmast_channels.get(0) : null,
+      collections?.size > 0 ? collections.get(0) : null,
+    ].filter((item) => item !== null);
 
-  const isLoading = searchTerm ? searchChannelsLoading : collectionsLoading;
+  const isLoading =
+    searchTerm || searchChannelsLoading
+      ? searchChannelsLoading
+      : collectionsLoading || channelFeedsLoading || newsmastChannelsLoading;
 
   const collectionsTiles =
     collections?.size > 0
       ? {
-          tiles: [
-            collections.get(1)?.attributes?.avatar_image_url.startsWith('https')
-              ? collections.get(1)?.attributes?.avatar_image_url
-              : images.channels,
-            collections.get(2)?.attributes?.avatar_image_url.startsWith('https')
-              ? collections.get(2)?.attributes?.avatar_image_url
-              : images.channels,
-            collections.get(3)?.attributes?.avatar_image_url.startsWith('https')
-              ? collections.get(3)?.attributes?.avatar_image_url
-              : images.channels,
-            collections.get(4)?.attributes?.avatar_image_url.startsWith('https')
-              ? collections.get(4)?.attributes?.avatar_image_url
-              : images.channels,
-          ],
-          collection: true,
-          channel: false,
-          newsmast: false,
-        }
+        tiles: [
+          collections.get(1)?.attributes?.avatar_image_url.startsWith('https')
+            ? collections.get(1)?.attributes?.avatar_image_url
+            : images.channels,
+          collections.get(2)?.attributes?.avatar_image_url.startsWith('https')
+            ? collections.get(2)?.attributes?.avatar_image_url
+            : images.channels,
+          collections.get(3)?.attributes?.avatar_image_url.startsWith('https')
+            ? collections.get(3)?.attributes?.avatar_image_url
+            : images.channels,
+          collections.get(4)?.attributes?.avatar_image_url.startsWith('https')
+            ? collections.get(4)?.attributes?.avatar_image_url
+            : images.channels,
+        ],
+        collection: true,
+        channel: false,
+        newsmast: false,
+      }
       : { tiles: [], collection: true, channel: false, newsmast: false };
 
   const channelsTiles =
     channel_feeds?.size > 0
       ? {
-          tiles: [
-            channel_feeds
-              .get(1)
-              ?.attributes?.avatar_image_url.startsWith('https')
-              ? channel_feeds.get(1)?.attributes?.avatar_image_url
-              : images.channels,
-            channel_feeds
-              .get(2)
-              ?.attributes?.avatar_image_url.startsWith('https')
-              ? channel_feeds.get(2)?.attributes?.avatar_image_url
-              : images.channels,
-            channel_feeds
-              .get(3)
-              ?.attributes?.avatar_image_url.startsWith('https')
-              ? channel_feeds.get(3)?.attributes?.avatar_image_url
-              : images.channels,
-            channel_feeds
-              .get(4)
-              ?.attributes?.avatar_image_url.startsWith('https')
-              ? channel_feeds.get(4)?.attributes?.avatar_image_url
-              : images.channels,
-          ],
-          collection: false,
-          channel: true,
-          newsmast: false,
-        }
+        tiles: [
+          channel_feeds
+            .get(1)
+            ?.attributes?.avatar_image_url.startsWith('https')
+            ? channel_feeds.get(1)?.attributes?.avatar_image_url
+            : images.channels,
+          channel_feeds
+            .get(2)
+            ?.attributes?.avatar_image_url.startsWith('https')
+            ? channel_feeds.get(2)?.attributes?.avatar_image_url
+            : images.channels,
+          channel_feeds
+            .get(3)
+            ?.attributes?.avatar_image_url.startsWith('https')
+            ? channel_feeds.get(3)?.attributes?.avatar_image_url
+            : images.channels,
+          channel_feeds
+            .get(4)
+            ?.attributes?.avatar_image_url.startsWith('https')
+            ? channel_feeds.get(4)?.attributes?.avatar_image_url
+            : images.channels,
+        ],
+        collection: false,
+        channel: true,
+        newsmast: false,
+      }
       : { tiles: [], collection: false, channel: true, newsmast: false };
 
   const newsmastTiles =
     newsmast_channels?.size > 0
       ? {
-          tiles: [
-            newsmast_channels
-              .get(1)
-              ?.attributes?.avatar_image_url.startsWith('https')
-              ? newsmast_channels.get(1)?.attributes?.avatar_image_url
-              : images.channels,
-            newsmast_channels
-              .get(2)
-              ?.attributes?.avatar_image_url.startsWith('https')
-              ? newsmast_channels.get(2)?.attributes?.avatar_image_url
-              : images.channels,
-            newsmast_channels
-              .get(3)
-              ?.attributes?.avatar_image_url.startsWith('https')
-              ? newsmast_channels.get(3)?.attributes?.avatar_image_url
-              : images.channels,
-            newsmast_channels
-              .get(4)
-              ?.attributes?.avatar_image_url.startsWith('https')
-              ? newsmast_channels.get(4)?.attributes?.avatar_image_url
-              : images.channels,
-          ],
-          collection: false,
-          channel: false,
-          newsmast: true,
-        }
+        tiles: [
+          newsmast_channels
+            .get(1)
+            ?.attributes?.avatar_image_url.startsWith('https')
+            ? newsmast_channels.get(1)?.attributes?.avatar_image_url
+            : images.channels,
+          newsmast_channels
+            .get(2)
+            ?.attributes?.avatar_image_url.startsWith('https')
+            ? newsmast_channels.get(2)?.attributes?.avatar_image_url
+            : images.channels,
+          newsmast_channels
+            .get(3)
+            ?.attributes?.avatar_image_url.startsWith('https')
+            ? newsmast_channels.get(3)?.attributes?.avatar_image_url
+            : images.channels,
+          newsmast_channels
+            .get(4)
+            ?.attributes?.avatar_image_url.startsWith('https')
+            ? newsmast_channels.get(4)?.attributes?.avatar_image_url
+            : images.channels,
+        ],
+        collection: false,
+        channel: false,
+        newsmast: true,
+      }
       : { tiles: [], collection: false, channel: false, newsmast: true };
 
   const handleSearch = useCallback(
@@ -181,25 +190,14 @@ const Collections = () => {
   );
 
   useEffect(() => {
-    if (
-      !searchTerm &&
-      (collections.size === 0 ||
-        newsmast_channels.size === 0 ||
-        channel_feeds.size === 0) &&
-      !collectionsLoading
-    ) {
-      dispatch(fetchChannels());
-      dispatch(fetchNewsmastChannels());
-      dispatch(fetchChannelFeeds());
+    // Initial fetch on mount if no search term is present
+    if (!searchTerm) {
+      if (collections.size === 0) dispatch(fetchChannels());
+      if (newsmast_channels.size === 0) dispatch(fetchNewsmastChannels());
+      if (channel_feeds.size === 0) dispatch(fetchChannelFeeds());
     }
-  }, [
-    searchTerm,
-    collections,
-    newsmast_channels,
-    collectionsLoading,
-    channel_feeds,
-    dispatch,
-  ]);
+  }, [dispatch]); // Removed data dependencies to prevent the infinite loop
+
   return (
     <div className='channels'>
       <Helmet>
