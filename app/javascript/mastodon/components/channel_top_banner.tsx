@@ -13,7 +13,9 @@ const ChannelTopBanner = () => {
     //  />
     <div
       className='channel-header'
-      style={{ '--header-image': `url(${header_image})` }}
+      style={
+        { '--header-image': `url(${header_image})` } as React.CSSProperties
+      }
     />
   );
 };
