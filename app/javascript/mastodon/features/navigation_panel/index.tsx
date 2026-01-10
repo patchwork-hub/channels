@@ -286,6 +286,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
                 transparent
                 href={navItem.url}
                 icon={navItem.icon}
+                target='_blank'
                 iconComponent={IconComponent}
                 activeIconComponent={IconComponent}
                 text={navItem.name}
