@@ -20,8 +20,8 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: 94fc6f339882ab0f01c9f56b7a61525b99ba3f72
-  branch: mastodon-4.5.3
+  revision: 577c71fdbad46a7bdd929ea70e827633cc09db39
+  branch: mastodon-4.5.3-custom-timeline
   specs:
     content_filters (0.1.0)
       httparty (~> 0.23.1)
@@ -39,8 +39,8 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/custom_feeds
-  revision: 7d02d07981555a4c95f1b9870d6550856b2cabeb
-  branch: mastodon-4.5.3
+  revision: e206f3db894556e70a8cad365d9227598e90199f
+  branch: mastodon-4.5.3-custom-timeline
   specs:
     custom_feeds (0.1.0)
       rails (>= 7.1, < 9.0)
