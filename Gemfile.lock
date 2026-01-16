@@ -20,7 +20,7 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: 9efa6e9c851a398ff288076d649dc76ab9bae824
+  revision: aa173259394cf21a6f86d8db03f681466e4cce11
   branch: mastodon-4.5.3-custom-timeline
   specs:
     content_filters (0.1.0)
