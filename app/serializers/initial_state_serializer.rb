@@ -5,8 +5,16 @@ class InitialStateSerializer < ActiveModel::Serializer
 
   attributes :meta, :compose, :accounts,
              :media_attachments, :settings,
-             :languages,:features,
-             :header_image, :custom_links, :channel_display_name, :logo_image, :is_main_channel, :is_newuser_with_approval
+             :languages, :features,
+             :header_image, :custom_links, :channel_display_name, :logo_image
+
+  attribute :is_main_channel do
+    ENV.fetch('MAIN_CHANNEL', nil)
+  end
+
+  attribute :is_newuser_with_approval do
+    Setting.registrations_mode == 'approved'
+  end
 
   attribute :critical_updates_pending, if: -> { object&.role&.can?(:view_devops) && SoftwareUpdate.check_enabled? }
 
@@ -102,19 +110,16 @@ class InitialStateSerializer < ActiveModel::Serializer
   end
 
   def custom_links
-    JSON.parse(ENV.fetch('LINKS', nil).gsub('\n', '').gsub('\t', '').strip)
+    links = ENV.fetch('LINKS', nil)
+    return nil if links.blank?
+
+    JSON.parse(links.gsub('\n', '').gsub('\t', '').strip)
+  rescue JSON::ParserError
+    nil
   end
 
   def channel_display_name
     ENV.fetch('DISPLAY_NAME', nil)
-  end
-
-  def is_main_channel
-    ENV.fetch('MAIN_CHANNEL', nil)
-  end
-
-  def is_newuser_with_approval
-    Setting.registrations_mode == 'approved'
   end
 
   private
