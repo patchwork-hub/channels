@@ -9,31 +9,31 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: 3348b23404da64d5b4cc6b267100faa9e6f47741
-  branch: main
+  revision: ed1726885de3b4eebb55a7dac84b73354fd76fd0
+  branch: mastodon-4.5.3
   specs:
     content_filters (0.1.0)
       httparty (~> 0.23.1)
-      rails (~> 8.0)
+      rails (>= 7.1, < 9.0)
 
 GIT
   remote: https://github.com/patchwork-hub/custom_feeds
-  revision: 020febe8a933855e968c262d5a9b8ece0ad92c05
-  branch: main
+  revision: 5a1ec1a5a23aa40a96cd938b1bf5c19e94b37ef4
+  branch: mastodon-4.5.3
   specs:
     custom_feeds (0.1.0)
-      rails (>= 8.0.2.1)
+      rails (>= 7.1, < 9.0)
 
 GIT
   remote: https://github.com/patchwork-hub/posts
-  revision: cfdfc9dd78fd1ab08166c994d8be6bf17c904bd0
-  branch: main
+  revision: e3144e55be20cdfc5b53fc2893f369add3b92993
+  branch: mastodon-4.5.3
   specs:
     posts (0.1.0)
       annotaterb (~> 4.13)
       byebug (~> 11.1)
       link_thumbnailer (~> 3.4)
-      rails (~> 8.0)
+      rails (>= 7.1, < 9.0)
 
 GEM
   remote: https://rubygems.org/
@@ -537,8 +537,8 @@ GEM
     mutex_m (0.3.0)
     net-http (0.6.0)
       uri
-    net-http-persistent (4.0.6)
-      connection_pool (~> 2.2, >= 2.2.4)
+    net-http-persistent (4.0.8)
+      connection_pool (>= 2.2.4, < 4)
     net-imap (0.5.10)
       date
       net-protocol
