@@ -9,8 +9,8 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/accounts
-  revision: c6d3ba7b2e30f76334f916cac65a43afa3d97454
-  branch: feature-4.5.3
+  revision: a8cae111ed7a6376951f2e1ee62740b3e3b07606
+  branch: mastodon-4.5.3
   specs:
     accounts (0.1.0)
       byebug (~> 11.1)
@@ -21,7 +21,7 @@ GIT
 GIT
   remote: https://github.com/patchwork-hub/content_filters
   revision: ed1726885de3b4eebb55a7dac84b73354fd76fd0
-  branch: mastodon-4.5.3-custom-timeline
+  branch: mastodon-4.5.3
   specs:
     content_filters (0.1.0)
       httparty (~> 0.23.1)
@@ -29,7 +29,7 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/conversations
-  revision: 0adb4ac11e1a616794fcc2801242e4498b457c6f
+  revision: d537a6f978f86a536d59282102d8acac95bf3ce1
   branch: mastodon-4.5.3
   specs:
     conversations (0.1.0)
@@ -39,15 +39,15 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/custom_feeds
-  revision: 260597b223ded64264b4ad7814950f7f3c72b655
-  branch: mastodon-4.5.3-custom-timeline
+  revision: 5a1ec1a5a23aa40a96cd938b1bf5c19e94b37ef4
+  branch: mastodon-4.5.3
   specs:
     custom_feeds (0.1.0)
       rails (>= 7.1, < 9.0)
 
 GIT
   remote: https://github.com/patchwork-hub/posts
-  revision: 8c21ce088592cbf1c3190ed263f03b0807074a26
+  revision: e3144e55be20cdfc5b53fc2893f369add3b92993
   branch: mastodon-4.5.3
   specs:
     posts (0.1.0)
@@ -302,6 +302,7 @@ GEM
     fast_blank (1.0.1)
     fastimage (2.4.0)
     ffi (1.17.2)
+    ffi (1.17.2-x86_64-linux-gnu)
     ffi-compiler (1.3.2)
       ffi (>= 1.15.5)
       rake
@@ -337,9 +338,12 @@ GEM
     google-protobuf (4.32.1)
       bigdecimal
       rake (>= 13)
+    google-protobuf (4.32.1-x86_64-linux-gnu)
+      bigdecimal
+      rake (>= 13)
     googleapis-common-protos-types (1.22.0)
       google-protobuf (~> 4.26)
-    googleauth (1.16.0)
+    googleauth (1.16.1)
       faraday (>= 1.0, < 3.a)
       google-cloud-env (~> 2.2)
       google-logging-utils (~> 0.1)
@@ -556,6 +560,8 @@ GEM
     nokogiri (1.18.10)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    nokogiri (1.18.10-x86_64-linux-gnu)
+      racc (~> 1.4)
     oga (3.4)
       ast
       ruby-ll (~> 2.1)
@@ -683,6 +689,7 @@ GEM
     pastel (0.8.0)
       tty-color (~> 0.5)
     pg (1.6.2)
+    pg (1.6.2-x86_64-linux)
     pghero (3.7.0)
       activerecord (>= 7.1)
     playwright-ruby-client (1.55.0)
@@ -1037,6 +1044,7 @@ GEM
 
 PLATFORMS
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   accounts!
