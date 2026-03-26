@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main-channel
+      - main-channel-v.4.5.3
 env:
   SIDEKIQ_DEFINITION: .aws/main-channel-sidekiq.json
 
