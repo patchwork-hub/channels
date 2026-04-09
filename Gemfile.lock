@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/accounts
-  revision: 6328f226a7a7e76741df62c4eaf423af0e833cc1
+  revision: 3e9cd3f8831935a757faf9bdd77320038fba821d
   branch: mastodon-4.5.3-image
   specs:
     accounts (0.1.0)
