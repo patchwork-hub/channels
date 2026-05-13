@@ -9,8 +9,8 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/accounts
-  revision: 8ff0efc540bcf304f156f1b78f0506060ca871d4
-  branch: mastodon-4.5.6-channel-deletion
+  revision: 821194ccd30b0c755d4f6719fe78d7181fcb377e
+  branch: mastodon-4.5.6
   specs:
     accounts (0.1.0)
       byebug (~> 11.1)
