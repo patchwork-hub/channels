@@ -57,6 +57,7 @@ jobs:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-channel-${{ github.sha }}
           restore-keys: |
+            ${{ runner.os }}-buildx-channel-${{ github.ref }}
             ${{ runner.os }}-buildx-channel-
             ${{ runner.os }}-buildx-
 
@@ -113,6 +114,7 @@ jobs:
           path: /tmp/.buildx-cache-streaming
           key: ${{ runner.os }}-buildx-streaming-${{ github.sha }}
           restore-keys: |
+            ${{ runner.os }}-buildx-streaming-${{ github.ref }}
             ${{ runner.os }}-buildx-streaming-
             ${{ runner.os }}-buildx-
 
