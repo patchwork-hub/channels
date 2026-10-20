@@ -1,0 +1,270 @@
+run-name: Deploy to Newsmast Channels by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main-channel-v.4.5.3
+env:
+  AWS_REGION: eu-west-2
+  REGISTRY: 672691776916.dkr.ecr.eu-west-2.amazonaws.com
+  CHANNEL_ECR_REPOSITORY: mastodon-channel
+  CHANNEL_CLUSTER: channels
+  CHANNEL_WEB_SERVICE_NAME: main-channel-web
+  CHANNEL_SIDEKIQ_SERVICE_NAME: main-channel-sidekiq
+  CHANNEL_STREAMING_SERVICE_NAME: main-channel-streaming
+  CHANNEL_WEB_CONTAINER: main-channel
+  CHANNEL_SIDEKIQ_CONTAINER: main-channel-sidekiq
+  CHANNEL_STREAMING_CONTAINER: main-channel-streaming
+  CHANNEL_IMAGE_TAG: channels-web-${{ github.sha }}
+  CHANNEL_STREAMING_IMAGE_TAG: channels-streaming-${{ github.sha }}
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-channel:
+    name: Build Channel Web / Sidekiq Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CHANNELS_AWS_ROLE_ARN }}
+          role-session-name: channels-production-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          mask-password: 'true'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          version: latest
+          driver-opts: |
+            image=moby/buildkit:master
+            network=host
+
+      - name: Cache Docker Layers
+        uses: actions/cache@v4
+        with:
+          path: |
+            /tmp/.buildx-cache
+            /tmp/.yarn-cache
+            /tmp/.bundle-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ github.ref }}
+            ${{ runner.os }}-buildx-
+
+      - name: Build and Push Image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.CHANNEL_ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ env.CHANNEL_IMAGE_TAG }}
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max \
+            --push \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            .
+
+      # Temp fix for build cache
+      - name: Move Cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  build-streaming:
+    name: Build Streaming Service
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CHANNELS_AWS_ROLE_ARN }}
+          role-session-name: channels-production-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          mask-password: 'true'
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers for streaming
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache-streaming
+          key: ${{ runner.os }}-buildx-streaming-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-streaming-
+            ${{ runner.os }}-buildx-
+
+      - name: Build and push streaming image
+        id: build-streaming-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.CHANNEL_ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ env.CHANNEL_STREAMING_IMAGE_TAG }}
+        run: |
+          echo "Building streaming service image..."
+          docker buildx build \
+            --platform linux/amd64 \
+            --file ./streaming/Dockerfile \
+            --cache-from type=local,src=/tmp/.buildx-cache-streaming \
+            --cache-to type=local,dest=/tmp/.buildx-cache-streaming-new,mode=max \
+            --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            --push \
+            .
+
+          # Move cache to prevent growth
+          rm -rf /tmp/.buildx-cache-streaming
+          mv /tmp/.buildx-cache-streaming-new /tmp/.buildx-cache-streaming
+
+          echo "Successfully built and pushed: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+  deploy-production:
+    name: Deploy Web, Sidekiq and Streaming to Channels ECS Production
+    runs-on: ubuntu-latest
+    needs: [build-channel, build-streaming]
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.CHANNELS_AWS_ROLE_ARN }}
+          role-session-name: channels-production-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          mask-password: 'true'
+
+      # The task definition is resolved THROUGH the service, so the service must
+      # already exist. Terraform remains the only writer of CPU, memory, ports,
+      # IAM roles, log groups and environment files; this pipeline only replaces
+      # the image. Nothing about the task definitions is stored in this
+      # repository, so it cannot drift from the IaC stack.
+      - name: Download current web task definition
+        run: |
+          TASK_DEF_ARN=$(aws ecs describe-services \
+            --cluster "$CHANNEL_CLUSTER" \
+            --services "$CHANNEL_WEB_SERVICE_NAME" \
+            --query 'services[0].taskDefinition' \
+            --output text)
+          echo "Web service is currently on: $TASK_DEF_ARN"
+          aws ecs describe-task-definition \
+            --task-definition "$TASK_DEF_ARN" \
+            --query 'taskDefinition' \
+            --output json > task-definition-web.json
+
+      - name: Render web task definition with this commit image
+        id: task-def-web
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition-web.json
+          container-name: ${{ env.CHANNEL_WEB_CONTAINER }}
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.CHANNEL_ECR_REPOSITORY }}:${{ env.CHANNEL_IMAGE_TAG }}
+
+      - name: Deploy web service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def-web.outputs.task-definition }}
+          service: ${{ env.CHANNEL_WEB_SERVICE_NAME }}
+          cluster: ${{ env.CHANNEL_CLUSTER }}
+          wait-for-service-stability: false
+
+      - name: Download current Sidekiq task definition
+        run: |
+          TASK_DEF_ARN=$(aws ecs describe-services \
+            --cluster "$CHANNEL_CLUSTER" \
+            --services "$CHANNEL_SIDEKIQ_SERVICE_NAME" \
+            --query 'services[0].taskDefinition' \
+            --output text)
+          echo "Sidekiq service is currently on: $TASK_DEF_ARN"
+          aws ecs describe-task-definition \
+            --task-definition "$TASK_DEF_ARN" \
+            --query 'taskDefinition' \
+            --output json > task-definition-sidekiq.json
+
+      - name: Render Sidekiq task definition with this commit image
+        id: task-def-sidekiq
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition-sidekiq.json
+          container-name: ${{ env.CHANNEL_SIDEKIQ_CONTAINER }}
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.CHANNEL_ECR_REPOSITORY }}:${{ env.CHANNEL_IMAGE_TAG }}
+
+      - name: Deploy Sidekiq service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def-sidekiq.outputs.task-definition }}
+          service: ${{ env.CHANNEL_SIDEKIQ_SERVICE_NAME }}
+          cluster: ${{ env.CHANNEL_CLUSTER }}
+          wait-for-service-stability: false
+
+      - name: Download current Streaming task definition
+        run: |
+          TASK_DEF_ARN=$(aws ecs describe-services \
+            --cluster "$CHANNEL_CLUSTER" \
+            --services "$CHANNEL_STREAMING_SERVICE_NAME" \
+            --query 'services[0].taskDefinition' \
+            --output text)
+          echo "Streaming service is currently on: $TASK_DEF_ARN"
+          aws ecs describe-task-definition \
+            --task-definition "$TASK_DEF_ARN" \
+            --query 'taskDefinition' \
+            --output json > task-definition-streaming.json
+
+      - name: Render Streaming task definition with this commit image
+        id: task-def-streaming
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition-streaming.json
+          container-name: ${{ env.CHANNEL_STREAMING_CONTAINER }}
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.CHANNEL_ECR_REPOSITORY }}:${{ env.CHANNEL_STREAMING_IMAGE_TAG }}
+
+      - name: Deploy Streaming service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def-streaming.outputs.task-definition }}
+          service: ${{ env.CHANNEL_STREAMING_SERVICE_NAME }}
+          cluster: ${{ env.CHANNEL_CLUSTER }}
+          wait-for-service-stability: false
+
+      - name: Deployment complete
+        run: |
+          echo "Deployment to Channels production environment completed successfully!"
+          echo "Commit: ${{ github.sha }}"
+          echo "Channel image: ${{ env.CHANNEL_ECR_REPOSITORY }}:${{ env.CHANNEL_IMAGE_TAG }}"
+          echo "Streaming image: ${{ env.CHANNEL_ECR_REPOSITORY }}:${{ env.CHANNEL_STREAMING_IMAGE_TAG }}"
+          echo "Web service: ${{ env.CHANNEL_WEB_SERVICE_NAME }}"
+          echo "Sidekiq service: ${{ env.CHANNEL_SIDEKIQ_SERVICE_NAME }}"
+          echo "Streaming service: ${{ env.CHANNEL_STREAMING_SERVICE_NAME }}"
+          echo "Cluster: ${{ env.CHANNEL_CLUSTER }}"
