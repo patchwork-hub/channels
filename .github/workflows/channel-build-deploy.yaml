@@ -48,42 +48,46 @@ jobs:
         with:
           mask-password: 'true'
 
-      - name: Setup Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          version: latest
+          driver-opts: |
+            image=moby/buildkit:master
+            network=host
 
-      - name: Cache Docker layers
+      - name: Cache Docker Layers
         uses: actions/cache@v4
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-channel-${{ github.sha }}
+          path: |
+            /tmp/.buildx-cache
+            /tmp/.yarn-cache
+            /tmp/.bundle-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-channel-${{ github.ref }}
-            ${{ runner.os }}-buildx-channel-
+            ${{ runner.os }}-buildx-${{ github.ref }}
             ${{ runner.os }}-buildx-
 
-      - name: Build and push channel image
+      - name: Build and Push Image to Amazon ECR
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.CHANNEL_ECR_REPOSITORY }}
           IMAGE_TAG: ${{ env.CHANNEL_IMAGE_TAG }}
-          SOURCE_COMMIT: ${{ github.sha }}
         run: |
-          echo "Building channel (web + sidekiq) image..."
           docker buildx build \
             --platform linux/amd64 \
-            --cache-from type=local,src=/tmp/.buildx-cache \
-            --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max \
-            --build-arg SOURCE_COMMIT="${SOURCE_COMMIT}" \
-            --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max \
             --push \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             .
 
-          # Move cache to prevent growth
+      # Temp fix for build cache
+      - name: Move Cache
+        run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-          echo "Successfully built and pushed: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
   build-streaming:
     name: Build Streaming Service
@@ -114,7 +118,6 @@ jobs:
           path: /tmp/.buildx-cache-streaming
           key: ${{ runner.os }}-buildx-streaming-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-streaming-${{ github.ref }}
             ${{ runner.os }}-buildx-streaming-
             ${{ runner.os }}-buildx-
 
@@ -124,7 +127,6 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.CHANNEL_ECR_REPOSITORY }}
           IMAGE_TAG: ${{ env.CHANNEL_STREAMING_IMAGE_TAG }}
-          SOURCE_COMMIT: ${{ github.sha }}
         run: |
           echo "Building streaming service image..."
           docker buildx build \
@@ -132,7 +134,6 @@ jobs:
             --file ./streaming/Dockerfile \
             --cache-from type=local,src=/tmp/.buildx-cache-streaming \
             --cache-to type=local,dest=/tmp/.buildx-cache-streaming-new,mode=max \
-            --build-arg SOURCE_COMMIT="${SOURCE_COMMIT}" \
             --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             --push \
             .
