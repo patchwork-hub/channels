@@ -20,7 +20,7 @@ GIT
 
 GIT
   remote: https://github.com/patchwork-hub/content_filters
-  revision: 69e84a8f03a33861615608a29fba7d7ede3984b2
+  revision: 5f168979e33799289ba490b36ede9d319e987320
   branch: mastodon-4.5.3
   specs:
     content_filters (0.1.0)

@@ -136,6 +136,7 @@ jobs:
           echo "Successfully built and pushed: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
   deploy-channel-web:
+    if: false
     name: Deploy to Main Channel Web Container
     runs-on: ubuntu-latest
     needs: build-and-push
