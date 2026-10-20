@@ -110,21 +110,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Fill in the new image ID in the Amazon ECS task definition (Web)
-        id: task-def-web
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.WEB_DEFINITION }}
-          container-name: ${{ secrets.WEB_STAGING_CONTAINER }}
-          image: ${{ secrets.WEB_STAGING_IMAGE }}
+      # - name: Fill in the new image ID in the Amazon ECS task definition (Web)
+      #   id: task-def-web
+      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+      #   with:
+      #     task-definition: ${{ env.WEB_DEFINITION }}
+      #     container-name: ${{ secrets.WEB_STAGING_CONTAINER }}
+      #     image: ${{ secrets.WEB_STAGING_IMAGE }}
 
-      - name: Deploy Amazon ECS task definition (Web)
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ steps.task-def-web.outputs.task-definition }}
-          service: ${{ secrets.WEB_STAGING_SERVICE_NAME }}
-          cluster: ${{ secrets.CLUSTER_STAGING }}
-          wait-for-service-stability: false
+      # - name: Deploy Amazon ECS task definition (Web)
+      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      #   with:
+      #     task-definition: ${{ steps.task-def-web.outputs.task-definition }}
+      #     service: ${{ secrets.WEB_STAGING_SERVICE_NAME }}
+      #     cluster: ${{ secrets.CLUSTER_STAGING }}
+      #     wait-for-service-stability: false
 
       - name: Fill in the new image ID in the Amazon ECS task definition (Sidekiq)
         id: task-def-sidekiq
