@@ -19,6 +19,15 @@ GIT
       rails (>= 7.1, < 9.0)
 
 GIT
+  remote: https://github.com/patchwork-hub/content_filters
+  revision: fe4ec3128dc9be505e8571edc0174bc78ad3e9f6
+  branch: mastodon-4.5.3
+  specs:
+    content_filters (0.1.0)
+      httparty (~> 0.23.1)
+      rails (>= 7.1, < 9.0)
+
+GIT
   remote: https://github.com/patchwork-hub/conversations
   revision: d537a6f978f86a536d59282102d8acac95bf3ce1
   branch: mastodon-4.5.3
@@ -1062,6 +1071,7 @@ DEPENDENCIES
   color_diff (~> 0.1)
   concurrent-ruby
   connection_pool
+  content_filters!
   conversations!
   csv (~> 3.2)
   custom_feeds!
