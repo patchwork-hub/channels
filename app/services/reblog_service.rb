@@ -18,10 +18,7 @@ class ReblogService < BaseService
 
     reblog = account.statuses.find_by(reblog: reblogged_status)
 
-    unless reblog.nil?
-      log_reblog_event('reblog_already_exists', account, reblogged_status, reblog, options)
-      return reblog
-    end
+    return reblog unless reblog.nil?
 
     visibility = if reblogged_status.hidden?
                    reblogged_status.visibility
@@ -30,7 +27,6 @@ class ReblogService < BaseService
                  end
 
     reblog = account.statuses.create!(reblog: reblogged_status, text: '', visibility: visibility, rate_limit: options[:with_rate_limit])
-    log_reblog_event('reblog_created', account, reblogged_status, reblog, options)
 
     Trends.register!(reblog)
     DistributionWorker.perform_async(reblog.id)
@@ -43,10 +39,6 @@ class ReblogService < BaseService
   end
 
   private
-
-  def log_reblog_event(event, account, reblogged_status, reblog, options)
-    Rails.logger.info("[ReblogService] event=#{event} request_id=#{options[:request_id] || 'none'} source=#{options[:source] || 'internal'} account_id=#{account.id} account_acct=#{account.acct.to_s.dump} status_id=#{reblogged_status.id} status_uri=#{reblogged_status.uri.to_s.dump} reblog_status_id=#{reblog.id}")
-  end
 
   def create_notification(reblog)
     reblogged_status = reblog.reblog

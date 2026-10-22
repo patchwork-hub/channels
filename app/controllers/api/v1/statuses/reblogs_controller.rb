@@ -12,10 +12,8 @@ class Api::V1::Statuses::ReblogsController < Api::V1::Statuses::BaseController
   override_rate_limit_headers :create, family: :statuses
 
   def create
-    Rails.logger.info("[ReblogService] event=api_reblog_requested request_id=#{request.request_id} account_id=#{current_account.id} account_acct=#{current_account.acct.to_s.dump} status_id=#{@reblog.id} status_uri=#{@reblog.uri.to_s.dump} application_id=#{doorkeeper_token.application_id}")
-
     with_redis_lock("reblog:#{current_account.id}:#{@reblog.id}") do
-      @status = ReblogService.new.call(current_account, @reblog, reblog_params.merge(request_id: request.request_id, source: 'api'))
+      @status = ReblogService.new.call(current_account, @reblog, reblog_params)
     end
 
     render json: @status, serializer: REST::StatusSerializer
