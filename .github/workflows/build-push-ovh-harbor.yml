@@ -1,0 +1,155 @@
+run-name: Build and push channel-org OVH Harbor images by @${{ github.actor }}
+
+on:
+  push:
+    branches:
+      - channel-org-4.5.3-production
+  workflow_dispatch:
+
+# Store the channel-org robot account's secret in the CHANNEL_ORG_HARBOR_PASSWORD
+# ORGANIZATION secret; its repository access must include this repo. Never commit it.
+env:
+  HARBOR_REGISTRY: 44eda7q3.gra7.container-registry.ovh.net
+  HARBOR_PROJECT: channel-org
+  HARBOR_USERNAME: robot$channel-org+channel-org
+  COMPOSE_SOURCE_FILE: docker-compose.ovh.yml
+  WEB_IMAGE_TAG: web-${{ github.sha }}
+  STREAMING_IMAGE_TAG: streaming-${{ github.sha }}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-web:
+    name: Build and push web image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to OVH Harbor
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.HARBOR_REGISTRY }}
+          username: ${{ env.HARBOR_USERNAME }}
+          password: ${{ secrets.CHANNEL_ORG_HARBOR_PASSWORD }}
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache-web
+          key: ${{ runner.os }}-buildx-web-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-web-
+            ${{ runner.os }}-buildx-
+
+      - name: Build and push web image
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          IMAGE=${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/web
+          docker buildx build \
+            --platform linux/amd64 \
+            --cache-from type=local,src=/tmp/.buildx-cache-web \
+            --cache-to type=local,dest=/tmp/.buildx-cache-web-new,mode=max \
+            --build-arg SOURCE_COMMIT="${SOURCE_COMMIT}" \
+            --tag $IMAGE:${{ env.WEB_IMAGE_TAG }} \
+            --tag $IMAGE:latest \
+            --push \
+            .
+          rm -rf /tmp/.buildx-cache-web
+          mv /tmp/.buildx-cache-web-new /tmp/.buildx-cache-web
+
+  build-streaming:
+    name: Build and push streaming image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to OVH Harbor
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.HARBOR_REGISTRY }}
+          username: ${{ env.HARBOR_USERNAME }}
+          password: ${{ secrets.CHANNEL_ORG_HARBOR_PASSWORD }}
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers for streaming
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache-streaming
+          key: ${{ runner.os }}-buildx-streaming-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-streaming-
+            ${{ runner.os }}-buildx-
+
+      - name: Build and push streaming image
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          IMAGE=${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/streaming
+          docker buildx build \
+            --platform linux/amd64 \
+            --file ./streaming/Dockerfile \
+            --cache-from type=local,src=/tmp/.buildx-cache-streaming \
+            --cache-to type=local,dest=/tmp/.buildx-cache-streaming-new,mode=max \
+            --build-arg SOURCE_COMMIT="${SOURCE_COMMIT}" \
+            --tag $IMAGE:${{ env.STREAMING_IMAGE_TAG }} \
+            --tag $IMAGE:latest \
+            --push \
+            .
+          rm -rf /tmp/.buildx-cache-streaming
+          mv /tmp/.buildx-cache-streaming-new /tmp/.buildx-cache-streaming
+
+  deploy-compose:
+    name: Update compose file image tags and deploy to OVH
+    runs-on: ubuntu-latest
+    needs: [build-web, build-streaming]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Replace web image tag in compose file
+        run: |
+          sed -i 's|image: .*/channel-org/web:.*|image: ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/web:${{ env.WEB_IMAGE_TAG }}|' ${{ env.COMPOSE_SOURCE_FILE }}
+
+      - name: Replace streaming image tag in compose file
+        run: |
+          sed -i 's|image: .*/channel-org/streaming:.*|image: ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/streaming:${{ env.STREAMING_IMAGE_TAG }}|' ${{ env.COMPOSE_SOURCE_FILE }}
+
+      - name: Copy compose file to OVH server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ vars.CHANNEL_ORG_SERVER_IP }}
+          username: ubuntu
+          key: ${{ secrets.OVH_SSH_PRIVATE_KEY }}
+          source: ${{ env.COMPOSE_SOURCE_FILE }}
+          target: /home/ubuntu/deployment/mastodon/
+          strip_components: 0
+          overwrite: true
+
+      - name: Deploy on OVH server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.CHANNEL_ORG_SERVER_IP }}
+          username: ubuntu
+          key: ${{ secrets.OVH_SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            cd /home/ubuntu/deployment/mastodon
+            mv -f docker-compose.ovh.yml docker-compose.yml
+            echo "${{ secrets.CHANNEL_ORG_HARBOR_PASSWORD }}" | docker login "${{ env.HARBOR_REGISTRY }}" -u '${{ env.HARBOR_USERNAME }}' --password-stdin
+            docker compose -f docker-compose.yml pull
+            docker compose -f docker-compose.yml up -d
+            docker compose -f docker-compose.yml ps

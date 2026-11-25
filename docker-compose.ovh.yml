@@ -1,0 +1,143 @@
+# OVH Public Cloud deployment compose file for channel-org
+# Images are built and pushed by .github/workflows/build-push-ovh-harbor.yml
+# which updates the image lines below on every push.
+#
+# Host layout (credentials are placed manually, never by CI):
+#   /home/ubuntu/deployment/mastodon/docker-compose.yml  (copied by CI from this file)
+#   /home/ubuntu/deployment/credential/.env.production
+#   /home/ubuntu/deployment/credential/firebase/firebase.json
+#
+# Run by hand with no variables:
+#   cd /home/ubuntu/deployment/mastodon
+#   docker compose down && \
+#     docker compose up -d
+
+name: mastodon
+
+services:
+  web:
+    # TAGS ARE UPDATED BY CI — do not edit manually
+    image: 44eda7q3.gra7.container-registry.ovh.net/channel-org/web:CHANGE_ME
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.75"
+          memory: 2G
+        reservations:
+          cpus: "0.75"
+          memory: 2G
+    env_file:
+      - /home/ubuntu/deployment/credential/.env.production
+    command: >
+      bash -c "bundle exec rails db:migrate &&
+               bundle exec rails s -p 3000"
+    ports:
+      - "127.0.0.1:3000:3000"
+    networks:
+      - external_network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
+    working_dir: /opt/mastodon
+    volumes:
+      - mastodon_uploads:/opt/mastodon/public/system
+      - /home/ubuntu/deployment/credential/firebase/firebase.json:/opt/mastodon/config/fcm_acc_service.json:ro
+    ulimits:
+      nofile:
+        soft: 1024
+        hard: 4096
+      memlock:
+        soft: 64
+        hard: 64
+      msgqueue:
+        soft: 819200
+        hard: 819200
+      nproc:
+        soft: 15471
+        hard: 15471
+      sigpending:
+        soft: 15471
+        hard: 15471
+
+  streaming:
+    # TAGS ARE UPDATED BY CI — do not edit manually
+    image: 44eda7q3.gra7.container-registry.ovh.net/channel-org/streaming:CHANGE_ME
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 512M
+    env_file:
+      - /home/ubuntu/deployment/credential/.env.production
+    environment:
+      - DB_SSLMODE=no-verify
+    command: ["node", "./streaming/index.js"]
+    ports:
+      - "127.0.0.1:4000:4000"
+    networks:
+      - external_network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:4000/api/v1/streaming/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
+    working_dir: /opt/mastodon
+    ulimits:
+      nofile:
+        soft: 1024
+        hard: 4096
+
+  sidekiq:
+    # TAGS ARE UPDATED BY CI — do not edit manually
+    image: 44eda7q3.gra7.container-registry.ovh.net/channel-org/web:CHANGE_ME
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 2G
+        reservations:
+          cpus: "1.0"
+          memory: 2G
+    env_file:
+      - /home/ubuntu/deployment/credential/.env.production
+    command: >
+      bash -c "bundle exec sidekiq"
+    networks:
+      - internal_network
+    working_dir: /opt/mastodon
+    volumes:
+      - mastodon_uploads:/opt/mastodon/public/system
+      - /home/ubuntu/deployment/credential/firebase/firebase.json:/opt/mastodon/config/fcm_acc_service.json:ro
+    ulimits:
+      nofile:
+        soft: 1024
+        hard: 4096
+      memlock:
+        soft: 64
+        hard: 64
+      msgqueue:
+        soft: 819200
+        hard: 819200
+      nproc:
+        soft: 15471
+        hard: 15471
+      sigpending:
+        soft: 15471
+        hard: 15471
+
+networks:
+  external_network:
+  internal_network:
+
+volumes:
+  mastodon_uploads:
